@@ -12,7 +12,7 @@ import {
   Clock,
   Sparkles
 } from 'lucide-react'
-import { saveTransferRequest } from '../lib/supabase'
+import { saveTransferBooking } from '../lib/supabase'
 
 export default function TransportationPage({ t, lang, onNavigateHome }) {
   const page = t.transportationPage
@@ -20,10 +20,17 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
 
   // Booking / Enquiry Modal State
   const [modalOpen, setModalOpen] = useState(false)
-  const [pickup, setPickup] = useState('Sharm El Sheikh Airport')
+  const [pickup, setPickup] = useState('Cairo')
   const [dropoff, setDropoff] = useState('Dahab')
   const [travelDate, setTravelDate] = useState('2026-10-25')
   const [passengers, setPassengers] = useState(2)
+  const [children, setChildren] = useState(0)
+  const [nationality, setNationality] = useState('egyptian')
+  const [customerName, setCustomerName] = useState('')
+  const [customerPhone, setCustomerPhone] = useState('')
+  const [cairoStation, setCairoStation] = useState('riad')
+  const [paymentMethod, setPaymentMethod] = useState('wallet')
+  const [notes, setNotes] = useState('')
   const [rideType, setRideType] = useState('hiace') // 'hiace' | 'private'
 
   const handleOpenPlanner = (type, dest) => {
@@ -37,16 +44,61 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
       ? (isAr ? 'ميكروباص هايس (Hiace Bus - عائلي/مجموعات)' : 'Hiace Bus (Group/Family)')
       : (isAr ? 'سيارة ملاكي خاصة (Private Car)' : 'Private Car Transfer')
 
-    const msg = isAr
-      ? `السلام عليكم سيناء بوكينج، أود حجز واستفسار عن خدمة الانتقالات والمواصلات:\n- من: ${pickup}\n- إلى: ${dropoff}\n- التاريخ: ${travelDate}\n- عدد الأفراد: ${passengers}\n- وسيلة النقل المفضلة: ${vehicleLabel}\nبرجاء موافاتنا بالتوافر والتكلفة.`
-      : `Hello Sinai Booking! I would like to enquire about a transfer:\n- From: ${pickup}\n- To: ${dropoff}\n- Date: ${travelDate}\n- Passengers: ${passengers}\n- Vehicle Preference: ${vehicleLabel}\nPlease confirm availability and rate.`
+    const cairoStationsMap = {
+      riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
+      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+      rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
+      madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
+      custom: isAr ? 'نقطة تحرك مخصصة' : 'Custom Pick-up'
+    }
 
-    saveTransferRequest({
-      pickup_location: pickup,
+    const paymentLabels = {
+      wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
+      instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
+      card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
+    }
+
+    const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
+
+    const msg = isAr
+      ? `السلام عليكم سيناء بوكينج، أود حجز خدمة انتقالات ومواصلات:
+• نوع النقل: ${vehicleLabel}
+• الجنسية: ${nationalityLabel}
+• من (المحطة): ${cairoStation === 'custom' ? pickup : cairoStationsMap[cairoStation]}
+• إلى (الوجهة): ${dropoff}
+• تاريخ السفر: ${travelDate}
+• عدد الركاب: ${passengers}
+• عدد الأطفال: ${children}
+• الاسم: ${customerName || 'غير محدد'}
+• رقم الهاتف: ${customerPhone || 'غير محدد'}
+• طريقة الدفع: ${paymentLabels[paymentMethod]}
+${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}برجاء موافاتنا بالتوافر والتكلفة وتأكيد الحجز.`
+      : `Hello Sinai Booking! I would like to book a transfer:
+• Vehicle Preference: ${vehicleLabel}
+• Nationality: ${nationalityLabel}
+• From (Station): ${cairoStation === 'custom' ? pickup : cairoStationsMap[cairoStation]}
+• To (Destination): ${dropoff}
+• Travel Date: ${travelDate}
+• Passengers: ${passengers}
+• Children: ${children}
+• Name: ${customerName || 'Not specified'}
+• Phone: ${customerPhone || 'Not specified'}
+• Payment Method: ${paymentLabels[paymentMethod]}
+${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability and rate.`
+
+    saveTransferBooking({
+      service_type: rideType === 'private' ? 'private_car' : 'hiace_bus',
+      pickup_location: cairoStation === 'custom' ? pickup : cairoStationsMap[cairoStation],
       dropoff_location: dropoff,
+      cairo_station: cairoStation !== 'custom' ? cairoStationsMap[cairoStation] : null,
       travel_date: travelDate,
       passengers_count: passengers,
-      vehicle_type: rideType,
+      children_count: children,
+      nationality: nationality,
+      customer_name: customerName || null,
+      customer_phone: customerPhone || null,
+      payment_method: paymentMethod,
+      notes: notes || null,
       status: 'pending'
     })
 
@@ -415,21 +467,110 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
             </div>
 
             {/* Route Inputs */}
-            <div className="space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
-                    {isAr ? 'نقطة التحرك (من)' : 'Pick-up Location (From)'}
+            <div className="space-y-4">
+              
+              {/* Nationality */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
+                  {isAr ? 'الجنسية' : 'Nationality'}
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNationality('egyptian')}
+                    className={`py-2 px-3 text-xs font-semibold rounded-xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      nationality === 'egyptian'
+                        ? 'bg-[#183B33] text-white border-[#183B33] shadow-sm'
+                        : 'bg-white text-[#6C6963] border-[#D9D0C2] hover:border-[#183B33]'
+                    }`}
+                  >
+                    <span>🇪🇬</span>
+                    <span>{isAr ? 'مصري' : 'Egyptian'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNationality('foreign')}
+                    className={`py-2 px-3 text-xs font-semibold rounded-xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      nationality === 'foreign'
+                        ? 'bg-[#183B33] text-white border-[#183B33] shadow-sm'
+                        : 'bg-white text-[#6C6963] border-[#D9D0C2] hover:border-[#183B33]'
+                    }`}
+                  >
+                    <span>🌍</span>
+                    <span>{isAr ? 'أجنبي' : 'Foreign'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Transportation from Cairo (Stations) */}
+              <div className="pt-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#22211F] flex items-center gap-1.5">
+                    <span>🚐</span>
+                    <span>{isAr ? 'محطات التحرك من القاهرة' : 'Transportation from Cairo'}</span>
                   </label>
-                  <input
-                    type="text"
-                    value={pickup}
-                    onChange={(e) => setPickup(e.target.value)}
-                    placeholder="e.g. Sharm Airport, Cairo, Dahab..."
-                    className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
-                  />
+                  <span className="text-[10px] text-[#C45437] font-bold">
+                    {isAr ? 'رحلات يومية من القاهرة 🚐' : 'Daily departures from Cairo 🚐'}
+                  </span>
                 </div>
 
+                <div className="space-y-1.5">
+                  {[
+                    { id: 'riad', labelEn: 'Abdel Moneim Riad', labelAr: 'عبد المنعم رياض', time: '12:00 AM' },
+                    { id: 'embassy', labelEn: 'UAE Embassy — Masr El Gedida', labelAr: 'سفارة الإمارات — مصر الجديدة', time: '12:30 AM' },
+                    { id: 'rehab', labelEn: 'Rehab', labelAr: 'الرحاب', time: '1:00 AM' },
+                    { id: 'madinaty', labelEn: 'Madinaty', labelAr: 'مدينتي', time: '1:15 AM' },
+                    { id: 'custom', labelEn: 'Custom pick-up point', labelAr: 'مكان تحرك مخصص آخر', time: null },
+                  ].map((st) => (
+                    <label
+                      key={st.id}
+                      onClick={() => setCairoStation(st.id)}
+                      className={`flex items-center justify-between p-2 rounded-xl border text-xs cursor-pointer transition-all ${
+                        cairoStation === st.id
+                          ? 'bg-[#FAF5ED] border-[#C45437] text-[#22211F] font-semibold ring-1 ring-[#C45437]/30'
+                          : 'bg-white border-[#E7DFCE] text-[#6C6963] hover:border-[#C45437]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="cairoStationTransfer"
+                          checked={cairoStation === st.id}
+                          onChange={() => setCairoStation(st.id)}
+                          className="text-[#C45437] focus:ring-[#C45437]"
+                        />
+                        <span>{isAr ? st.labelAr : st.labelEn}</span>
+                      </div>
+                      {st.time && (
+                        <span className="font-mono text-[11px] text-[#C45437] bg-[#F4EBE1] px-2 py-0.5 rounded-full font-bold">
+                          {st.time}
+                        </span>
+                      )}
+                    </label>
+                  ))}
+                </div>
+
+                {cairoStation !== 'custom' ? (
+                  <p className="text-[11px] text-[#7A756C] mt-2 bg-[#F6EFE5] p-2 rounded-lg leading-relaxed">
+                    ℹ️ {isAr
+                      ? 'سنرسل لك رقم كابتن الرحلة في الساعة 11 مساءً ليلة المغادرة (يتغير يومياً).'
+                      : "We'll send you the trip captain's number at 11 PM the night before departure (it changes daily)."}
+                  </p>
+                ) : (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={pickup}
+                      onChange={(e) => setPickup(e.target.value)}
+                      placeholder={isAr ? 'اكتب نقطة التحرك المخصصة (مثال: مطار شرم الشيخ، دهب...)' : 'Enter custom pick-up (e.g. Sharm Airport, Dahab...)'}
+                      className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Destination & Date & Passengers */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
                     {isAr ? 'الوجهة (إلى)' : 'Destination (To)'}
@@ -442,9 +583,7 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
                     className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
                     {isAr ? 'تاريخ السفر' : 'Travel Date'}
@@ -456,10 +595,12 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
                     className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
                   />
                 </div>
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
-                    {isAr ? 'عدد المسافرين' : 'Passengers'}
+                    {isAr ? 'عدد الركاب البالغين' : 'No. of passengers'}
                   </label>
                   <input
                     type="number"
@@ -470,7 +611,99 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
                     className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
                   />
                 </div>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
+                    {isAr ? 'عدد الأطفال' : 'No. of children'}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="6"
+                    value={children}
+                    onChange={(e) => setChildren(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                  />
+                </div>
               </div>
+
+              {/* Customer Name & Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1">
+                    {isAr ? 'الاسم بالكامل' : 'Full Name'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={isAr ? 'اسمك بالكامل' : 'Your full name'}
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1">
+                    {isAr ? 'رقم الهاتف / الواتساب' : 'Phone Number'}
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="01xxxxxxxxx"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium font-mono focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                  />
+                </div>
+              </div>
+
+              {/* Payment Method */}
+              <div className="pt-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-[#22211F] block mb-1.5">
+                  {isAr ? 'طريقة الدفع' : 'Payment method'}
+                </label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { id: 'wallet', labelEn: 'Mobile Wallet', labelAr: 'محفظة كاش', icon: '📱' },
+                    { id: 'instapay', labelEn: 'InstaPay', labelAr: 'انستاباي', icon: '⚡' },
+                    { id: 'card', labelEn: 'Pay online card', labelAr: 'دفع بالفيزا', icon: '💳' },
+                  ].map((pm) => (
+                    <button
+                      key={pm.id}
+                      type="button"
+                      onClick={() => setPaymentMethod(pm.id)}
+                      className={`p-2 rounded-xl border text-center transition-all cursor-pointer ${
+                        paymentMethod === pm.id
+                          ? 'bg-[#183B33] text-white border-[#183B33] shadow-sm'
+                          : 'bg-white text-[#6C6963] border-[#E7DFCE] hover:border-[#183B33]'
+                      }`}
+                    >
+                      <div className="text-sm mb-0.5">{pm.icon}</div>
+                      <div className="text-[10px] font-bold leading-tight">
+                        {isAr ? pm.labelAr : pm.labelEn}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
+                  💵 {isAr
+                    ? 'أرسل العربون إلى رقم المحفظة الموضح أدناه، ثم أرفق لقطة شاشة للتحويل مع رسالة الواتساب. — 01116664591+'
+                    : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
+                </p>
+              </div>
+
+              {/* Notes (optional) */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1">
+                  {isAr ? 'ملاحظات (اختياري)' : 'Notes (optional)'}
+                </label>
+                <input
+                  type="text"
+                  placeholder={isAr ? 'أي طلبات أو تفاصيل خاصة...' : 'Any special requests'}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                />
+              </div>
+
             </div>
 
             {/* Direct WhatsApp Action Button */}
@@ -480,10 +713,10 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
                 className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
               >
                 <MessageCircle size={20} />
-                <span>{isAr ? 'إرسال تفاصيل المسار عبر واتساب' : 'Send Route Request via WhatsApp'}</span>
+                <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send request via WhatsApp'}</span>
               </button>
               <p className="text-[11px] text-[#7A7367] text-center">
-                {isAr ? 'سيتم التواصل معك فوراً لتأكيد التوقيت والتكلفة وتأمين سيارتك.' : 'Our team will respond immediately to confirm rate and schedule.'}
+                {isAr ? 'سنفتح الواتساب مع تفاصيل حجزك الكاملة جاهزة للإرسال.' : "We'll open WhatsApp with your full booking details ready to send."}
               </p>
             </div>
 

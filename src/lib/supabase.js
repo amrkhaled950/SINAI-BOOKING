@@ -15,30 +15,34 @@ export const supabase = isSupabaseConfigured
   : null
 
 /**
- * 1. Save apartment booking (جدول حجوزات الشقق)
+ * 1. Save apartment booking (حجوزات الشقق)
  */
-export async function saveApartmentBooking(bookingData) {
+export async function saveApartmentBooking(b) {
   if (!supabase) {
-    console.info('Supabase not configured. Skipping apartment booking:', bookingData)
+    console.info('Supabase not configured. Skipping apartment booking:', b)
     return { data: null, error: null }
   }
 
   try {
     const payload = {
-      apartment_name: bookingData.item_title || bookingData.apartment_name || 'Mashraba duplex (Studio 1)',
-      apartment_code: bookingData.apartment_code || 'Studio 1',
-      customer_name: bookingData.customer_name || null,
-      customer_phone: bookingData.customer_phone || null,
-      customer_email: bookingData.customer_email || null,
-      check_in_date: bookingData.check_in_date || null,
-      check_out_date: bookingData.check_out_date || null,
-      nights_count: bookingData.nights_count || 1,
-      guests_count: bookingData.guests_count || 2,
-      stay_type: bookingData.stay_type || 'daily',
-      estimated_total_usd: bookingData.estimated_total_usd || null,
-      estimated_total_egp: bookingData.estimated_total_egp || null,
-      status: bookingData.status || 'pending',
-      notes: bookingData.notes || null,
+      apartment_name: b.apartment_name || b.item_title || 'Mashraba duplex (Studio 1)',
+      apartment_code: b.apartment_code || 'Studio 1',
+      customer_name: b.customer_name || null,
+      customer_phone: b.customer_phone || null,
+      customer_email: b.customer_email || null,
+      nationality: b.nationality || 'egyptian',
+      check_in_date: b.check_in_date || null,
+      check_out_date: b.check_out_date || null,
+      nights_count: b.nights_count || 1,
+      guests_count: b.guests_count || 2,
+      children_count: b.children_count || 0,
+      stay_type: b.stay_type || 'daily',
+      transportation_station: b.transportation_station || null,
+      payment_method: b.payment_method || 'wallet',
+      estimated_total_usd: b.estimated_total_usd || null,
+      estimated_total_egp: b.estimated_total_egp || null,
+      status: b.status || 'pending',
+      notes: b.notes || null,
     }
 
     const { error } = await supabase.from('apartment_bookings').insert([payload])
@@ -54,29 +58,33 @@ export async function saveApartmentBooking(bookingData) {
 }
 
 /**
- * 2. Save safari tour booking (جدول حجوزات رحلات السفاري)
+ * 2. Save safari tour booking (حجوزات رحلات السفاري)
  */
-export async function saveSafariBooking(safariData) {
+export async function saveSafariBooking(s) {
   if (!supabase) {
-    console.info('Supabase not configured. Skipping safari booking:', safariData)
+    console.info('Supabase not configured. Skipping safari booking:', s)
     return { data: null, error: null }
   }
 
   try {
     const payload = {
-      tour_name: safariData.item_title || safariData.tour_name || 'Desert Safari',
-      tour_id: safariData.item_id || safariData.tour_id || 'safari',
-      preferred_camp: safariData.preferred_camp || null,
-      customer_name: safariData.customer_name || null,
-      customer_phone: safariData.customer_phone || null,
-      customer_email: safariData.customer_email || null,
-      tour_date: safariData.tour_date || safariData.check_in_date || null,
-      travelers_count: safariData.guests_count || safariData.travelers_count || 2,
-      duration: safariData.duration || null,
-      estimated_price_usd: safariData.estimated_total_usd || null,
-      estimated_price_egp: safariData.estimated_total_egp || null,
-      status: safariData.status || 'pending',
-      notes: safariData.notes || null,
+      tour_name: s.tour_name || s.item_title || 'Desert Safari',
+      tour_id: s.tour_id || s.item_id || 'safari',
+      preferred_camp: s.preferred_camp || null,
+      customer_name: s.customer_name || null,
+      customer_phone: s.customer_phone || null,
+      customer_email: s.customer_email || null,
+      nationality: s.nationality || 'egyptian',
+      tour_date: s.tour_date || s.check_in_date || null,
+      travelers_count: s.travelers_count || s.guests_count || 2,
+      children_count: s.children_count || 0,
+      transportation_station: s.transportation_station || null,
+      payment_method: s.payment_method || 'wallet',
+      duration: s.duration || null,
+      estimated_price_usd: s.estimated_price_usd || s.estimated_total_usd || null,
+      estimated_price_egp: s.estimated_price_egp || s.estimated_total_egp || null,
+      status: s.status || 'pending',
+      notes: s.notes || null,
     }
 
     const { error } = await supabase.from('safari_bookings').insert([payload])
@@ -92,25 +100,29 @@ export async function saveSafariBooking(safariData) {
 }
 
 /**
- * 3. Save bus & transfer booking (جدول حجوزات الباصات والانتقالات)
+ * 3. Save bus & transfer booking (حجوزات الباصات والانتقالات)
  */
-export async function saveTransferBooking(transferData) {
+export async function saveTransferBooking(t) {
   if (!supabase) {
-    console.info('Supabase not configured. Skipping transfer booking:', transferData)
+    console.info('Supabase not configured. Skipping transfer booking:', t)
     return { data: null, error: null }
   }
 
   try {
     const payload = {
-      service_type: transferData.vehicle_type === 'private' ? 'private_car' : 'hiace_bus',
-      pickup_location: transferData.pickup_location,
-      dropoff_location: transferData.dropoff_location,
-      travel_date: transferData.travel_date || null,
-      passengers_count: transferData.passengers_count || 1,
-      customer_name: transferData.customer_name || null,
-      customer_phone: transferData.customer_phone || null,
-      status: transferData.status || 'pending',
-      notes: transferData.notes || null,
+      service_type: t.service_type || (t.vehicle_type === 'private' ? 'private_car' : 'hiace_bus'),
+      pickup_location: t.pickup_location,
+      dropoff_location: t.dropoff_location,
+      cairo_station: t.cairo_station || t.transportation_station || null,
+      travel_date: t.travel_date || null,
+      passengers_count: t.passengers_count || t.guests_count || 1,
+      children_count: t.children_count || 0,
+      nationality: t.nationality || 'egyptian',
+      customer_name: t.customer_name || null,
+      customer_phone: t.customer_phone || null,
+      payment_method: t.payment_method || 'wallet',
+      status: t.status || 'pending',
+      notes: t.notes || null,
     }
 
     const { error } = await supabase.from('transfer_bookings').insert([payload])
@@ -151,7 +163,7 @@ export async function saveNewsletterSubscriber(email, source = 'footer') {
 }
 
 /**
- * Smart Backwards Compatibility Adapters
+ * Backwards compatibility wrappers
  */
 export async function saveBooking(bookingData) {
   if (bookingData.booking_type === 'apartment') {

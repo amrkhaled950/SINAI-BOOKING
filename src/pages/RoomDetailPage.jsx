@@ -16,7 +16,7 @@ import {
   MapPin,
   Home
 } from 'lucide-react'
-import { saveBooking } from '../lib/supabase'
+import { saveApartmentBooking } from '../lib/supabase'
 
 export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome }) {
   const isAr = lang === 'ar'
@@ -41,8 +41,14 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const [stayType, setStayType] = useState('daily') // 'daily' or 'monthly'
   const [checkIn, setCheckIn] = useState('2026-10-20')
   const [checkOut, setCheckOut] = useState('2026-10-25')
-  const [guests, setGuests] = useState(2) // 1, 2, or 3
+  const [nationality, setNationality] = useState('egyptian') // 'egyptian' | 'foreign'
+  const [guests, setGuests] = useState(2) // 1, 2, 3
+  const [children, setChildren] = useState(0) // 0, 1, 2
   const [guestName, setGuestName] = useState('')
+  const [guestPhone, setGuestPhone] = useState('')
+  const [cairoStation, setCairoStation] = useState('none') // 'riad' | 'embassy' | 'rehab' | 'madinaty' | 'none'
+  const [paymentMethod, setPaymentMethod] = useState('wallet') // 'wallet' | 'instapay' | 'card'
+  const [notes, setNotes] = useState('')
 
   const handlePrev = (e) => {
     e.stopPropagation()
@@ -352,42 +358,224 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                   </div>
                 </div>
 
-                {/* Guests */}
+                {/* Nationality */}
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-[#5A554E] flex items-center gap-1">
+                  <label className="block text-xs font-semibold text-[#5A554E] mb-1.5">
+                    {isAr ? 'الجنسية' : 'Nationality'}
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setNationality('egyptian')}
+                      className={`py-2 px-3 text-xs font-semibold rounded-xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        nationality === 'egyptian'
+                          ? 'bg-[#22211F] text-white border-[#22211F] shadow-sm'
+                          : 'bg-white text-[#6C6963] border-[#E4DDD0] hover:border-[#C8553D]'
+                      }`}
+                    >
+                      <span>🇪🇬</span>
+                      <span>{isAr ? 'مصري' : 'Egyptian'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNationality('foreign')}
+                      className={`py-2 px-3 text-xs font-semibold rounded-xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        nationality === 'foreign'
+                          ? 'bg-[#22211F] text-white border-[#22211F] shadow-sm'
+                          : 'bg-white text-[#6C6963] border-[#E4DDD0] hover:border-[#C8553D]'
+                      }`}
+                    >
+                      <span>🌍</span>
+                      <span>{isAr ? 'أجنبي' : 'Foreign'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* No. of guests & No. of children */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#5A554E] mb-1.5 flex items-center gap-1">
                       <Users size={12} className="text-[#C8553D]" />
-                      {isAr ? 'عدد الأفراد' : 'Guests'}
+                      {isAr ? 'عدد الأفراد' : 'No. of guests'}
                     </label>
-                    <span className="text-[11px] text-[#8C867C]">
-                      {isAr ? 'الحد الأقصى ٣ أفراد' : 'Upto 3 persons max'}
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => setGuests(num)}
+                          className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+                            guests === num
+                              ? 'bg-[#22211F] text-white border-[#22211F]'
+                              : 'bg-white text-[#6C6963] border-[#E4DDD0] hover:border-[#C8553D]'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#5A554E] mb-1.5 flex items-center gap-1">
+                      <Users size={12} className="text-[#8C867C]" />
+                      {isAr ? 'عدد الأطفال' : 'No. of children'}
+                    </label>
+                    <div className="flex items-center gap-1">
+                      {[0, 1, 2].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => setChildren(num)}
+                          className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+                            children === num
+                              ? 'bg-[#22211F] text-white border-[#22211F]'
+                              : 'bg-white text-[#6C6963] border-[#E4DDD0] hover:border-[#C8553D]'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Room Feature Spec */}
+                <div className="bg-[#FAF6EF] rounded-xl p-2.5 border border-[#EBE3D5] text-[11px] text-[#5A554E] leading-relaxed">
+                  ✨ {isAr ? 'غرفة دوبلكس مريحة، إطلالة بحرية، تكييف وحمام خاص.' : 'Comfortable duplex loft, sea view, AC and private bathroom.'}
+                </div>
+
+                {/* Name & Phone number */}
+                <div className="space-y-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#5A554E] mb-1">
+                      {isAr ? 'الاسم بالكامل' : 'Name'}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder={isAr ? 'اسمك بالكامل' : 'Your full name'}
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      className="w-full text-xs bg-white border border-[#E4DDD0] rounded-xl px-3 py-2 text-[#22211F] placeholder-[#A39E94] focus:outline-none focus:ring-2 focus:ring-[#C8553D]/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#5A554E] mb-1">
+                      {isAr ? 'رقم الهاتف / الواتساب' : 'Phone number'}
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="01xxxxxxxxx"
+                      value={guestPhone}
+                      onChange={(e) => setGuestPhone(e.target.value)}
+                      className="w-full text-xs bg-white border border-[#E4DDD0] rounded-xl px-3 py-2 text-[#22211F] placeholder-[#A39E94] focus:outline-none focus:ring-2 focus:ring-[#C8553D]/30 font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Transportation from Cairo */}
+                <div className="pt-1">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-[#22211F] flex items-center gap-1.5">
+                      <span>🚐</span>
+                      <span>{isAr ? 'الانتقالات من القاهرة' : 'Transportation from Cairo'}</span>
+                    </label>
+                    <span className="text-[10px] text-[#C8553D] font-medium">
+                      {isAr ? 'رحلات يومية 🚐' : 'Daily departures 🚐'}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[1, 2, 3].map((num) => (
+
+                  <div className="space-y-1.5">
+                    {[
+                      { id: 'riad', labelEn: 'Abdel Moneim Riad', labelAr: 'عبد المنعم رياض', time: '12:00 AM' },
+                      { id: 'embassy', labelEn: 'UAE Embassy — Masr El Gedida', labelAr: 'سفارة الإمارات — مصر الجديدة', time: '12:30 AM' },
+                      { id: 'rehab', labelEn: 'Rehab', labelAr: 'الرحاب', time: '1:00 AM' },
+                      { id: 'madinaty', labelEn: 'Madinaty', labelAr: 'مدينتي', time: '1:15 AM' },
+                      { id: 'none', labelEn: 'Without transportation (on my own)', labelAr: 'بدون انتقالات (بمعرفتي)', time: null },
+                    ].map((st) => (
+                      <label
+                        key={st.id}
+                        onClick={() => setCairoStation(st.id)}
+                        className={`flex items-center justify-between p-2 rounded-xl border text-xs cursor-pointer transition-all ${
+                          cairoStation === st.id
+                            ? 'bg-[#FAF5ED] border-[#C8553D] text-[#22211F] font-semibold ring-1 ring-[#C8553D]/30'
+                            : 'bg-white border-[#E7DFCE] text-[#6C6963] hover:border-[#C8553D]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="cairoStation"
+                            checked={cairoStation === st.id}
+                            onChange={() => setCairoStation(st.id)}
+                            className="text-[#C8553D] focus:ring-[#C8553D]"
+                          />
+                          <span>{isAr ? st.labelAr : st.labelEn}</span>
+                        </div>
+                        {st.time && (
+                          <span className="font-mono text-[11px] text-[#C8553D] bg-[#F4EBE1] px-2 py-0.5 rounded-full font-medium">
+                            {st.time}
+                          </span>
+                        )}
+                      </label>
+                    ))}
+                  </div>
+
+                  {cairoStation !== 'none' && (
+                    <p className="text-[11px] text-[#7A756C] mt-2 bg-[#F6EFE5] p-2 rounded-lg leading-relaxed">
+                      ℹ️ {isAr
+                        ? 'سنرسل لك رقم كابتن الرحلة في الساعة 11 مساءً ليلة المغادرة (يتغير يومياً).'
+                        : "We'll send you the trip captain's number at 11 PM the night before departure (it changes daily)."}
+                    </p>
+                  )}
+                </div>
+
+                {/* Payment Method */}
+                <div className="pt-1">
+                  <label className="block text-xs font-semibold text-[#22211F] mb-1.5">
+                    {isAr ? 'طريقة الدفع' : 'Payment method'}
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {[
+                      { id: 'wallet', labelEn: 'Mobile Wallet', labelAr: 'محفظة كاش', icon: '📱' },
+                      { id: 'instapay', labelEn: 'InstaPay', labelAr: 'انستاباي', icon: '⚡' },
+                      { id: 'card', labelEn: 'Pay online card', labelAr: 'دفع بالفيزا', icon: '💳' },
+                    ].map((pm) => (
                       <button
-                        key={num}
+                        key={pm.id}
                         type="button"
-                        onClick={() => setGuests(num)}
-                        className={`py-2 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
-                          guests === num
+                        onClick={() => setPaymentMethod(pm.id)}
+                        className={`p-2 rounded-xl border text-center transition-all cursor-pointer ${
+                          paymentMethod === pm.id
                             ? 'bg-[#22211F] text-white border-[#22211F] shadow-sm'
                             : 'bg-white text-[#6C6963] border-[#E4DDD0] hover:border-[#C8553D]'
                         }`}
                       >
-                        {num} {isAr ? (num === 1 ? 'فرد' : 'أفراد') : (num === 1 ? 'Guest' : 'Guests')}
+                        <div className="text-sm mb-0.5">{pm.icon}</div>
+                        <div className="text-[10px] font-semibold leading-tight">
+                          {isAr ? pm.labelAr : pm.labelEn}
+                        </div>
                       </button>
                     ))}
                   </div>
+
+                  <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
+                    💵 {isAr
+                      ? 'أرسل العربون إلى رقم المحفظة الموضح أدناه، ثم أرفق لقطة شاشة للتحويل مع رسالة الواتساب. — 01116664591+'
+                      : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
+                  </p>
                 </div>
 
-                {/* Guest Name */}
+                {/* Notes (optional) */}
                 <div>
+                  <label className="block text-xs font-semibold text-[#5A554E] mb-1">
+                    {isAr ? 'ملاحظات (اختياري)' : 'Notes (optional)'}
+                  </label>
                   <input
                     type="text"
-                    placeholder={isAr ? 'الاسم بالكامل (اختياري)' : 'Your name (optional)'}
-                    value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
+                    placeholder={isAr ? 'أي طلبات خاصة...' : 'Any special requests'}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
                     className="w-full text-xs bg-white border border-[#E4DDD0] rounded-xl px-3 py-2 text-[#22211F] placeholder-[#A39E94] focus:outline-none focus:ring-2 focus:ring-[#C8553D]/30"
                   />
                 </div>
@@ -419,28 +607,54 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                 <a
                   href={(() => {
                     const stayLabel = stayType === 'monthly'
-                      ? (isAr ? 'إقامة شهرية (الشهر 30 يوم / 31 يوم)' : 'Monthly stay (30 / 31 days)')
+                      ? (isAr ? 'إقامة شهرية (30 / 31 يوم)' : 'Monthly stay (30 / 31 days)')
                       : (isAr ? `إقامة يومية (${nights} ليالي)` : `Daily stay (${nights} nights)`)
+
+                    const cairoStationsMap = {
+                      riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
+                      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+                      rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
+                      madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
+                      none: isAr ? 'بدون انتقالات (بمعرفتي)' : 'Without transportation (on my own)'
+                    }
+
+                    const paymentLabels = {
+                      wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
+                      instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
+                      card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
+                    }
+
+                    const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
 
                     const msg = isAr
                       ? `السلام عليكم، أود تقديم طلب حجز استوديو دوبلكس مشربه:
 • كود الوحدة: Studio 1
+• الجنسية: ${nationalityLabel}
 • نوع الإقامة: ${stayLabel}
 • تاريخ الوصول: ${checkIn}
 • تاريخ المغادرة: ${checkOut}
-• عدد الأفراد: ${guests} أفراد (حتى 3 أفراد)
-• السعر المعتمد: 40 $ / night (2000 جم ليله)
-• الإجمالي التقديري: $${totUsd} / ${totEgp.toLocaleString()} جم
-${guestName ? `• الاسم: ${guestName}\n` : ''}أرجو تأكيد التوافر وإتمام الحجز.`
+• عدد الأفراد: ${guests} أفراد
+• عدد الأطفال: ${children}
+• الاسم: ${guestName || 'غير محدد'}
+• رقم الهاتف: ${guestPhone || 'غير محدد'}
+• الانتقالات من القاهرة: ${cairoStationsMap[cairoStation]}
+• طريقة الدفع: ${paymentLabels[paymentMethod]}
+• السعر التقديري: $${totUsd} / ${totEgp.toLocaleString()} جم
+${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}أرجو تأكيد التوافر وإتمام الحجز.`
                       : `Hello! I would like to request a booking for Mashraba Duplex:
-• Unit Backend ID: Studio 1
+• Unit Code: Studio 1
+• Nationality: ${nationalityLabel}
 • Stay type: ${stayLabel}
 • Check-in: ${checkIn}
 • Check-out: ${checkOut}
-• Guests: ${guests} persons (upto 3 persons)
-• Rate: $40 / night (2,000 EGP / night)
+• Guests: ${guests} adults
+• Children: ${children}
+• Name: ${guestName || 'Not specified'}
+• Phone: ${guestPhone || 'Not specified'}
+• Transportation from Cairo: ${cairoStationsMap[cairoStation]}
+• Payment Method: ${paymentLabels[paymentMethod]}
 • Estimated total: $${totUsd} / ${totEgp.toLocaleString()} EGP
-${guestName ? `• Guest Name: ${guestName}\n` : ''}Please let me know availability and how to proceed.`
+${notes ? `• Special requests: ${notes}\n` : ''}Please let me know availability and how to proceed.`
 
                     return `https://wa.me/201116664591?text=${encodeURIComponent(msg)}`
                   })()}
@@ -451,25 +665,44 @@ ${guestName ? `• Guest Name: ${guestName}\n` : ''}Please let me know availabil
                     const nightsCount = stay.count
                     const totUsd = stayType === 'monthly' ? 1200 : nightsCount * 40
                     const totEgp = stayType === 'monthly' ? 60000 : nightsCount * 2000
-                    saveBooking({
-                      booking_type: 'apartment',
-                      item_id: 'mashraba-duplex',
-                      item_title: 'Mashraba duplex (Studio 1)',
+
+                    const cairoStationsMap = {
+                      riad: 'Abdel Moneim Riad (12:00 AM)',
+                      embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',
+                      rehab: 'Rehab (1:00 AM)',
+                      madinaty: 'Madinaty (1:15 AM)',
+                      none: 'None'
+                    }
+
+                    saveApartmentBooking({
+                      apartment_name: 'Mashraba duplex (Studio 1)',
+                      apartment_code: 'Studio 1',
                       customer_name: guestName || null,
+                      customer_phone: guestPhone || null,
+                      nationality: nationality,
                       check_in_date: checkIn,
                       check_out_date: checkOut,
+                      nights_count: nightsCount,
                       guests_count: guests,
+                      children_count: children,
                       stay_type: stayType,
+                      transportation_station: cairoStationsMap[cairoStation],
+                      payment_method: paymentMethod,
                       estimated_total_usd: totUsd,
                       estimated_total_egp: totEgp,
+                      notes: notes || null,
                       status: 'pending'
                     })
                   }}
                   className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-[#25D366] hover:bg-[#20BA5A] text-white text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer"
                 >
                   <MessageCircle size={20} className="fill-white" />
-                  <span>Send request via WhatsApp</span>
+                  <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send request via WhatsApp'}</span>
                 </a>
+
+                <p className="text-[11px] text-center text-[#8C867C]">
+                  {isAr ? 'سنفتح الواتساب مع تفاصيل حجزك الكاملة جاهزة للإرسال.' : "We'll open WhatsApp with your full booking details ready to send."}
+                </p>
 
                 <div className="flex items-center justify-center gap-2 text-xs text-[#5A554E] pt-1">
                   <span className="font-medium">{isAr ? 'رقم سيناء بوكينج:' : 'Sinai booking line:'}</span>

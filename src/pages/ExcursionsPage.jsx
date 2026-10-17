@@ -18,7 +18,7 @@ import {
   ChevronRight,
   ShieldCheck
 } from 'lucide-react'
-import { saveBooking } from '../lib/supabase'
+import { saveSafariBooking } from '../lib/supabase'
 
 export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const page = t.excursionsPage
@@ -28,6 +28,13 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const [selectedTrip, setSelectedTrip] = useState(null)
   const [activeTab, setActiveTab] = useState('arada-canyon') // for the detailed itinerary view
   const [guestCount, setGuestCount] = useState(4) // default 4 (minimum per brochure)
+  const [childrenCount, setChildrenCount] = useState(0)
+  const [nationality, setNationality] = useState('egyptian')
+  const [customerName, setCustomerName] = useState('')
+  const [customerPhone, setCustomerPhone] = useState('')
+  const [cairoStation, setCairoStation] = useState('none')
+  const [paymentMethod, setPaymentMethod] = useState('wallet')
+  const [notes, setNotes] = useState('')
   const [selectedDate, setSelectedDate] = useState('2026-10-25')
   const [selectedCamp, setSelectedCamp] = useState('zigzag') // for 2-day trip
   const [activeDay, setActiveDay] = useState(1) // for 2-day trip tab
@@ -48,20 +55,63 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
     const campNote = selectedTrip.twoDays
       ? (isAr ? `\nالكامب المفضل: ${selectedCamp === 'zigzag' ? 'كانيون زجزاج (الرومانسي)' : 'الهواء الطلق قرب جبل مخروم (النجوم)'}` : `\nPreferred Camp: ${selectedCamp === 'zigzag' ? 'Zigzag Canyon (Romantic)' : 'Open Air near Gebel Makhroum (Stargazer)'}`)
       : ''
+
+    const cairoStationsMap = {
+      riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
+      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+      rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
+      madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
+      none: isAr ? 'بدون انتقالات (بمعرفتي)' : 'Without transportation (on my own)'
+    }
+
+    const paymentLabels = {
+      wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
+      instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
+      card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
+    }
+
+    const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
     
     const msg = isAr
-      ? `السلام عليكم، أود حجز رحلة "${selectedTrip.title}" عبر Sinai Booking.\nالتاريخ المطلوب: ${selectedDate}\nعدد الأفراد: ${guestCount} أفراد (الحد الأدنى 4)${campNote}\nالسعر التقديري: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}\nبرجاء تأكيد التوافر وإمكانية الحجز.`
-      : `Hello! I would like to book "${selectedTrip.title}" via Sinai Booking.\nRequested Date: ${selectedDate}\nGuests: ${guestCount} (min. 4 people)${campNote}\nEstimated total: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}\nPlease confirm availability and dates.`
+      ? `السلام عليكم، أود حجز رحلة "${selectedTrip.title}" عبر Sinai Booking.
+• الجنسية: ${nationalityLabel}
+• التاريخ المطلوب: ${selectedDate}
+• عدد الأفراد: ${guestCount} أفراد (الحد الأدنى 4)
+• عدد الأطفال: ${childrenCount}
+• الاسم: ${customerName || 'غير محدد'}
+• رقم الهاتف: ${customerPhone || 'غير محدد'}
+• الانتقالات من القاهرة: ${cairoStationsMap[cairoStation]}
+• طريقة الدفع: ${paymentLabels[paymentMethod]}${campNote}
+• السعر التقديري: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}
+${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}برجاء تأكيد التوافر وإمكانية الحجز.`
+      : `Hello! I would like to book "${selectedTrip.title}" via Sinai Booking.
+• Nationality: ${nationalityLabel}
+• Requested Date: ${selectedDate}
+• Guests: ${guestCount} adults (min. 4 people)
+• Children: ${childrenCount}
+• Name: ${customerName || 'Not specified'}
+• Phone: ${customerPhone || 'Not specified'}
+• Transportation from Cairo: ${cairoStationsMap[cairoStation]}
+• Payment Method: ${paymentLabels[paymentMethod]}${campNote}
+• Estimated total: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}
+${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability and dates.`
     
-    saveBooking({
-      booking_type: 'excursion',
-      item_id: selectedTrip.id,
-      item_title: selectedTrip.title,
-      check_in_date: selectedDate,
-      guests_count: guestCount,
+    saveSafariBooking({
+      tour_name: selectedTrip.title,
+      tour_id: selectedTrip.id,
+      customer_name: customerName || null,
+      customer_phone: customerPhone || null,
+      nationality: nationality,
+      tour_date: selectedDate,
+      travelers_count: guestCount,
+      children_count: childrenCount,
+      transportation_station: cairoStationsMap[cairoStation],
+      payment_method: paymentMethod,
       preferred_camp: selectedTrip.twoDays ? selectedCamp : null,
-      estimated_total_eur: selectedTrip.priceEur * guestCount,
-      estimated_total_usd: selectedTrip.priceUsd * guestCount,
+      duration: selectedTrip.twoDays ? '2 Days / 1 Night' : 'Full Day',
+      estimated_price_eur: selectedTrip.priceEur * guestCount,
+      estimated_price_usd: selectedTrip.priceUsd * guestCount,
+      notes: notes || null,
       status: 'pending'
     })
 
@@ -646,31 +696,66 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
 
             {/* Booking Inputs */}
             <div className="space-y-4 pt-2 border-t border-[#E7DFCE]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              
+              {/* Nationality */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
+                  {isAr ? 'الجنسية' : 'Nationality'}
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNationality('egyptian')}
+                    className={`py-2 px-3 text-xs font-semibold rounded-xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      nationality === 'egyptian'
+                        ? 'bg-[#183B33] text-white border-[#183B33] shadow-sm'
+                        : 'bg-white text-[#6C6963] border-[#D9D0C2] hover:border-[#183B33]'
+                    }`}
+                  >
+                    <span>🇪🇬</span>
+                    <span>{isAr ? 'مصري' : 'Egyptian'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNationality('foreign')}
+                    className={`py-2 px-3 text-xs font-semibold rounded-xl border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      nationality === 'foreign'
+                        ? 'bg-[#183B33] text-white border-[#183B33] shadow-sm'
+                        : 'bg-white text-[#6C6963] border-[#D9D0C2] hover:border-[#183B33]'
+                    }`}
+                  >
+                    <span>🌍</span>
+                    <span>{isAr ? 'أجنبي' : 'Foreign'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Date & Guests & Children */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {/* Date Picker */}
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
-                    {isAr ? 'تاريخ الرحلة المطلوب' : 'Trip Date'}
+                    {isAr ? 'تاريخ الرحلة' : 'Trip Date'}
                   </label>
                   <input
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                    className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
                   />
                 </div>
 
-                {/* Guests Picker (min 4 people per brochure) */}
+                {/* Guests Picker */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block">
-                      {isAr ? 'عدد الأفراد' : 'Guests'}
+                      {isAr ? 'الأفراد' : 'Guests'}
                     </label>
                     <span className="text-[10px] text-[#9C4328] font-bold">
-                      {isAr ? '(الحد الأدنى 4 أفراد)' : '(min. 4 people)'}
+                      {isAr ? '(الحد الأدنى 4)' : '(min. 4)'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-xl border border-[#D9D0C2]">
+                  <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-xl border border-[#D9D0C2]">
                     {[4, 5, 6, 7, 8].map((num) => (
                       <button
                         key={num}
@@ -687,6 +772,164 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
                     ))}
                   </div>
                 </div>
+
+                {/* Children Picker */}
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1.5">
+                    {isAr ? 'عدد الأطفال' : 'Children'}
+                  </label>
+                  <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-xl border border-[#D9D0C2]">
+                    {[0, 1, 2, 3].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setChildrenCount(num)}
+                        className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          childrenCount === num
+                            ? 'bg-[#183B33] text-white shadow-sm'
+                            : 'text-[#6C6963] hover:bg-[#F2ECE1]'
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Name & Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1">
+                    {isAr ? 'الاسم بالكامل' : 'Full Name'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={isAr ? 'اسمك بالكامل' : 'Your full name'}
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1">
+                    {isAr ? 'رقم الهاتف / الواتساب' : 'Phone Number'}
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="01xxxxxxxxx"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium font-mono focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                  />
+                </div>
+              </div>
+
+              {/* Transportation from Cairo */}
+              <div className="pt-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#22211F] flex items-center gap-1.5">
+                    <span>🚐</span>
+                    <span>{isAr ? 'الانتقالات من القاهرة' : 'Transportation from Cairo'}</span>
+                  </label>
+                  <span className="text-[10px] text-[#C45437] font-bold">
+                    {isAr ? 'رحلات يومية من القاهرة 🚐' : 'Daily departures from Cairo 🚐'}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {[
+                    { id: 'riad', labelEn: 'Abdel Moneim Riad', labelAr: 'عبد المنعم رياض', time: '12:00 AM' },
+                    { id: 'embassy', labelEn: 'UAE Embassy — Masr El Gedida', labelAr: 'سفارة الإمارات — مصر الجديدة', time: '12:30 AM' },
+                    { id: 'rehab', labelEn: 'Rehab', labelAr: 'الرحاب', time: '1:00 AM' },
+                    { id: 'madinaty', labelEn: 'Madinaty', labelAr: 'مدينتي', time: '1:15 AM' },
+                    { id: 'none', labelEn: 'Without transportation (on my own)', labelAr: 'بدون انتقالات (بمعرفتي)', time: null },
+                  ].map((st) => (
+                    <label
+                      key={st.id}
+                      onClick={() => setCairoStation(st.id)}
+                      className={`flex items-center justify-between p-2 rounded-xl border text-xs cursor-pointer transition-all ${
+                        cairoStation === st.id
+                          ? 'bg-[#FAF5ED] border-[#C45437] text-[#22211F] font-semibold ring-1 ring-[#C45437]/30'
+                          : 'bg-white border-[#E7DFCE] text-[#6C6963] hover:border-[#C45437]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="cairoStationSafari"
+                          checked={cairoStation === st.id}
+                          onChange={() => setCairoStation(st.id)}
+                          className="text-[#C45437] focus:ring-[#C45437]"
+                        />
+                        <span>{isAr ? st.labelAr : st.labelEn}</span>
+                      </div>
+                      {st.time && (
+                        <span className="font-mono text-[11px] text-[#C45437] bg-[#F4EBE1] px-2 py-0.5 rounded-full font-bold">
+                          {st.time}
+                        </span>
+                      )}
+                    </label>
+                  ))}
+                </div>
+
+                {cairoStation !== 'none' && (
+                  <p className="text-[11px] text-[#7A756C] mt-2 bg-[#F6EFE5] p-2 rounded-lg leading-relaxed">
+                    ℹ️ {isAr
+                      ? 'سنرسل لك رقم كابتن الرحلة في الساعة 11 مساءً ليلة المغادرة (يتغير يومياً).'
+                      : "We'll send you the trip captain's number at 11 PM the night before departure (it changes daily)."}
+                  </p>
+                )}
+              </div>
+
+              {/* Payment Method */}
+              <div className="pt-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-[#22211F] block mb-1.5">
+                  {isAr ? 'طريقة الدفع' : 'Payment method'}
+                </label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { id: 'wallet', labelEn: 'Mobile Wallet', labelAr: 'محفظة كاش', icon: '📱' },
+                    { id: 'instapay', labelEn: 'InstaPay', labelAr: 'انستاباي', icon: '⚡' },
+                    { id: 'card', labelEn: 'Pay online card', labelAr: 'دفع بالفيزا', icon: '💳' },
+                  ].map((pm) => (
+                    <button
+                      key={pm.id}
+                      type="button"
+                      onClick={() => setPaymentMethod(pm.id)}
+                      className={`p-2 rounded-xl border text-center transition-all cursor-pointer ${
+                        paymentMethod === pm.id
+                          ? 'bg-[#183B33] text-white border-[#183B33] shadow-sm'
+                          : 'bg-white text-[#6C6963] border-[#E7DFCE] hover:border-[#183B33]'
+                      }`}
+                    >
+                      <div className="text-sm mb-0.5">{pm.icon}</div>
+                      <div className="text-[10px] font-bold leading-tight">
+                        {isAr ? pm.labelAr : pm.labelEn}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
+                  💵 {isAr
+                    ? 'أرسل العربون إلى رقم المحفظة الموضح أدناه، ثم أرفق لقطة شاشة للتحويل مع رسالة الواتساب. — 01116664591+'
+                    : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
+                </p>
+              </div>
+
+              {/* Notes (optional) */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7A7367] block mb-1">
+                  {isAr ? 'ملاحظات (اختياري)' : 'Notes (optional)'}
+                </label>
+                <input
+                  type="text"
+                  placeholder={isAr ? 'أي طلبات خاصة...' : 'Any special requests'}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                />
               </div>
 
               {/* Estimated Total Calculation */}
