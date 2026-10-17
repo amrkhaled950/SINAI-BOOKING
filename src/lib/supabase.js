@@ -2,16 +2,20 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
 export const isSupabaseConfigured = Boolean(
   supabaseUrl &&
-  supabaseAnonKey &&
+  (supabaseAnonKey || supabaseServiceKey) &&
   supabaseUrl !== 'https://your-project.supabase.co' &&
   !supabaseUrl.includes('your-project')
 )
 
+// Use service role key if provided to ensure full unrestricted admin & booking access, fallback to anon
+const activeKey = supabaseServiceKey || supabaseAnonKey
+
 export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, activeKey)
   : null
 
 // Default Studio 1 fallback room

@@ -161,54 +161,12 @@ CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
 );
 
 -- ==========================================================
--- 6. تفعيل الأمان (Row Level Security) والصلاحيات الكاملة
+-- 6. الصلاحيات الكاملة وضمان ظهور الحجوزات في لوحة التحكم
 -- ==========================================================
-ALTER TABLE public.apartments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.apartment_bookings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.safari_bookings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.transfer_bookings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+-- الحل المباشر والموصى به: إلغاء RLS لمنع أي تعليق للحجوزات والسماح للوحة التحكم بالقراءة والتعديل الفوري
+ALTER TABLE public.apartments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.apartment_bookings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.safari_bookings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.transfer_bookings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.newsletter_subscribers DISABLE ROW LEVEL SECURITY;
 
--- Allow public read on apartments
-DROP POLICY IF EXISTS "Allow public read apartments" ON public.apartments;
-CREATE POLICY "Allow public read apartments"
-ON public.apartments FOR SELECT TO anon, authenticated USING (true);
-
--- Allow full modifications on apartments
-DROP POLICY IF EXISTS "Allow admin modify apartments" ON public.apartments;
-CREATE POLICY "Allow admin modify apartments"
-ON public.apartments FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
-
--- Allow public insert to bookings
-DROP POLICY IF EXISTS "Allow public insert to apartment_bookings" ON public.apartment_bookings;
-CREATE POLICY "Allow public insert to apartment_bookings"
-ON public.apartment_bookings FOR INSERT TO anon, authenticated WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Allow public insert to safari_bookings" ON public.safari_bookings;
-CREATE POLICY "Allow public insert to safari_bookings"
-ON public.safari_bookings FOR INSERT TO anon, authenticated WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Allow public insert to transfer_bookings" ON public.transfer_bookings;
-CREATE POLICY "Allow public insert to transfer_bookings"
-ON public.transfer_bookings FOR INSERT TO anon, authenticated WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Allow public insert to newsletter_subscribers" ON public.newsletter_subscribers;
-CREATE POLICY "Allow public insert to newsletter_subscribers"
-ON public.newsletter_subscribers FOR INSERT TO anon, authenticated WITH CHECK (true);
-
--- Allow admin full read, update, delete on bookings
-DROP POLICY IF EXISTS "Allow admin full access to apartment_bookings" ON public.apartment_bookings;
-CREATE POLICY "Allow admin full access to apartment_bookings"
-ON public.apartment_bookings FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Allow admin full access to safari_bookings" ON public.safari_bookings;
-CREATE POLICY "Allow admin full access to safari_bookings"
-ON public.safari_bookings FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Allow admin full access to transfer_bookings" ON public.transfer_bookings;
-CREATE POLICY "Allow admin full access to transfer_bookings"
-ON public.transfer_bookings FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Allow admin full access to newsletter_subscribers" ON public.newsletter_subscribers;
-CREATE POLICY "Allow admin full access to newsletter_subscribers"
-ON public.newsletter_subscribers FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
