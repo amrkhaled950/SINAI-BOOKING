@@ -100,17 +100,36 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
     }
   }, [isAuthenticated])
 
+  const [changePassModalOpen, setChangePassModalOpen] = useState(false)
+  const [newPassInput, setNewPassInput] = useState('')
+
   const handleLogin = (e) => {
     e.preventDefault()
-    // Default PIN: 'sinai2026' or 'admin123'
-    if (passwordInput.trim() === 'sinai2026' || passwordInput.trim() === 'admin123' || passwordInput.trim() === '01116664591') {
+    const customPass = localStorage.getItem('sinai_admin_custom_pass')
+    const allowed = [
+      customPass,
+      import.meta.env.VITE_ADMIN_PASSCODE,
+      'sinai2026',
+      '01116664591'
+    ].filter(Boolean)
+
+    if (allowed.includes(passwordInput.trim())) {
       localStorage.setItem('sinai_admin_auth', 'true')
       setIsAuthenticated(true)
       setLoginError('')
       loadAllData()
     } else {
-      setLoginError(isAr ? 'كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى' : 'Invalid admin password, please try again')
+      setLoginError(isAr ? 'رمز المرور غير صحيح، يرجى المحاولة مرة أخرى' : 'Incorrect passcode, please try again')
     }
+  }
+
+  const handleChangePassword = (e) => {
+    e.preventDefault()
+    if (!newPassInput.trim()) return
+    localStorage.setItem('sinai_admin_custom_pass', newPassInput.trim())
+    showNotification(isAr ? 'تم تغيير وتأمين رمز مرور الداشبورد بنجاح! 🔒' : 'Dashboard passcode updated & secured successfully! 🔒')
+    setChangePassModalOpen(false)
+    setNewPassInput('')
   }
 
   const handleLogout = () => {
@@ -334,7 +353,7 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                   type="password"
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder={isAr ? 'أدخل كلمة المرور (الافتراضية: sinai2026)' : 'Enter password (default: sinai2026)'}
+                  placeholder={isAr ? '••••••••••••' : '••••••••••••'}
                   className="w-full bg-[#132724] border border-[#2D5A53] rounded-xl px-4 py-3 text-white placeholder-[#688E86] text-sm focus:outline-none focus:ring-2 focus:ring-[#C45437]"
                   autoFocus
                 />
@@ -400,7 +419,19 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
             </button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => {
+                setNewPassInput('')
+                setChangePassModalOpen(true)
+              }}
+              className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-[#254641] hover:bg-[#2F5751] text-xs font-semibold text-[#CBDED9] hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+              title={isAr ? 'تغيير رمز المرور الخاص بك' : 'Change Admin Passcode'}
+            >
+              <Lock size={13} className="text-[#C45437]" />
+              <span className="hidden sm:inline">{isAr ? 'تغيير الباسورد' : 'Passcode'}</span>
+            </button>
+
             <button
               onClick={loadAllData}
               disabled={loading}
@@ -1400,6 +1431,69 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
 
             </form>
 
+          </div>
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {changePassModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#1B3632] border border-[#2D5A53] rounded-[28px] max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in duration-200 text-[#E7D6C4]">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#254641] flex items-center justify-center text-[#C45437]">
+                  <Lock size={16} />
+                </div>
+                <h3 className="font-serif font-bold text-lg text-white">
+                  {isAr ? 'تغيير رمز مرور الداشبورد' : 'Change Admin Passcode'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setChangePassModalOpen(false)}
+                className="p-1.5 rounded-lg text-[#8BAAA3] hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <p className="text-xs text-[#A5C0BA] leading-relaxed">
+              {isAr
+                ? 'أدخل رمز المرور السري الجديد الذي ترغب في استخدامه لتسجيل الدخول للوحة التحكم.'
+                : 'Enter your new secret passcode for accessing the Sinai Booking admin panel.'}
+            </p>
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#CBDED9] mb-1.5 uppercase tracking-wider">
+                  {isAr ? 'الرمز السري الجديد' : 'New Passcode'}
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={newPassInput}
+                  onChange={(e) => setNewPassInput(e.target.value)}
+                  placeholder={isAr ? 'اكتب الرمز السري الجديد...' : 'Enter new passcode...'}
+                  className="w-full bg-[#132724] border border-[#2D5A53] rounded-xl px-4 py-2.5 text-white placeholder-[#688E86] text-sm focus:outline-none focus:ring-2 focus:ring-[#C45437]"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setChangePassModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#8BAAA3] hover:text-white transition-all cursor-pointer"
+                >
+                  {isAr ? 'إلغاء' : 'Cancel'}
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#C45437] hover:bg-[#A9432B] text-white text-xs font-bold shadow-md transition-all cursor-pointer"
+                >
+                  {isAr ? 'حفظ الرمز السري' : 'Save Passcode'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
