@@ -20,7 +20,10 @@ export default function Footer({ t, lang = 'en', onNavigate }) {
   const isAr = lang === 'ar'
 
   return (
-    <footer className="bg-[#122432] text-white pt-20 pb-14 border-t border-white/5">
+    <footer
+      className="bg-[#122432] text-white pt-20 pb-16 border-t border-white/5 w-full mt-auto"
+      style={{ paddingBottom: 'max(3.5rem, calc(2rem + env(safe-area-inset-bottom, 0px)))' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}

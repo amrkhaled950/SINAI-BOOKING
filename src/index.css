@@ -5,12 +5,17 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background-color: #FAF6EF;
+    overflow-x: hidden;
   }
   
   body {
-    background-color: #FAF6EF;
+    background-color: #122432;
     color: #22211F;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, .font-serif {

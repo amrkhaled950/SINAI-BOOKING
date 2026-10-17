@@ -19,17 +19,19 @@ export default function FloatingWhatsApp({ lang = 'en' }) {
     >
       {/* Tooltip / Prompt Bubble */}
       <div
-        className={`hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-xl border border-[#E8DEC9] text-xs font-medium text-[#22211F] transition-all duration-300 ${
-          showTooltip ? 'opacity-100 translate-y-0' : 'opacity-90 group-hover:opacity-100'
+        className={`hidden sm:flex items-center gap-2 bg-[#122432]/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-white/20 text-xs font-medium text-white transition-all duration-300 ${
+          showTooltip
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 pointer-events-none translate-y-1 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0'
         }`}
       >
         <span className="w-2 h-2 rounded-full bg-[#25D366] animate-ping" />
-        <span>{isAr ? 'واتساب مباشر:' : 'Direct WhatsApp:'}</span>
+        <span className="text-white/80">{isAr ? 'واتساب مباشر:' : 'Direct WhatsApp:'}</span>
         <a
           href={waUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono font-bold text-[#1F7A8C] hover:text-[#25D366] transition-colors"
+          className="font-mono font-bold text-[#25D366] hover:text-[#4ADE80] transition-colors"
         >
           01116664591
         </a>

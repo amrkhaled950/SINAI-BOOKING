@@ -126,7 +126,7 @@ export default function App() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#FAF6EF] text-[#22211F] selection:bg-[#C45437] selection:text-white ${lang === 'ar' ? 'font-sans' : ''}`}>
+    <div className={`min-h-screen flex flex-col bg-[#122432] text-[#22211F] selection:bg-[#C45437] selection:text-white ${lang === 'ar' ? 'font-sans' : ''}`}>
       {/* Navbar with brand, links, language toggle, and active state */}
       <Navbar
         lang={lang}
@@ -136,7 +136,7 @@ export default function App() {
         onNavigate={navigate}
       />
 
-      <main>
+      <main className="flex-1 bg-[#FAF6EF]">
         {currentPage === 'blog' ? (
           /* Dedicated Field Notes & Blog Inner Page */
           <BlogPage
