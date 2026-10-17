@@ -45,13 +45,9 @@ export default function DuplexSection({ t, onNavigate }) {
             <div className="bg-[#F5EEE2] rounded-[32px] p-8 sm:p-10 lg:p-12 border border-[#EBE3D3] space-y-7 shadow-sm">
               
               {/* Badge */}
-              <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div>
                 <span className="inline-block px-4 py-1.5 bg-white rounded-full text-xs font-bold tracking-wider text-[#C45437] uppercase shadow-sm">
                   {t.duplex.badge}
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#132724] text-[#E7D6C4] text-xs font-mono font-semibold rounded-full shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                  backend: Studio 1
                 </span>
               </div>
 

@@ -170,10 +170,6 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
               <span className="inline-block px-3 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold rounded-full uppercase">
                 {selectedApartment?.badge || page.place.badge}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#132724] text-[#E7D6C4] text-xs font-mono font-semibold rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                backend: {roomCode}
-              </span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#22211F]">
               {roomTitle}
@@ -317,13 +313,9 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
           <div className="lg:col-span-5">
             <div className="bg-[#F8F3EA] rounded-[28px] p-6 sm:p-8 border border-[#EAE1D1] space-y-6 shadow-md sticky top-28">
               
-              <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div>
                 <span className="inline-block px-3 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold rounded-full uppercase tracking-wider">
                   {page.place.badge}
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#132724] text-[#E7D6C4] text-xs font-mono font-semibold rounded-full shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                  backend: Studio 1
                 </span>
               </div>
 
@@ -712,9 +704,6 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                     {stayType === 'monthly'
                       ? (isAr ? 'إقامة شهرية (30 / 31 يوم)' : 'Monthly stay (30/31 days)')
                       : (isAr ? `إقامة يومية (${nights} ليالي)` : `Daily stay (${nights} nights)`)}
-                  </span>
-                  <span className="font-mono text-[#2A6543] font-semibold">
-                    Unit: Studio 1
                   </span>
                 </div>
                 <div className="flex items-center justify-between pt-1 border-t border-[#EDE5D8] font-semibold text-[#22211F]">
