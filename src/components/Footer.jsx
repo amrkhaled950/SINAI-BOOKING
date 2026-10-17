@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Logo from './Logo'
-import { Instagram, Facebook, Lock } from 'lucide-react'
+import { Instagram, Facebook } from 'lucide-react'
 import { saveNewsletterSubscriber } from '../lib/supabase'
 
 export default function Footer({ t, lang = 'en', onNavigate }) {
@@ -140,16 +140,8 @@ export default function Footer({ t, lang = 'en', onNavigate }) {
         </div>
 
         {/* Bottom Copyright Area */}
-        <div className="pt-16 mt-12 text-xs sm:text-sm text-white/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="pt-16 mt-12 text-xs sm:text-sm text-white/60 text-center">
           <p>{t.footer.copyright}</p>
-          <button
-            onClick={() => onNavigate && onNavigate('admin')}
-            className="text-white/40 hover:text-white/90 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1 px-2.5 rounded hover:bg-white/5 text-xs font-mono"
-            title="Admin Portal"
-          >
-            <Lock size={12} className="text-[#C8553D]" />
-            <span>{isAr ? 'لوحة تحكم الإدارة (Admin)' : 'Admin Dashboard'}</span>
-          </button>
         </div>
 
       </div>
