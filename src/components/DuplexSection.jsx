@@ -27,7 +27,11 @@ export default function DuplexSection({ t, onNavigate }) {
           
           {/* Left: Authentic Duplex Interior Image */}
           <div className="lg:col-span-6">
-            <div className="relative aspect-[4/3] sm:aspect-[16/11] rounded-[32px] overflow-hidden shadow-lg border border-[#EAE3D5] group">
+            <div
+              onClick={() => onNavigate && onNavigate('dahab-accommodation')}
+              className="relative aspect-[4/3] sm:aspect-[16/11] rounded-[32px] overflow-hidden shadow-lg border border-[#EAE3D5] group cursor-pointer"
+              title="Explore Dahab Duplex"
+            >
               <img
                 src="/images/mashraba-duplex.png"
                 alt="Mashraba Duplex Interior"
