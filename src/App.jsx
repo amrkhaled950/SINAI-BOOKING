@@ -18,10 +18,39 @@ import TransportationPage from './pages/TransportationPage'
 import BlogPage from './pages/BlogPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 
+const VALID_PAGES = [
+  'home',
+  'dahab-accommodation',
+  'room-detail',
+  'excursions',
+  'transportation',
+  'blog',
+  'admin'
+]
+
+function getPageFromUrl() {
+  const hash = (window.location.hash || '').replace(/^#\/?/, '').split('?')[0].split('/')[0]
+  if (VALID_PAGES.includes(hash)) {
+    return hash
+  }
+  const path = (window.location.pathname || '').replace(/^\//, '').split('?')[0].split('/')[0]
+  if (VALID_PAGES.includes(path)) {
+    return path
+  }
+  return 'home'
+}
+
 export default function App() {
   const [lang, setLang] = useState('en')
-  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'dahab-accommodation' | 'room-detail' | 'excursions' | 'transportation' | 'blog' | 'admin'
-  const [selectedApartment, setSelectedApartment] = useState(null)
+  const [currentPage, setCurrentPage] = useState(() => getPageFromUrl())
+  const [selectedApartment, setSelectedApartment] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('sinai_selected_apt')
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
   const t = translations[lang]
 
   useEffect(() => {
@@ -29,28 +58,56 @@ export default function App() {
     document.documentElement.lang = lang
   }, [lang])
 
+  // Save selected apartment in session storage to persist across page reloads
   useEffect(() => {
-    const handleUrl = () => {
-      if (window.location.hash === '#admin' || window.location.pathname === '/admin') {
-        setCurrentPage('admin')
+    if (selectedApartment) {
+      try {
+        sessionStorage.setItem('sinai_selected_apt', JSON.stringify(selectedApartment))
+      } catch (e) {
+        console.error(e)
       }
     }
-    handleUrl()
-    window.addEventListener('hashchange', handleUrl)
-    return () => window.removeEventListener('hashchange', handleUrl)
+  }, [selectedApartment])
+
+  // Synchronize state with browser URL (handles refresh, back/forward buttons, direct links)
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const page = getPageFromUrl()
+      setCurrentPage(page)
+    }
+
+    // Run on initial mount
+    handleUrlChange()
+
+    window.addEventListener('hashchange', handleUrlChange)
+    window.addEventListener('popstate', handleUrlChange)
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange)
+      window.removeEventListener('popstate', handleUrlChange)
+    }
   }, [])
 
-  const navigate = (page, hash) => {
+  const navigate = (page, sectionHash) => {
     setCurrentPage(page)
-    if (page === 'admin') {
-      window.location.hash = 'admin'
-    } else if (window.location.hash === '#admin') {
-      window.history.replaceState(null, '', window.location.pathname)
+
+    // Update URL hash smoothly
+    if (page === 'home') {
+      if (sectionHash) {
+        window.location.hash = sectionHash
+      } else {
+        if (window.location.hash) {
+          window.history.pushState(null, '', window.location.pathname)
+        }
+      }
+    } else {
+      window.location.hash = page
     }
+
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    if (hash) {
+
+    if (sectionHash) {
       setTimeout(() => {
-        const el = document.getElementById(hash)
+        const el = document.getElementById(sectionHash)
         if (el) el.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     }
