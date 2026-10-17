@@ -16,6 +16,7 @@ import {
   MapPin,
   Home
 } from 'lucide-react'
+import { saveBooking } from '../lib/supabase'
 
 export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome }) {
   const isAr = lang === 'ar'
@@ -445,6 +446,25 @@ ${guestName ? `• Guest Name: ${guestName}\n` : ''}Please let me know availabil
                   })()}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => {
+                    const stay = stayType === 'monthly' ? calculateMonthDays() : calculateNights()
+                    const nightsCount = stay.count
+                    const totUsd = stayType === 'monthly' ? 1200 : nightsCount * 40
+                    const totEgp = stayType === 'monthly' ? 60000 : nightsCount * 2000
+                    saveBooking({
+                      booking_type: 'apartment',
+                      item_id: 'mashraba-duplex',
+                      item_title: 'Mashraba duplex (Studio 1)',
+                      customer_name: guestName || null,
+                      check_in_date: checkIn,
+                      check_out_date: checkOut,
+                      guests_count: guests,
+                      stay_type: stayType,
+                      estimated_total_usd: totUsd,
+                      estimated_total_egp: totEgp,
+                      status: 'pending'
+                    })
+                  }}
                   className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-[#25D366] hover:bg-[#20BA5A] text-white text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer"
                 >
                   <MessageCircle size={20} className="fill-white" />

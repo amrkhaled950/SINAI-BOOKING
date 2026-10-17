@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Logo from './Logo'
 import { Instagram, Facebook } from 'lucide-react'
+import { saveNewsletterSubscriber } from '../lib/supabase'
 
 export default function Footer({ t, lang = 'en', onNavigate }) {
   const [email, setEmail] = useState('')
@@ -9,6 +10,7 @@ export default function Footer({ t, lang = 'en', onNavigate }) {
   const handleSubscribe = (e) => {
     e.preventDefault()
     if (email.trim()) {
+      saveNewsletterSubscriber(email, 'footer')
       setSubscribed(true)
       setEmail('')
       setTimeout(() => setSubscribed(false), 5000)

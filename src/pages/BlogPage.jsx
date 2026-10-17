@@ -10,6 +10,7 @@ import {
   Sparkles,
   MessageCircle
 } from 'lucide-react'
+import { saveNewsletterSubscriber } from '../lib/supabase'
 
 export default function BlogPage({ t, lang, onNavigateHome }) {
   const page = t.blogPage
@@ -25,11 +26,13 @@ export default function BlogPage({ t, lang, onNavigateHome }) {
     ? page.stories
     : page.stories.filter(s => s.category === activeCategory)
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault()
     if (newsletterEmail.trim()) {
+      const emailToSave = newsletterEmail.trim()
       setSubscribed(true)
       setNewsletterEmail('')
+      await saveNewsletterSubscriber(emailToSave, 'blog')
       setTimeout(() => setSubscribed(false), 5000)
     }
   }

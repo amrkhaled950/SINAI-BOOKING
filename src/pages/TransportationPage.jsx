@@ -12,6 +12,7 @@ import {
   Clock,
   Sparkles
 } from 'lucide-react'
+import { saveTransferRequest } from '../lib/supabase'
 
 export default function TransportationPage({ t, lang, onNavigateHome }) {
   const page = t.transportationPage
@@ -39,6 +40,15 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
     const msg = isAr
       ? `السلام عليكم سيناء بوكينج، أود حجز واستفسار عن خدمة الانتقالات والمواصلات:\n- من: ${pickup}\n- إلى: ${dropoff}\n- التاريخ: ${travelDate}\n- عدد الأفراد: ${passengers}\n- وسيلة النقل المفضلة: ${vehicleLabel}\nبرجاء موافاتنا بالتوافر والتكلفة.`
       : `Hello Sinai Booking! I would like to enquire about a transfer:\n- From: ${pickup}\n- To: ${dropoff}\n- Date: ${travelDate}\n- Passengers: ${passengers}\n- Vehicle Preference: ${vehicleLabel}\nPlease confirm availability and rate.`
+
+    saveTransferRequest({
+      pickup_location: pickup,
+      dropoff_location: dropoff,
+      travel_date: travelDate,
+      passengers_count: passengers,
+      vehicle_type: rideType,
+      status: 'pending'
+    })
 
     window.open(`https://wa.me/201116664591?text=${encodeURIComponent(msg)}`, '_blank')
   }

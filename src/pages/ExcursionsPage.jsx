@@ -18,6 +18,7 @@ import {
   ChevronRight,
   ShieldCheck
 } from 'lucide-react'
+import { saveBooking } from '../lib/supabase'
 
 export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const page = t.excursionsPage
@@ -52,6 +53,18 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
       ? `السلام عليكم، أود حجز رحلة "${selectedTrip.title}" عبر Sinai Booking.\nالتاريخ المطلوب: ${selectedDate}\nعدد الأفراد: ${guestCount} أفراد (الحد الأدنى 4)${campNote}\nالسعر التقديري: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}\nبرجاء تأكيد التوافر وإمكانية الحجز.`
       : `Hello! I would like to book "${selectedTrip.title}" via Sinai Booking.\nRequested Date: ${selectedDate}\nGuests: ${guestCount} (min. 4 people)${campNote}\nEstimated total: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}\nPlease confirm availability and dates.`
     
+    saveBooking({
+      booking_type: 'excursion',
+      item_id: selectedTrip.id,
+      item_title: selectedTrip.title,
+      check_in_date: selectedDate,
+      guests_count: guestCount,
+      preferred_camp: selectedTrip.twoDays ? selectedCamp : null,
+      estimated_total_eur: selectedTrip.priceEur * guestCount,
+      estimated_total_usd: selectedTrip.priceUsd * guestCount,
+      status: 'pending'
+    })
+
     window.open(`https://wa.me/201116664591?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
