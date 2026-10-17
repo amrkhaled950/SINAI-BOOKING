@@ -1,13 +1,33 @@
-import React from 'react'
-import { ArrowUpRight } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { ArrowUpRight, Bed, Users, Sparkles, Check } from 'lucide-react'
+import { fetchApartments, DEFAULT_APARTMENTS } from '../lib/supabase'
 
 export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSelectApartment }) {
   const page = t.accommodationPage
   const isAr = lang === 'ar'
+  const [apartments, setApartments] = useState(DEFAULT_APARTMENTS)
+  const [loading, setLoading] = useState(false)
 
-  const handleOpenApartment = () => {
+  useEffect(() => {
+    let isMounted = true
+    async function load() {
+      setLoading(true)
+      const res = await fetchApartments()
+      if (isMounted && res.data && res.data.length > 0) {
+        setApartments(res.data)
+      }
+      if (isMounted) setLoading(false)
+    }
+    load()
+    return () => { isMounted = false }
+  }, [])
+
+  const primaryApartment = apartments[0] || DEFAULT_APARTMENTS[0]
+  const additionalApartments = apartments.slice(1)
+
+  const handleOpenApartment = (apt = primaryApartment) => {
     if (onSelectApartment) {
-      onSelectApartment('mashraba-duplex')
+      onSelectApartment(apt)
     }
   }
 
@@ -65,12 +85,12 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
             {/* Right: Duplex Photo with Bottom-Right Base Badge */}
             <div className="lg:col-span-6 relative flex justify-center lg:justify-end">
               <div
-                onClick={handleOpenApartment}
+                onClick={() => handleOpenApartment(primaryApartment)}
                 className="relative w-full max-w-[540px] aspect-[4/3] sm:aspect-[16/11] rounded-[32px] overflow-hidden shadow-xl border-4 border-white/70 group cursor-pointer"
               >
                 <img
-                  src="/images/duplex-hero-loft.jpg"
-                  alt="Mashraba Duplex in Dahab"
+                  src={primaryApartment.images?.[0] || '/images/duplex-hero-loft.jpg'}
+                  alt={primaryApartment.title || 'Mashraba Duplex in Dahab'}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
 
@@ -81,7 +101,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                       {page.hero.cardOverlayTitle}
                     </p>
                     <p className="text-xs text-[#8C867C] font-normal">
-                      {page.hero.cardOverlaySubtitle}
+                      {primaryApartment.code || page.hero.cardOverlaySubtitle}
                     </p>
                   </div>
                 </div>
@@ -115,12 +135,12 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
             {/* Left: Clean Single Duplex Photo */}
             <div className="lg:col-span-7 space-y-3">
               <div
-                onClick={handleOpenApartment}
+                onClick={() => handleOpenApartment(primaryApartment)}
                 className="relative aspect-[4/3] sm:aspect-[16/11] rounded-[28px] overflow-hidden shadow-md border border-[#EAE3D5] bg-[#F2EDE4] group cursor-pointer"
               >
                 <img
-                  src="/images/duplex-full-structure.jpg"
-                  alt="Meet the Mashraba duplex"
+                  src={primaryApartment.images?.[1] || primaryApartment.images?.[0] || '/images/duplex-full-structure.jpg'}
+                  alt={primaryApartment.title || 'Meet the Mashraba duplex'}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
               </div>
@@ -137,17 +157,17 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 {/* Tag Badge */}
                 <div>
                   <span className="inline-block px-3 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold rounded-full uppercase tracking-wider">
-                    {page.place.badge}
+                    {primaryApartment.badge || page.place.badge}
                   </span>
                 </div>
 
                 {/* Title & Desc */}
                 <div className="space-y-2.5">
                   <h3 className="text-2xl sm:text-3xl font-serif font-normal text-[#22211F]">
-                    {page.place.stayTitle}
+                    {isAr ? (primaryApartment.title_ar || page.place.stayTitle) : (primaryApartment.title || page.place.stayTitle)}
                   </h3>
                   <p className="text-sm text-[#6C6963] leading-relaxed">
-                    {page.place.stayDesc}
+                    {isAr ? (primaryApartment.description_ar || page.place.stayDesc) : (primaryApartment.description || page.place.stayDesc)}
                   </p>
                 </div>
 
@@ -155,14 +175,14 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 <div className="border-t border-[#EAE1D1] pt-6 space-y-1.5">
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold text-[#22211F]">
-                      {page.place.priceUsd}
+                      ${primaryApartment.price_usd || 40}
                     </span>
                     <span className="text-sm text-[#8C867C]">
                       {page.place.priceUsdSuffix}
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-[#1F7A8C]">
-                    {page.place.priceEgp}
+                    {(primaryApartment.price_egp || 2000).toLocaleString()} EGP / {isAr ? 'ليلة' : 'night'}
                   </p>
                 </div>
 
@@ -170,7 +190,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 <div className="pt-2">
                   <button
                     type="button"
-                    onClick={handleOpenApartment}
+                    onClick={() => handleOpenApartment(primaryApartment)}
                     className="w-full inline-flex items-center justify-center py-4 px-6 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-base font-semibold rounded-full shadow hover:shadow-md transition-all active:scale-95 cursor-pointer"
                   >
                     {page.place.button}
@@ -184,6 +204,64 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
 
         </div>
       </section>
+
+      {/* Additional Apartments Grid (if more than 1 room exists in CMS) */}
+      {additionalApartments.length > 0 && (
+        <section className="py-16 bg-white border-t border-[#EAE3D5]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div>
+              <span className="text-xs font-semibold tracking-[0.2em] text-[#C8553D] uppercase block">
+                {isAr ? 'المزيد من الوحدات المتاحة' : 'More Available Units'}
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif text-[#22211F]">
+                {isAr ? 'اختر الغرفة أو الاستوديو المناسب لإقامتك في دهب' : 'Select from Our Curated Dahab Stays'}
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {additionalApartments.map((apt) => (
+                <div key={apt.id} className="bg-[#FAF6EF] rounded-3xl overflow-hidden border border-[#EAE1D1] shadow-sm hover:shadow-md transition-all flex flex-col">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
+                    <img
+                      src={apt.images?.[0] || '/images/duplex-hero-loft.jpg'}
+                      alt={apt.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold rounded-full uppercase">
+                      {apt.code || 'Studio'}
+                    </span>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h4 className="text-xl font-serif font-bold text-[#22211F]">
+                        {isAr ? (apt.title_ar || apt.title) : apt.title}
+                      </h4>
+                      <p className="text-xs text-[#8C867C] mt-1 line-clamp-2">
+                        {isAr ? (apt.description_ar || apt.description) : apt.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-[#EAE1D1] flex items-center justify-between">
+                      <div>
+                        <span className="text-xl font-bold text-[#BA4B33]">${apt.price_usd}</span>
+                        <span className="text-xs text-[#8C867C]"> / {isAr ? 'ليلة' : 'night'}</span>
+                        <div className="text-xs font-medium text-[#1F7A8C]">{apt.price_egp?.toLocaleString()} EGP</div>
+                      </div>
+
+                      <button
+                        onClick={() => handleOpenApartment(apt)}
+                        className="px-5 py-2.5 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-xs font-semibold rounded-full shadow transition-all active:scale-95 cursor-pointer"
+                      >
+                        {isAr ? 'عرض وحجز' : 'View & Book'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 4. The Everyday Details Section: "Everything you need to settle in" */}
       <section className="py-20 lg:py-24 bg-[#EFF4EC] border-t border-[#E4ECE0]">

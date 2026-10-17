@@ -18,12 +18,11 @@ import {
 } from 'lucide-react'
 import { saveApartmentBooking } from '../lib/supabase'
 
-export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome }) {
+export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome, selectedApartment }) {
   const isAr = lang === 'ar'
   const page = t.accommodationPage
 
-  // 8 High-resolution photos of Mashraba Duplex (Studio 1)
-  const gallery = [
+  const defaultGallery = [
     { src: '/images/duplex-hero-loft.jpg', label: isAr ? 'المنظور الكامل للدوبلكس والسرير العلوي' : 'Full Duplex Loft & Chandelier' },
     { src: '/images/duplex-full-structure.jpg', label: isAr ? 'هيكل الدوبلكس والدرج الخشبي والجلسة' : 'Loft Bed Railing & Wooden Stairs' },
     { src: '/images/duplex-lower-lounge.jpg', label: isAr ? 'الجلسة السفلية المريحة والستائر' : 'Lower Lounge Suite & Daybed' },
@@ -33,6 +32,22 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
     { src: '/images/duplex-lounge-outward.jpg', label: isAr ? 'إطلالة من داخل جلسة الاسترخاء' : 'View Looking Out from Lower Lounge' },
     { src: '/images/duplex-coffee-corner.jpg', label: isAr ? 'طاولة الضيافة الخشبية وركن الشاي' : 'Coffee Table & Cozy Armchair' },
   ]
+
+  const gallery = (selectedApartment?.images && selectedApartment.images.length > 0)
+    ? selectedApartment.images.map((src, idx) => ({
+        src,
+        label: isAr ? `صورة الغرفة ${idx + 1}` : `Room Photo ${idx + 1}`
+      }))
+    : defaultGallery
+
+  const roomTitle = isAr
+    ? (selectedApartment?.title_ar || selectedApartment?.title || 'استوديو دوبلكس مشربه')
+    : (selectedApartment?.title || 'Mashraba duplex (Studio 1)')
+  const roomCode = selectedApartment?.code || 'Studio 1'
+  const dailyPriceUsd = Number(selectedApartment?.price_usd) || 40
+  const dailyPriceEgp = Number(selectedApartment?.price_egp) || 2000
+  const monthlyPriceUsd = Number(selectedApartment?.monthly_usd) || 1200
+  const monthlyPriceEgp = Number(selectedApartment?.monthly_egp) || 60000
 
   const [activePhoto, setActivePhoto] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -73,8 +88,8 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   }
 
   const nights = calculateNights()
-  const totUsd = stayType === 'monthly' ? 1200 : nights * 40
-  const totEgp = stayType === 'monthly' ? 60000 : nights * 2000
+  const totUsd = stayType === 'monthly' ? monthlyPriceUsd : nights * dailyPriceUsd
+  const totEgp = stayType === 'monthly' ? monthlyPriceEgp : nights * dailyPriceEgp
 
   return (
     <div className="bg-[#FAF6EF] text-[#22211F] min-h-screen animate-in fade-in duration-300">
@@ -97,7 +112,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
           </button>
           <span>/</span>
           <span className="text-[#22211F] font-semibold">
-            {isAr ? 'دوبلكس مشربه (Studio 1)' : 'Mashraba duplex (Studio 1)'}
+            {roomTitle}
           </span>
         </nav>
       </div>
@@ -110,18 +125,18 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block px-3 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold rounded-full uppercase">
-                {page.place.badge}
+                {selectedApartment?.badge || page.place.badge}
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#132724] text-[#E7D6C4] text-xs font-mono font-semibold rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span>
-                backend: Studio 1
+                backend: {roomCode}
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#22211F]">
-              {isAr ? 'استوديو دوبلكس مشربه' : 'Mashraba duplex'}
+              {roomTitle}
             </h1>
             <p className="text-sm sm:text-base text-[#6C6963] pt-1">
-              {isAr ? 'حتى 3 أفراد • المشربة، دهب' : 'Upto 3 person accommodation • Mashraba, Dahab'}
+              {isAr ? `حتى ${selectedApartment?.max_guests || 3} أفراد • ${selectedApartment?.location_ar || 'المشربة، دهب'}` : `Upto ${selectedApartment?.max_guests || 3} person accommodation • ${selectedApartment?.location || 'Mashraba, Dahab'}`}
             </p>
           </div>
 

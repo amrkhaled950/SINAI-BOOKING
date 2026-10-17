@@ -14,15 +14,46 @@ export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
-/**
- * 1. Save apartment booking (حجوزات الشقق)
- */
-export async function saveApartmentBooking(b) {
-  if (!supabase) {
-    console.info('Supabase not configured. Skipping apartment booking:', b)
-    return { data: null, error: null }
+// Default Studio 1 fallback room
+export const DEFAULT_APARTMENTS = [
+  {
+    id: 'studio-1',
+    title: 'Mashraba duplex (Studio 1)',
+    title_ar: 'استوديو دوبلكس مشربه (Studio 1)',
+    code: 'studio-1',
+    location: 'Dahab - Mashraba',
+    location_ar: 'دهب - المشربة',
+    badge: 'DUPLEX APARTMENT',
+    badge_ar: 'استوديو دوبلكس',
+    price_usd: 40,
+    price_egp: 2000,
+    monthly_usd: 1200,
+    monthly_egp: 60000,
+    max_guests: 3,
+    description: 'Comfortable duplex loft, sea view, AC and private bathroom with cozy living area and wooden staircase.',
+    description_ar: 'غرفة دوبلكس مريحة، إطلالة بحرية، تكييف وحمام خاص، مع ركن معيشة فندقي مودرن ودرج خشبي للدور العلوي.',
+    images: [
+      '/images/duplex-hero-loft.jpg',
+      '/images/duplex-full-structure.jpg',
+      '/images/duplex-lower-lounge.jpg',
+      '/images/duplex-living-room.jpg',
+      '/images/duplex-living-tv.jpg',
+      '/images/duplex-living-wide.jpg',
+      '/images/duplex-lounge-outward.jpg',
+      '/images/duplex-coffee-corner.jpg'
+    ],
+    amenities: ['Air Conditioning', 'High-Speed Wi-Fi', 'Private Bathroom', 'Smart TV', 'Kitchenette', 'Sea/Garden View'],
+    amenities_ar: ['تكييف هواء سبليت', 'واي فاي سريع', 'حمام خاص متكامل', 'تلفزيون ذكي سمارت', 'مطبخ تحضيري', 'إطلالة هادئة'],
+    is_available: true,
   }
+]
 
+/* ==========================================================
+   1. Client Public Insert Methods
+   ========================================================== */
+
+export async function saveApartmentBooking(b) {
+  if (!supabase) return { data: null, error: null }
   try {
     const payload = {
       apartment_name: b.apartment_name || b.item_title || 'Mashraba duplex (Studio 1)',
@@ -44,28 +75,15 @@ export async function saveApartmentBooking(b) {
       status: b.status || 'pending',
       notes: b.notes || null,
     }
-
     const { error } = await supabase.from('apartment_bookings').insert([payload])
-    if (error) {
-      console.error('Error saving apartment booking:', error)
-      return { data: null, error }
-    }
-    return { data: true, error: null }
+    return { data: !error, error }
   } catch (err) {
-    console.error('Unexpected error saving apartment booking:', err)
     return { data: null, error: err }
   }
 }
 
-/**
- * 2. Save safari tour booking (حجوزات رحلات السفاري)
- */
 export async function saveSafariBooking(s) {
-  if (!supabase) {
-    console.info('Supabase not configured. Skipping safari booking:', s)
-    return { data: null, error: null }
-  }
-
+  if (!supabase) return { data: null, error: null }
   try {
     const payload = {
       tour_name: s.tour_name || s.item_title || 'Desert Safari',
@@ -86,28 +104,15 @@ export async function saveSafariBooking(s) {
       status: s.status || 'pending',
       notes: s.notes || null,
     }
-
     const { error } = await supabase.from('safari_bookings').insert([payload])
-    if (error) {
-      console.error('Error saving safari booking:', error)
-      return { data: null, error }
-    }
-    return { data: true, error: null }
+    return { data: !error, error }
   } catch (err) {
-    console.error('Unexpected error saving safari booking:', err)
     return { data: null, error: err }
   }
 }
 
-/**
- * 3. Save bus & transfer booking (حجوزات الباصات والانتقالات)
- */
 export async function saveTransferBooking(t) {
-  if (!supabase) {
-    console.info('Supabase not configured. Skipping transfer booking:', t)
-    return { data: null, error: null }
-  }
-
+  if (!supabase) return { data: null, error: null }
   try {
     const payload = {
       service_type: t.service_type || (t.vehicle_type === 'private' ? 'private_car' : 'hiace_bus'),
@@ -124,47 +129,169 @@ export async function saveTransferBooking(t) {
       status: t.status || 'pending',
       notes: t.notes || null,
     }
-
     const { error } = await supabase.from('transfer_bookings').insert([payload])
-    if (error) {
-      console.error('Error saving transfer booking:', error)
-      return { data: null, error }
-    }
-    return { data: true, error: null }
+    return { data: !error, error }
   } catch (err) {
-    console.error('Unexpected error saving transfer booking:', err)
     return { data: null, error: err }
   }
 }
 
-/**
- * 4. Save newsletter subscriber (جدول النشرة البريدية)
- */
 export async function saveNewsletterSubscriber(email, source = 'footer') {
-  if (!supabase) {
-    console.info('Supabase not configured. Skipping newsletter insert:', email)
-    return { data: null, error: null }
-  }
-
+  if (!supabase) return { data: null, error: null }
   try {
     const { error } = await supabase
       .from('newsletter_subscribers')
       .insert([{ email: email.toLowerCase().trim(), source }])
-
-    if (error && error.code !== '23505') {
-      console.error('Error saving newsletter subscriber:', error)
-      return { data: null, error }
-    }
-    return { data: true, error: null }
+    return { data: !error, error }
   } catch (err) {
-    console.error('Unexpected error saving newsletter subscriber:', err)
     return { data: null, error: err }
   }
 }
 
-/**
- * Backwards compatibility wrappers
- */
+/* ==========================================================
+   2. Admin Fetching & Management Methods
+   ========================================================== */
+
+export async function fetchApartmentBookings() {
+  if (!supabase) return { data: [], error: null }
+  try {
+    const { data, error } = await supabase
+      .from('apartment_bookings')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data: data || [], error }
+  } catch (err) {
+    return { data: [], error: err }
+  }
+}
+
+export async function fetchSafariBookings() {
+  if (!supabase) return { data: [], error: null }
+  try {
+    const { data, error } = await supabase
+      .from('safari_bookings')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data: data || [], error }
+  } catch (err) {
+    return { data: [], error: err }
+  }
+}
+
+export async function fetchTransferBookings() {
+  if (!supabase) return { data: [], error: null }
+  try {
+    const { data, error } = await supabase
+      .from('transfer_bookings')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data: data || [], error }
+  } catch (err) {
+    return { data: [], error: err }
+  }
+}
+
+export async function fetchNewsletterSubscribers() {
+  if (!supabase) return { data: [], error: null }
+  try {
+    const { data, error } = await supabase
+      .from('newsletter_subscribers')
+      .select('*')
+      .order('created_at', { ascending: false })
+    return { data: data || [], error }
+  } catch (err) {
+    return { data: [], error: err }
+  }
+}
+
+export async function updateBookingStatus(tableName, id, newStatus) {
+  if (!supabase) return { data: null, error: null }
+  try {
+    const { data, error } = await supabase
+      .from(tableName)
+      .update({ status: newStatus })
+      .eq('id', id)
+    return { data, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+export async function deleteBookingRecord(tableName, id) {
+  if (!supabase) return { data: null, error: null }
+  try {
+    const { error } = await supabase
+      .from(tableName)
+      .delete()
+      .eq('id', id)
+    return { data: !error, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+/* ==========================================================
+   3. Apartments & Rooms CMS Methods
+   ========================================================== */
+
+export async function fetchApartments() {
+  if (!supabase) return { data: DEFAULT_APARTMENTS, error: null }
+  try {
+    const { data, error } = await supabase
+      .from('apartments')
+      .select('*')
+      .order('created_at', { ascending: true })
+
+    if (error || !data || data.length === 0) {
+      return { data: DEFAULT_APARTMENTS, error: null }
+    }
+    return { data, error: null }
+  } catch (err) {
+    return { data: DEFAULT_APARTMENTS, error: null }
+  }
+}
+
+export async function createApartment(apt) {
+  if (!supabase) return { data: null, error: 'Database not connected' }
+  try {
+    const { data, error } = await supabase
+      .from('apartments')
+      .insert([apt])
+      .select()
+    return { data: data?.[0] || null, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+export async function updateApartment(id, updates) {
+  if (!supabase) return { data: null, error: 'Database not connected' }
+  try {
+    const { data, error } = await supabase
+      .from('apartments')
+      .update(updates)
+      .eq('id', id)
+      .select()
+    return { data: data?.[0] || null, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+export async function deleteApartment(id) {
+  if (!supabase) return { data: null, error: 'Database not connected' }
+  try {
+    const { error } = await supabase
+      .from('apartments')
+      .delete()
+      .eq('id', id)
+    return { data: !error, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+// Backwards compatibility adapters
 export async function saveBooking(bookingData) {
   if (bookingData.booking_type === 'apartment') {
     return saveApartmentBooking(bookingData)

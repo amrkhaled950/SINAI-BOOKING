@@ -16,10 +16,12 @@ import RoomDetailPage from './pages/RoomDetailPage'
 import ExcursionsPage from './pages/ExcursionsPage'
 import TransportationPage from './pages/TransportationPage'
 import BlogPage from './pages/BlogPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
 
 export default function App() {
   const [lang, setLang] = useState('en')
-  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'dahab-accommodation' | 'room-detail' | 'excursions' | 'transportation' | 'blog'
+  const [currentPage, setCurrentPage] = useState('home') // 'home' | 'dahab-accommodation' | 'room-detail' | 'excursions' | 'transportation' | 'blog' | 'admin'
+  const [selectedApartment, setSelectedApartment] = useState(null)
   const t = translations[lang]
 
   useEffect(() => {
@@ -27,8 +29,24 @@ export default function App() {
     document.documentElement.lang = lang
   }, [lang])
 
+  useEffect(() => {
+    const handleUrl = () => {
+      if (window.location.hash === '#admin' || window.location.pathname === '/admin') {
+        setCurrentPage('admin')
+      }
+    }
+    handleUrl()
+    window.addEventListener('hashchange', handleUrl)
+    return () => window.removeEventListener('hashchange', handleUrl)
+  }, [])
+
   const navigate = (page, hash) => {
     setCurrentPage(page)
+    if (page === 'admin') {
+      window.location.hash = 'admin'
+    } else if (window.location.hash === '#admin') {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
     if (hash) {
       setTimeout(() => {
@@ -36,6 +54,18 @@ export default function App() {
         if (el) el.scrollIntoView({ behavior: 'smooth' })
       }, 100)
     }
+  }
+
+  // Full-screen Admin Dashboard Portal
+  if (currentPage === 'admin') {
+    return (
+      <div className={`min-h-screen bg-[#0E1715] text-[#F3EFE6] selection:bg-[#C45437] selection:text-white ${lang === 'ar' ? 'font-sans' : ''}`}>
+        <AdminDashboardPage
+          lang={lang}
+          onNavigateHome={() => navigate('home')}
+        />
+      </div>
+    )
   }
 
   return (
@@ -76,16 +106,20 @@ export default function App() {
           <RoomDetailPage
             t={t}
             lang={lang}
+            selectedApartment={selectedApartment}
             onNavigateBack={() => navigate('dahab-accommodation')}
             onNavigateHome={() => navigate('home')}
           />
         ) : currentPage === 'dahab-accommodation' ? (
-          /* Dahab Accommodation Showcase Page (Exact Screenshot replica) */
+          /* Dahab Accommodation Showcase Page */
           <DahabAccommodationPage
             t={t}
             lang={lang}
             onNavigateHome={() => navigate('home')}
-            onSelectApartment={() => navigate('room-detail')}
+            onSelectApartment={(apt) => {
+              setSelectedApartment(apt)
+              navigate('room-detail')
+            }}
           />
         ) : (
           /* Homepage */
