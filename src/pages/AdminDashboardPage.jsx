@@ -151,7 +151,14 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
   const handleUpdateStatus = async (table, id, newStatus) => {
     const { error } = await updateBookingStatus(table, id, newStatus)
     if (!error) {
-      showNotification(isAr ? 'تم تحديث حالة الحجز بنجاح' : 'Status updated successfully')
+      if (table === 'apartment_bookings' && newStatus === 'confirmed') {
+        showNotification(isAr ? 'تم تأكيد الحجز وقفل المواعيد تلقائياً على الموقع لمنع تداخل الحجوزات! 🔒' : 'Booking confirmed & dates automatically locked on website! 🔒')
+      } else if (table === 'apartment_bookings' && newStatus !== 'confirmed') {
+        showNotification(isAr ? 'تم فك قفل المواعيد وتحديث حالة الحجز' : 'Status updated & dates released')
+      } else {
+        showNotification(isAr ? 'تم تحديث حالة الحجز بنجاح' : 'Status updated successfully')
+      }
+
       if (table === 'apartment_bookings') {
         setAptBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b))
       } else if (table === 'safari_bookings') {
@@ -907,9 +914,17 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                               className="text-[11px] font-semibold bg-[#FAF5ED] border border-[#E7DFCE] rounded-lg px-2 py-1 text-[#22211F]"
                             >
                               <option value="pending">⏳ {isAr ? 'معلق' : 'Pending'}</option>
-                              <option value="confirmed">✅ {isAr ? 'مؤكد' : 'Confirmed'}</option>
+                              <option value="confirmed">✅ {isAr ? 'مؤكد (يقفل المعاد)' : 'Confirmed (Locks dates)'}</option>
                               <option value="cancelled">❌ {isAr ? 'ملغي' : 'Cancelled'}</option>
                             </select>
+                            {b.status === 'confirmed' && (
+                              <div className="mt-1">
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-md border border-green-200 shadow-2xs">
+                                  <Lock size={10} className="text-green-600" />
+                                  <span>{isAr ? 'مقفل على الموقع' : 'Locked on site'}</span>
+                                </span>
+                              </div>
+                            )}
                           </td>
                           <td className="px-4 py-3 text-center">
                             <div className="flex items-center justify-center gap-1.5">

@@ -165,6 +165,31 @@ export async function fetchApartmentBookings() {
   }
 }
 
+export async function fetchConfirmedApartmentBookings(apartmentCode) {
+  if (!supabase) return { data: [], error: null }
+  try {
+    const { data, error } = await supabase
+      .from('apartment_bookings')
+      .select('id, apartment_name, apartment_code, check_in_date, check_out_date, status, customer_name')
+      .eq('status', 'confirmed')
+
+    if (error) return { data: [], error }
+    let list = data || []
+    if (apartmentCode) {
+      const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+      const target = norm(apartmentCode)
+      list = list.filter(b => {
+        const c = norm(b.apartment_code)
+        const n = norm(b.apartment_name)
+        return !target || c.includes(target) || target.includes(c) || n.includes(target)
+      })
+    }
+    return { data: list, error: null }
+  } catch (err) {
+    return { data: [], error: err }
+  }
+}
+
 export async function fetchSafariBookings() {
   if (!supabase) return { data: [], error: null }
   try {

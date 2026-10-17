@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,9 +14,11 @@ import {
   Clock,
   Sparkles,
   MapPin,
-  Home
+  Home,
+  Lock,
+  AlertCircle
 } from 'lucide-react'
-import { saveApartmentBooking } from '../lib/supabase'
+import { saveApartmentBooking, fetchConfirmedApartmentBookings } from '../lib/supabase'
 
 export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome, selectedApartment }) {
   const isAr = lang === 'ar'
@@ -54,6 +56,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
 
   // Booking Form State
   const [stayType, setStayType] = useState('daily') // 'daily' or 'monthly'
+  const todayStr = new Date().toISOString().split('T')[0]
   const [checkIn, setCheckIn] = useState('2026-10-20')
   const [checkOut, setCheckOut] = useState('2026-10-25')
   const [nationality, setNationality] = useState('egyptian') // 'egyptian' | 'foreign'
@@ -64,6 +67,46 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const [cairoStation, setCairoStation] = useState('none') // 'riad' | 'embassy' | 'rehab' | 'madinaty' | 'none'
   const [paymentMethod, setPaymentMethod] = useState('wallet') // 'wallet' | 'instapay' | 'card'
   const [notes, setNotes] = useState('')
+
+  // Confirmed Locked Dates State
+  const [confirmedBookings, setConfirmedBookings] = useState([])
+  const [loadingBookings, setLoadingBookings] = useState(false)
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadConfirmed() {
+      setLoadingBookings(true)
+      const res = await fetchConfirmedApartmentBookings(roomCode)
+      if (isMounted && res.data) {
+        setConfirmedBookings(res.data)
+      }
+      if (isMounted) setLoadingBookings(false)
+    }
+    loadConfirmed()
+    return () => { isMounted = false }
+  }, [roomCode])
+
+  // Overlap & Conflict Check
+  const getConflictingBooking = (inDate, outDate) => {
+    if (!inDate || !outDate) return null
+    const dIn = new Date(inDate).getTime()
+    const dOut = new Date(outDate).getTime()
+    if (dOut <= dIn) return null
+
+    for (const b of confirmedBookings) {
+      if (!b.check_in_date || !b.check_out_date) continue
+      const bIn = new Date(b.check_in_date).getTime()
+      const bOut = new Date(b.check_out_date).getTime()
+      // Overlap condition: start < booked_end && end > booked_start
+      if (dIn < bOut && dOut > bIn) {
+        return b
+      }
+    }
+    return null
+  }
+
+  const conflictingBooking = getConflictingBooking(checkIn, checkOut)
+  const isDatesConflict = Boolean(conflictingBooking)
 
   const handlePrev = (e) => {
     e.stopPropagation()
@@ -346,31 +389,96 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                 </div>
 
                 {/* Dates */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#5A554E] mb-1.5 flex items-center gap-1">
-                      <Calendar size={12} className="text-[#C8553D]" />
-                      {isAr ? 'الوصول' : 'Check-in'}
-                    </label>
-                    <input
-                      type="date"
-                      value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
-                      className="w-full text-xs font-medium bg-white border border-[#E4DDD0] rounded-xl px-3 py-2 text-[#22211F] focus:outline-none focus:ring-2 focus:ring-[#C8553D]/30"
-                    />
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#5A554E] mb-1.5 flex items-center gap-1">
+                        <Calendar size={12} className="text-[#C8553D]" />
+                        {isAr ? 'الوصول' : 'Check-in'}
+                      </label>
+                      <input
+                        type="date"
+                        min={todayStr}
+                        value={checkIn}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          setCheckIn(val)
+                          if (val && checkOut && val >= checkOut) {
+                            const d = new Date(val)
+                            d.setDate(d.getDate() + 1)
+                            setCheckOut(d.toISOString().split('T')[0])
+                          }
+                        }}
+                        className={`w-full text-xs font-medium bg-white border rounded-xl px-3 py-2 text-[#22211F] focus:outline-none transition-all ${
+                          isDatesConflict
+                            ? 'border-red-500 ring-2 ring-red-200'
+                            : 'border-[#E4DDD0] focus:ring-2 focus:ring-[#C8553D]/30'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#5A554E] mb-1.5 flex items-center gap-1">
+                        <Calendar size={12} className="text-[#C8553D]" />
+                        {isAr ? 'المغادرة' : 'Check-out'}
+                      </label>
+                      <input
+                        type="date"
+                        min={checkIn || todayStr}
+                        value={checkOut}
+                        onChange={(e) => setCheckOut(e.target.value)}
+                        className={`w-full text-xs font-medium bg-white border rounded-xl px-3 py-2 text-[#22211F] focus:outline-none transition-all ${
+                          isDatesConflict
+                            ? 'border-red-500 ring-2 ring-red-200'
+                            : 'border-[#E4DDD0] focus:ring-2 focus:ring-[#C8553D]/30'
+                        }`}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-[#5A554E] mb-1.5 flex items-center gap-1">
-                      <Calendar size={12} className="text-[#C8553D]" />
-                      {isAr ? 'المغادرة' : 'Check-out'}
-                    </label>
-                    <input
-                      type="date"
-                      value={checkOut}
-                      onChange={(e) => setCheckOut(e.target.value)}
-                      className="w-full text-xs font-medium bg-white border border-[#E4DDD0] rounded-xl px-3 py-2 text-[#22211F] focus:outline-none focus:ring-2 focus:ring-[#C8553D]/30"
-                    />
-                  </div>
+
+                  {/* Conflict Alert (Dates Closed) */}
+                  {isDatesConflict && conflictingBooking && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs flex items-start gap-2.5 shadow-xs animate-in fade-in duration-200">
+                      <AlertCircle size={17} className="text-red-600 flex-shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <p className="font-bold text-red-900">
+                          {isAr ? '⚠️ عذراً، هذا الميعاد محجوز ومغلق بالفعل!' : '⚠️ Sorry, this date range is already locked!'}
+                        </p>
+                        <p className="text-[11px] text-red-700 leading-relaxed">
+                          {isAr
+                            ? `تم تأكيد حجز مسبق لهذه الغرفة من ${conflictingBooking.check_in_date} إلى ${conflictingBooking.check_out_date}. يرجى تغيير التواريخ للمتابعة.`
+                            : `A confirmed reservation exists from ${conflictingBooking.check_in_date} to ${conflictingBooking.check_out_date}. Please choose other dates.`}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Locked Dates Chips for Transparency */}
+                  {confirmedBookings.length > 0 && (
+                    <div className="bg-[#FAF2E8] border border-[#ECDCCB] rounded-xl p-2.5 text-xs space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-[#8B4513] text-[11px] flex items-center gap-1">
+                          <Lock size={11} className="text-[#C8553D]" />
+                          {isAr ? 'فترات محجوزة ومغلقة للوحدة:' : 'Currently locked dates for this unit:'}
+                        </span>
+                        <span className="text-[10px] font-bold text-red-700 bg-red-100/80 px-2 py-0.5 rounded-full">
+                          {isAr ? 'مغلقة' : 'Closed'}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 pt-0.5">
+                        {confirmedBookings.map((b) => (
+                          <span
+                            key={b.id}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-white text-red-700 text-[11px] font-mono font-medium rounded-lg border border-red-200 shadow-xs"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            <span>{b.check_in_date}</span>
+                            <span className="text-red-400">←</span>
+                            <span>{b.check_out_date}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Nationality */}
@@ -619,31 +727,41 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
 
               {/* Send Request via WhatsApp */}
               <div className="pt-1 space-y-2">
-                <a
-                  href={(() => {
-                    const stayLabel = stayType === 'monthly'
-                      ? (isAr ? 'إقامة شهرية (30 / 31 يوم)' : 'Monthly stay (30 / 31 days)')
-                      : (isAr ? `إقامة يومية (${nights} ليالي)` : `Daily stay (${nights} nights)`)
+                {isDatesConflict ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-stone-300 text-stone-600 text-sm font-bold rounded-full shadow-none cursor-not-allowed border border-stone-300 select-none"
+                  >
+                    <Lock size={18} className="text-red-600" />
+                    <span>{isAr ? 'عذراً، هذا الميعاد محجوز ومغلق بالفعل' : 'Dates Already Booked - Please Select Other Dates'}</span>
+                  </button>
+                ) : (
+                  <a
+                    href={(() => {
+                      const stayLabel = stayType === 'monthly'
+                        ? (isAr ? 'إقامة شهرية (30 / 31 يوم)' : 'Monthly stay (30 / 31 days)')
+                        : (isAr ? `إقامة يومية (${nights} ليالي)` : `Daily stay (${nights} nights)`)
 
-                    const cairoStationsMap = {
-                      riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
-                      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
-                      rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
-                      madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
-                      none: isAr ? 'بدون انتقالات (بمعرفتي)' : 'Without transportation (on my own)'
-                    }
+                      const cairoStationsMap = {
+                        riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
+                        embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+                        rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
+                        madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
+                        none: isAr ? 'بدون انتقالات (بمعرفتي)' : 'Without transportation (on my own)'
+                      }
 
-                    const paymentLabels = {
-                      wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
-                      instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
-                      card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
-                    }
+                      const paymentLabels = {
+                        wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
+                        instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
+                        card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
+                      }
 
-                    const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
+                      const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
 
-                    const msg = isAr
-                      ? `السلام عليكم، أود تقديم طلب حجز استوديو دوبلكس مشربه:
-• كود الوحدة: Studio 1
+                      const msg = isAr
+                        ? `السلام عليكم، أود تقديم طلب حجز ${roomTitle}:
+• كود الوحدة: ${roomCode}
 • الجنسية: ${nationalityLabel}
 • نوع الإقامة: ${stayLabel}
 • تاريخ الوصول: ${checkIn}
@@ -656,8 +774,8 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
 • طريقة الدفع: ${paymentLabels[paymentMethod]}
 • السعر التقديري: $${totUsd} / ${totEgp.toLocaleString()} جم
 ${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}أرجو تأكيد التوافر وإتمام الحجز.`
-                      : `Hello! I would like to request a booking for Mashraba Duplex:
-• Unit Code: Studio 1
+                        : `Hello! I would like to request a booking for ${roomTitle}:
+• Unit Code: ${roomCode}
 • Nationality: ${nationalityLabel}
 • Stay type: ${stayLabel}
 • Check-in: ${checkIn}
@@ -671,49 +789,47 @@ ${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}أرجو تأكيد ا�
 • Estimated total: $${totUsd} / ${totEgp.toLocaleString()} EGP
 ${notes ? `• Special requests: ${notes}\n` : ''}Please let me know availability and how to proceed.`
 
-                    return `https://wa.me/201116664591?text=${encodeURIComponent(msg)}`
-                  })()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    const stay = stayType === 'monthly' ? calculateMonthDays() : calculateNights()
-                    const nightsCount = stay.count
-                    const totUsd = stayType === 'monthly' ? 1200 : nightsCount * 40
-                    const totEgp = stayType === 'monthly' ? 60000 : nightsCount * 2000
+                      return `https://wa.me/201116664591?text=${encodeURIComponent(msg)}`
+                    })()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      const stay = stayType === 'monthly' ? calculateMonthDays() : calculateNights()
+                      const nightsCount = stay.count || nights
+                      const cairoStationsMap = {
+                        riad: 'Abdel Moneim Riad (12:00 AM)',
+                        embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',
+                        rehab: 'Rehab (1:00 AM)',
+                        madinaty: 'Madinaty (1:15 AM)',
+                        none: 'None'
+                      }
 
-                    const cairoStationsMap = {
-                      riad: 'Abdel Moneim Riad (12:00 AM)',
-                      embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',
-                      rehab: 'Rehab (1:00 AM)',
-                      madinaty: 'Madinaty (1:15 AM)',
-                      none: 'None'
-                    }
-
-                    saveApartmentBooking({
-                      apartment_name: 'Mashraba duplex (Studio 1)',
-                      apartment_code: 'Studio 1',
-                      customer_name: guestName || null,
-                      customer_phone: guestPhone || null,
-                      nationality: nationality,
-                      check_in_date: checkIn,
-                      check_out_date: checkOut,
-                      nights_count: nightsCount,
-                      guests_count: guests,
-                      children_count: children,
-                      stay_type: stayType,
-                      transportation_station: cairoStationsMap[cairoStation],
-                      payment_method: paymentMethod,
-                      estimated_total_usd: totUsd,
-                      estimated_total_egp: totEgp,
-                      notes: notes || null,
-                      status: 'pending'
-                    })
-                  }}
-                  className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-[#25D366] hover:bg-[#20BA5A] text-white text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer"
-                >
-                  <MessageCircle size={20} className="fill-white" />
-                  <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send request via WhatsApp'}</span>
-                </a>
+                      saveApartmentBooking({
+                        apartment_name: roomTitle,
+                        apartment_code: roomCode,
+                        customer_name: guestName || null,
+                        customer_phone: guestPhone || null,
+                        nationality: nationality,
+                        check_in_date: checkIn,
+                        check_out_date: checkOut,
+                        nights_count: nightsCount,
+                        guests_count: guests,
+                        children_count: children,
+                        stay_type: stayType,
+                        transportation_station: cairoStationsMap[cairoStation],
+                        payment_method: paymentMethod,
+                        estimated_total_usd: totUsd,
+                        estimated_total_egp: totEgp,
+                        notes: notes || null,
+                        status: 'pending'
+                      })
+                    }}
+                    className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-[#25D366] hover:bg-[#20BA5A] text-white text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer"
+                  >
+                    <MessageCircle size={20} className="fill-white" />
+                    <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send request via WhatsApp'}</span>
+                  </a>
+                )}
 
                 <p className="text-[11px] text-center text-[#8C867C]">
                   {isAr ? 'سنفتح الواتساب مع تفاصيل حجزك الكاملة جاهزة للإرسال.' : "We'll open WhatsApp with your full booking details ready to send."}
