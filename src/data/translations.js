@@ -5,7 +5,7 @@ export const translations = {
       excursions: "Excursions",
       transportation: "Transportation",
       blog: "Blog",
-      tabaNuweiba: "Taba Nuweiba Camps",
+      tabaNuweiba: "Taba Nuweiba Camp",
       campsBadge: "Camps",
       bookNow: "Book now",
     },
