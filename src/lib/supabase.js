@@ -27,13 +27,12 @@ export async function saveBooking(bookingData) {
     const { data, error } = await supabase
       .from('bookings')
       .insert([bookingData])
-      .select()
 
     if (error) {
       console.error('Error saving booking to Supabase:', error)
       return { data: null, error }
     }
-    return { data, error: null }
+    return { data: true, error: null }
   } catch (err) {
     console.error('Unexpected error saving booking:', err)
     return { data: null, error: err }
@@ -53,13 +52,12 @@ export async function saveTransferRequest(transferData) {
     const { data, error } = await supabase
       .from('transfer_requests')
       .insert([transferData])
-      .select()
 
     if (error) {
       console.error('Error saving transfer request to Supabase:', error)
       return { data: null, error }
     }
-    return { data, error: null }
+    return { data: true, error: null }
   } catch (err) {
     console.error('Unexpected error saving transfer:', err)
     return { data: null, error: err }
@@ -79,7 +77,6 @@ export async function saveNewsletterSubscriber(email, source = 'footer') {
     const { data, error } = await supabase
       .from('newsletter_subscribers')
       .insert([{ email: email.toLowerCase().trim(), source }])
-      .select()
 
     if (error && error.code !== '23505') { // ignore duplicate email error code
       console.error('Error saving newsletter subscriber:', error)
