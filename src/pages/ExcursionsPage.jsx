@@ -82,7 +82,7 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
 • رقم الهاتف: ${customerPhone || 'غير محدد'}
 • الانتقالات من القاهرة: ${cairoStationsMap[cairoStation]}
 • طريقة الدفع: ${paymentLabels[paymentMethod]}${campNote}
-• السعر التقديري: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}
+• السعر التقديري: $${selectedTrip.priceUsd * guestCount}
 ${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}برجاء تأكيد التوافر وإمكانية الحجز.`
       : `Hello! I would like to book "${selectedTrip.title}" via Sinai Booking.
 • Nationality: ${nationalityLabel}
@@ -93,7 +93,7 @@ ${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}برجاء تأكيد �
 • Phone: ${customerPhone || 'Not specified'}
 • Transportation from Cairo: ${cairoStationsMap[cairoStation]}
 • Payment Method: ${paymentLabels[paymentMethod]}${campNote}
-• Estimated total: €${selectedTrip.priceEur * guestCount} / $${selectedTrip.priceUsd * guestCount}
+• Estimated total: $${selectedTrip.priceUsd * guestCount}
 ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability and dates.`
     
     saveSafariBooking({
@@ -109,7 +109,6 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
       payment_method: paymentMethod,
       preferred_camp: selectedTrip.twoDays ? selectedCamp : null,
       duration: selectedTrip.twoDays ? '2 Days / 1 Night' : 'Full Day',
-      estimated_price_eur: selectedTrip.priceEur * guestCount,
       estimated_price_usd: selectedTrip.priceUsd * guestCount,
       notes: notes || null,
       status: 'pending'
@@ -580,8 +579,8 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
             </h3>
             <p className="text-sm sm:text-base text-white/90 max-w-2xl mx-auto">
               {isAr
-                ? 'رحلة اليوم الواحد 75 يورو / 95 دولار · رحلة التزلج على الرمال 75 يورو / 95 دولار · رحلة المبيت ليلتين 150 يورو / 190 دولار للفرد · الحد الأدنى 4 أفراد · جميع الرحلات قابلة للتعديل والتخصيص.'
-                : 'Day trip €75 / 95 USD · Sandboarding €75 / 95 USD · Overnight €150 / 190 USD per person · min. 4 people · all trips can be adapted.'}
+                ? 'رحلة اليوم الواحد 95 دولار · رحلة التزلج على الرمال 95 دولار · رحلة المبيت ليلتين 190 دولار للفرد · الحد الأدنى 4 أفراد · جميع الرحلات قابلة للتعديل والتخصيص.'
+                : 'Day trip 95 USD · Sandboarding 95 USD · Overnight 190 USD per person · min. 4 people · all trips can be adapted.'}
             </p>
             <p className="font-script text-2xl sm:text-3xl text-white/95">
               {isAr ? 'أرسل لنا تواريخك وسنساعدك في الاختيار.' : 'Send us your dates and we\'ll help you choose.'}
@@ -941,7 +940,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                     {isAr ? `إجمالي التقدير (${guestCount} أفراد)` : `Estimated Total (${guestCount} guests)`}
                   </span>
                   <span className="text-xl font-bold text-[#183B33]">
-                    €{selectedTrip.priceEur * guestCount} / ${selectedTrip.priceUsd * guestCount}
+                    ${selectedTrip.priceUsd * guestCount}
                   </span>
                 </div>
                 <span className="text-[11px] text-[#7A7367] font-medium text-right rtl:text-left">
