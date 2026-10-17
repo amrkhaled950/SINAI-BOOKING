@@ -22,42 +22,42 @@ export default function HeroSection({ t, lang = 'en' }) {
           {/* Left Column: Editorial Headline, Search & Copy */}
           <div className="lg:col-span-6 space-y-6 lg:space-y-8">
             <div className="space-y-4">
-              <span className="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] text-[#C8553D] uppercase">
+              <span className="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] text-[#C8553D] uppercase animate-fade-in-down">
                 {t.hero.tag}
               </span>
-              <h1 className="text-5xl sm:text-6xl lg:text-[70px] font-serif font-normal text-[#22211F] tracking-tight leading-[1.08]">
+              <h1 className="text-4xl sm:text-6xl lg:text-[70px] font-serif font-normal text-[#22211F] tracking-tight leading-[1.1] animate-fade-in-up stagger-1">
                 {t.hero.title}
               </h1>
             </div>
 
-            <p className="text-lg sm:text-xl text-[#6C6963] font-normal leading-relaxed max-w-xl">
+            <p className="text-base sm:text-xl text-[#6C6963] font-normal leading-relaxed max-w-xl animate-fade-in-up stagger-2">
               {t.hero.subtitle}
             </p>
 
             {/* Handwritten prompt: Search for class & Search for the vibe */}
-            <div className="flex items-center gap-3 pt-1 select-none">
-              <span className={`${isAr ? 'font-scriptAr text-2xl' : 'font-script text-3xl'} text-[#C8553D] -rotate-2 inline-block`}>
+            <div className="flex items-center gap-3 pt-1 select-none animate-fade-in-up stagger-2">
+              <span className={`${isAr ? 'font-scriptAr text-2xl' : 'font-script text-3xl'} text-[#C8553D] -rotate-2 inline-block animate-float`}>
                 Search for class
               </span>
               <span className="text-[#8C867C] font-mono text-sm">•</span>
-              <span className={`${isAr ? 'font-scriptAr text-xl' : 'font-script text-2xl'} text-[#6C6963] rotate-1 inline-block`}>
+              <span className={`${isAr ? 'font-scriptAr text-xl' : 'font-script text-2xl'} text-[#6C6963] rotate-1 inline-block animate-float-reverse`}>
                 Search for the vibe
               </span>
             </div>
 
             {/* "Search for the vibe" Input Bar from Figma */}
-            <form onSubmit={handleSearch} className="max-w-md pt-1">
-              <div className="relative flex items-center bg-[#FAF6EF] rounded-full border border-[#22211F] shadow-sm hover:shadow transition-all px-6 py-3 group focus-within:ring-2 focus-within:ring-[#C8553D]/30">
+            <form onSubmit={handleSearch} className="max-w-md pt-1 animate-fade-in-up stagger-3">
+              <div className="relative flex items-center bg-[#FAF6EF] rounded-full border border-[#22211F] shadow-sm hover:shadow-md transition-all px-5 sm:px-6 py-3 sm:py-3.5 group focus-within:ring-2 focus-within:ring-[#C8553D]/30 focus-within:border-[#C8553D]">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={isAr ? 'Search for class ... ابحث عن الرقي' : 'Search for class ~ Search for the vibe'}
-                  className={`w-full bg-transparent text-[#22211F] placeholder-[#5A554E] ${isAr ? 'font-scriptAr text-xl' : 'font-script text-2xl'} focus:outline-none tracking-wide`}
+                  className={`w-full bg-transparent text-[#22211F] placeholder-[#5A554E] ${isAr ? 'font-scriptAr text-lg sm:text-xl' : 'font-script text-xl sm:text-2xl'} focus:outline-none tracking-wide`}
                 />
                 <button
                   type="submit"
-                  className="text-[#C8553D] hover:text-[#AB462C] transition-colors p-1 flex-shrink-0 cursor-pointer"
+                  className="text-[#C8553D] hover:text-[#AB462C] transition-transform active:scale-90 p-1 flex-shrink-0 cursor-pointer"
                   title="Search"
                 >
                   <Search size={22} className="stroke-[2.2]" />
@@ -65,10 +65,10 @@ export default function HeroSection({ t, lang = 'en' }) {
               </div>
             </form>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3.5 sm:gap-4 flex-wrap animate-fade-in-up stagger-4">
               <a
                 href="#destinations"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#C8553D] hover:bg-[#AB462C] text-white text-base font-medium rounded-full shadow-md hover:shadow-lg transition-all active:scale-95 group"
+                className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-3.5 sm:py-4 bg-[#C8553D] hover:bg-[#AB462C] text-white text-base font-medium rounded-full shadow-md hover:shadow-xl hover:scale-102 active:scale-95 transition-all duration-300 group"
               >
                 <span>{t.hero.cta}</span>
                 <ArrowUpRight size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -78,15 +78,15 @@ export default function HeroSection({ t, lang = 'en' }) {
                 href="https://wa.me/201116664591?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20Sinai%20Booking%D8%8C%20%D8%A3%D9%88%D8%AF%20%D8%A7%D9%84%D8%AD%D8%AC%D8%B2%20%D9%88%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#128C7E] text-sm font-semibold rounded-full shadow-sm hover:shadow transition-all active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#128C7E] text-sm font-semibold rounded-full shadow-sm hover:shadow-md hover:scale-102 active:scale-95 transition-all duration-300"
               >
-                <span className="w-2 h-2 rounded-full bg-[#25D366]"></span>
+                <span className="w-2 h-2 rounded-full bg-[#25D366] animate-ping"></span>
                 <span>واتساب 01116664591</span>
               </a>
             </div>
 
             {/* Micro Tags */}
-            <div className="pt-2 flex items-center gap-3 text-xs font-semibold tracking-widest text-[#6C6963] uppercase">
+            <div className="pt-2 flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs font-semibold tracking-widest text-[#6C6963] uppercase animate-fade-in stagger-5 flex-wrap">
               {t.hero.meta.map((item, idx) => (
                 <React.Fragment key={idx}>
                   <span>{item}</span>

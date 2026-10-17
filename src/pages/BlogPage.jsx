@@ -150,15 +150,17 @@ export default function BlogPage({ t, lang, onNavigateHome }) {
 
           {/* 3 Stories Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-7">
-            {filteredStories.map((story) => (
+            {filteredStories.map((story, idx) => (
               <article
                 key={story.id}
-                className="bg-white rounded-[22px] border border-[#E7DFCE] p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer"
+                className={`bg-white rounded-[22px] border border-[#E7DFCE] p-3.5 sm:p-4 flex flex-col justify-between shadow-xs card-shadow-hover reveal-scale ${
+                  idx === 0 ? 'stagger-1' : idx === 1 ? 'stagger-2' : 'stagger-3'
+                } group cursor-pointer active:scale-98 transition-all`}
                 onClick={() => setSelectedStory(story)}
               >
                 {/* Visual Block (Matching the exact solid colored card blocks in screenshot) */}
                 <div
-                  className="aspect-[16/10] rounded-[16px] overflow-hidden mb-4 transition-transform duration-500 group-hover:scale-[1.02] shadow-inner relative flex items-center justify-center"
+                  className="aspect-[16/10] rounded-[16px] overflow-hidden mb-4 transition-transform duration-700 group-hover:scale-[1.04] shadow-inner relative flex items-center justify-center"
                   style={{ backgroundColor: story.color }}
                 >
                   <span className="text-white/20 font-serif text-3xl font-bold tracking-widest select-none">

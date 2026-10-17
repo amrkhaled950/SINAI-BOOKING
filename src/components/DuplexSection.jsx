@@ -6,17 +6,17 @@ export default function DuplexSection({ t, onNavigate }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading with Handwritten Touch */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 reveal">
           <div className="space-y-4">
             <span className="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] text-[#C45437] uppercase">
               {t.duplex.tag}
             </span>
-            <h2 className="text-4xl sm:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
               {t.duplex.title}
             </h2>
           </div>
           <div>
-            <span className="font-script text-2xl sm:text-3xl text-[#8C867C] -rotate-2 inline-block">
+            <span className="font-script text-2xl sm:text-3xl text-[#8C867C] -rotate-2 inline-block animate-float">
               "We are The old school of tourism"
             </span>
           </div>
@@ -26,10 +26,10 @@ export default function DuplexSection({ t, onNavigate }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left: Authentic Duplex Interior Image */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-6 reveal-scale stagger-1">
             <div
               onClick={() => onNavigate && onNavigate('dahab-accommodation')}
-              className="relative aspect-[4/3] sm:aspect-[16/11] rounded-[32px] overflow-hidden shadow-lg border border-[#EAE3D5] group cursor-pointer"
+              className="relative aspect-[4/3] sm:aspect-[16/11] rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-md card-shadow-hover border border-[#EAE3D5] group cursor-pointer active:scale-98"
               title="Explore Dahab Duplex"
             >
               <img
@@ -41,12 +41,12 @@ export default function DuplexSection({ t, onNavigate }) {
           </div>
 
           {/* Right: Detailed Card */}
-          <div className="lg:col-span-6">
-            <div className="bg-[#F5EEE2] rounded-[32px] p-8 sm:p-10 lg:p-12 border border-[#EBE3D3] space-y-7 shadow-sm">
+          <div className="lg:col-span-6 reveal stagger-2">
+            <div className="bg-[#F5EEE2] rounded-[28px] sm:rounded-[32px] p-6 sm:p-10 lg:p-12 border border-[#EBE3D3] space-y-7 shadow-xs card-shadow-hover">
               
               {/* Badge */}
               <div>
-                <span className="inline-block px-4 py-1.5 bg-white rounded-full text-xs font-bold tracking-wider text-[#C45437] uppercase shadow-sm">
+                <span className="inline-block px-4 py-1.5 bg-white rounded-full text-xs font-bold tracking-wider text-[#C45437] uppercase shadow-xs">
                   {t.duplex.badge}
                 </span>
               </div>

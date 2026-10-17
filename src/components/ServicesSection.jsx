@@ -25,20 +25,20 @@ export default function ServicesSection({ t, onNavigate }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading with Handwritten Annotation */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 lg:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 lg:mb-16 reveal">
           <div className="space-y-4">
             <span className="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] text-[#C45437] uppercase">
               {t.services.tag}
             </span>
-            <h2 className="text-4xl sm:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
               {t.services.title}
             </h2>
-            <p className="text-lg text-[#6C6963] font-normal">
+            <p className="text-base sm:text-lg text-[#6C6963] font-normal leading-relaxed">
               {t.services.subtitle}
             </p>
           </div>
           <div className="hidden sm:inline-block">
-            <span className="font-script text-3xl sm:text-4xl text-[#C8553D] rotate-2 inline-block">
+            <span className="font-script text-3xl sm:text-4xl text-[#C8553D] rotate-2 inline-block animate-float">
               ~ Search for class ~
             </span>
           </div>
@@ -74,7 +74,9 @@ export default function ServicesSection({ t, onNavigate }) {
                 onClick={handleClick}
                 target={idx === 0 ? undefined : "_blank"}
                 rel={idx === 0 ? undefined : "noopener noreferrer"}
-                className="bg-white rounded-[28px] overflow-hidden border border-[#EAE3D5] shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col group cursor-pointer"
+                className={`bg-white rounded-[28px] overflow-hidden border border-[#EAE3D5] shadow-xs card-shadow-hover reveal-scale ${
+                  idx === 0 ? 'stagger-1' : idx === 1 ? 'stagger-2' : 'stagger-3'
+                } flex flex-col group cursor-pointer active:scale-98 transition-all`}
                 title={idx === 0 ? "Explore Excursions" : `WhatsApp Sinai Booking: 01116664591 - ${card.title}`}
               >
                 {/* Image */}

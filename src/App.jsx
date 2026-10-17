@@ -17,6 +17,7 @@ import ExcursionsPage from './pages/ExcursionsPage'
 import TransportationPage from './pages/TransportationPage'
 import BlogPage from './pages/BlogPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import { useScrollReveal } from './hooks/useScrollReveal'
 
 const VALID_PAGES = [
   'home',
@@ -52,6 +53,9 @@ export default function App() {
     }
   })
   const t = translations[lang]
+
+  // Activate scroll reveal animation on page navigation
+  useScrollReveal(currentPage)
 
   useEffect(() => {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'

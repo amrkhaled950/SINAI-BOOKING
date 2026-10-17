@@ -179,7 +179,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Section Header */}
-          <div className="space-y-2 mb-10">
+          <div className="space-y-2 mb-10 reveal">
             <span className="text-xs font-bold tracking-[0.16em] text-[#C45437] uppercase block">
               {page.section.badge}
             </span>
@@ -193,17 +193,19 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
 
           {/* 3 Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-7">
-            {page.trips.map((trip) => (
+            {page.trips.map((trip, idx) => (
               <div
                 key={trip.id}
-                className="bg-[#FBF9F4] rounded-[22px] border border-[#E7DFCE] p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 group"
+                className={`bg-[#FBF9F4] rounded-[22px] border border-[#E7DFCE] p-3.5 sm:p-4 flex flex-col justify-between shadow-xs card-shadow-hover reveal-scale ${
+                  idx === 0 ? 'stagger-1' : idx === 1 ? 'stagger-2' : 'stagger-3'
+                } group active:scale-98 transition-all`}
               >
                 {/* Top Image */}
                 <div className="aspect-[16/10] rounded-[16px] overflow-hidden mb-4 bg-[#EDE5D8]">
                   <img
                     src={trip.image}
                     alt={trip.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                 </div>
 
@@ -237,10 +239,10 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                   <div className="pt-2">
                     <button
                       onClick={() => handleOpenTripModal(trip)}
-                      className="w-full py-3 px-4 rounded-[10px] bg-[#9C4328] hover:bg-[#85371F] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all duration-200 active:scale-[0.98] cursor-pointer"
+                      className="btn-shimmer w-full py-3 px-4 rounded-[12px] bg-[#9C4328] hover:bg-[#85371F] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 shadow-sm hover:shadow-md hover:scale-102 transition-all duration-200 active:scale-95 cursor-pointer"
                     >
                       <span>{trip.button}</span>
-                      <ArrowUpRight size={16} className="inline-block flex-shrink-0" />
+                      <ArrowUpRight size={16} className="inline-block flex-shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </button>
                   </div>
                 </div>

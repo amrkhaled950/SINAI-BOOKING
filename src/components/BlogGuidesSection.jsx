@@ -25,20 +25,20 @@ export default function BlogGuidesSection({ t, onNavigate }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading with Handwritten Touch */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 lg:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 lg:mb-16 reveal">
           <div className="space-y-4">
             <span className="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] text-[#C45437] uppercase">
               {t.blog.tag}
             </span>
-            <h2 className="text-4xl sm:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
               {t.blog.title}
             </h2>
-            <p className="text-lg text-[#6C6963] font-normal">
+            <p className="text-base sm:text-lg text-[#6C6963] font-normal leading-relaxed">
               {t.blog.subtitle}
             </p>
           </div>
           <div className="hidden sm:inline-block">
-            <span className="font-script text-2xl sm:text-3xl text-[#8C867C] -rotate-2 inline-block">
+            <span className="font-script text-2xl sm:text-3xl text-[#8C867C] -rotate-2 inline-block animate-float">
               "We are The old school of tourism"
             </span>
           </div>
@@ -50,7 +50,9 @@ export default function BlogGuidesSection({ t, onNavigate }) {
             <div
               key={idx}
               onClick={() => onNavigate && onNavigate('blog')}
-              className="bg-[#F6F0E6] rounded-[28px] overflow-hidden border border-[#ECE4D5] shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col group cursor-pointer"
+              className={`bg-[#F6F0E6] rounded-[28px] overflow-hidden border border-[#ECE4D5] shadow-xs card-shadow-hover reveal-scale ${
+                idx === 0 ? 'stagger-1' : idx === 1 ? 'stagger-2' : 'stagger-3'
+              } flex flex-col group cursor-pointer active:scale-98 transition-all`}
               title={`Read on blog: ${story.title}`}
             >
               {/* Image */}

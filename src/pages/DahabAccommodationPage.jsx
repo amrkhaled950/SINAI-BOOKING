@@ -54,14 +54,14 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
             {/* Left: Copy & Tags */}
-            <div className="lg:col-span-6 space-y-6">
+            <div className="lg:col-span-6 space-y-6 animate-fade-in-up">
               <div>
-                <span className="inline-block px-3.5 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold tracking-wider rounded-full uppercase">
+                <span className="inline-block px-3.5 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold tracking-wider rounded-full uppercase animate-fade-in-down">
                   {page.hero.badge}
                 </span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-serif font-normal text-[#22211F] tracking-tight leading-[1.12]">
+              <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-serif font-normal text-[#22211F] tracking-tight leading-[1.12]">
                 {page.hero.title}
               </h1>
 
@@ -70,11 +70,11 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
               </p>
 
               {/* 3 Pill Badges */}
-              <div className="pt-2 flex flex-wrap items-center gap-3">
+              <div className="pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
                 {page.hero.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-4 py-1.5 bg-white rounded-full text-xs font-semibold tracking-wider text-[#5A554E] uppercase border border-[#E3DBD0] shadow-sm"
+                    className="px-3.5 sm:px-4 py-1.5 bg-white rounded-full text-xs font-semibold tracking-wider text-[#5A554E] uppercase border border-[#E3DBD0] shadow-2xs hover:border-[#C45437] transition-colors"
                   >
                     {tag}
                   </span>
@@ -83,10 +83,10 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
             </div>
 
             {/* Right: Duplex Photo with Bottom-Right Base Badge */}
-            <div className="lg:col-span-6 relative flex justify-center lg:justify-end">
+            <div className="lg:col-span-6 relative flex justify-center lg:justify-end animate-fade-in-up stagger-2">
               <div
                 onClick={() => handleOpenApartment(primaryApartment)}
-                className="relative w-full max-w-[540px] aspect-[4/3] sm:aspect-[16/11] rounded-[32px] overflow-hidden shadow-xl border-4 border-white/70 group cursor-pointer"
+                className="relative w-full max-w-[540px] aspect-[4/3] sm:aspect-[16/11] rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-xl border-4 border-white/70 group cursor-pointer active:scale-98 transition-transform"
               >
                 <img
                   src={primaryApartment.images?.[0] || '/images/duplex-hero-loft.jpg'}
@@ -95,12 +95,12 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 />
 
                 {/* Bottom Overlay Card */}
-                <div className="absolute bottom-5 right-5 rtl:right-auto rtl:left-5">
-                  <div className="bg-white/95 backdrop-blur-md rounded-2xl px-5 py-3 shadow-lg border border-black/5">
-                    <p className="text-sm font-bold text-[#22211F]">
+                <div className="absolute bottom-4 sm:bottom-5 right-4 sm:right-5 rtl:right-auto rtl:left-4 sm:rtl:left-5">
+                  <div className="bg-white/95 backdrop-blur-md rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg border border-black/5">
+                    <p className="text-xs sm:text-sm font-bold text-[#22211F]">
                       {page.hero.cardOverlayTitle}
                     </p>
-                    <p className="text-xs text-[#8C867C] font-normal">
+                    <p className="text-[11px] sm:text-xs text-[#8C867C] font-normal">
                       {primaryApartment.code || page.hero.cardOverlaySubtitle}
                     </p>
                   </div>
@@ -219,13 +219,18 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {additionalApartments.map((apt) => (
-                <div key={apt.id} className="bg-[#FAF6EF] rounded-3xl overflow-hidden border border-[#EAE1D1] shadow-sm hover:shadow-md transition-all flex flex-col">
+              {additionalApartments.map((apt, idx) => (
+                <div
+                  key={apt.id}
+                  className={`bg-[#FAF6EF] rounded-3xl overflow-hidden border border-[#EAE1D1] shadow-xs card-shadow-hover reveal-scale ${
+                    idx % 3 === 0 ? 'stagger-1' : idx % 3 === 1 ? 'stagger-2' : 'stagger-3'
+                  } flex flex-col active:scale-98 transition-all`}
+                >
                   <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
                     <img
                       src={apt.images?.[0] || '/images/duplex-hero-loft.jpg'}
                       alt={apt.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
                     />
                     <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold rounded-full uppercase">
                       {apt.code || 'Studio'}
@@ -250,7 +255,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
 
                       <button
                         onClick={() => handleOpenApartment(apt)}
-                        className="px-5 py-2.5 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-xs font-semibold rounded-full shadow transition-all active:scale-95 cursor-pointer"
+                        className="btn-shimmer px-5 py-2.5 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-xs font-semibold rounded-full shadow hover:shadow-md hover:scale-105 transition-all active:scale-95 cursor-pointer"
                       >
                         {isAr ? 'عرض وحجز' : 'View & Book'}
                       </button>

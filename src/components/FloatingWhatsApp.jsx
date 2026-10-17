@@ -13,8 +13,8 @@ export default function FloatingWhatsApp({ lang = 'en' }) {
 
   return (
     <div
-      className={`fixed bottom-6 ${
-        isAr ? 'left-6' : 'right-6'
+      className={`fixed bottom-5 sm:bottom-6 ${
+        isAr ? 'left-5 sm:left-6' : 'right-5 sm:right-6'
       } z-50 flex items-center gap-3 group`}
     >
       {/* Tooltip / Prompt Bubble */}
@@ -44,13 +44,16 @@ export default function FloatingWhatsApp({ lang = 'en' }) {
         rel="noopener noreferrer"
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full shadow-2xl hover:shadow-[#25D366]/40 hover:scale-108 active:scale-95 transition-all duration-300 cursor-pointer"
+        className="relative flex items-center justify-center w-13 h-13 sm:w-14 sm:h-14 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full shadow-2xl hover:shadow-[#25D366]/40 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
         aria-label="Direct WhatsApp Chat 01116664591"
         title={isAr ? 'تواصل معنا عبر واتساب 01116664591' : 'Chat with Sinai Booking 01116664591'}
       >
-        <MessageCircle size={30} className="fill-white" />
+        {/* Subtle Ambient Pulse Ring */}
+        <span className="absolute -inset-1 rounded-full bg-[#25D366]/25 animate-ping opacity-60 pointer-events-none" />
+        
+        <MessageCircle size={28} className="fill-white relative z-10" />
         {/* Pulsing online badge */}
-        <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-300 border-2 border-white rounded-full"></span>
+        <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-300 border-2 border-white rounded-full z-20"></span>
       </a>
     </div>
   )

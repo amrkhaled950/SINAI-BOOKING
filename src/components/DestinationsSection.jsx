@@ -20,21 +20,21 @@ export default function DestinationsSection({ t, onNavigate }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading with Handwritten Annotation */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 lg:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 lg:mb-16 reveal">
           <div className="space-y-4">
             <span className="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] text-[#C45437] uppercase">
               {t.destinations.tag}
             </span>
-            <h2 className="text-4xl sm:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-[#22211F] tracking-tight">
               {t.destinations.title}
             </h2>
-            <p className="text-lg text-[#6C6963] max-w-2xl font-normal">
+            <p className="text-base sm:text-lg text-[#6C6963] max-w-2xl font-normal leading-relaxed">
               {t.destinations.subtitle}
             </p>
           </div>
 
           <div className="hidden sm:inline-block">
-            <span className="font-script text-3xl sm:text-4xl text-[#C8553D] -rotate-3 inline-block">
+            <span className="font-script text-3xl sm:text-4xl text-[#C8553D] -rotate-3 inline-block animate-float">
               ~ Search for class ~
             </span>
           </div>
@@ -54,7 +54,9 @@ export default function DestinationsSection({ t, onNavigate }) {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-[32px] overflow-hidden border border-[#EAE3D5] shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col"
+                className={`bg-white rounded-[28px] sm:rounded-[32px] overflow-hidden border border-[#EAE3D5] shadow-xs card-shadow-hover reveal-scale ${
+                  idx === 0 ? 'stagger-1' : 'stagger-2'
+                } group flex flex-col active:scale-98 transition-all`}
               >
                 {/* Card Image Area (Clickable) */}
                 <div

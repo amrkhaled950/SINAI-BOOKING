@@ -268,7 +268,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
       <section className="py-16 bg-[#EBEFEA] border-y border-[#DCE4DB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="space-y-2 mb-10">
+          <div className="space-y-2 mb-10 reveal">
             <span className="text-xs font-bold tracking-[0.16em] text-[#C45437] uppercase block">
               {page.destinationsSection.badge}
             </span>
@@ -281,17 +281,19 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-7">
-            {page.destinationsSection.routes.map((route) => (
+            {page.destinationsSection.routes.map((route, idx) => (
               <div
                 key={route.id}
-                className="bg-white rounded-[22px] overflow-hidden border border-[#D9E1D8] shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between"
+                className={`bg-white rounded-[22px] overflow-hidden border border-[#D9E1D8] shadow-xs card-shadow-hover reveal-scale ${
+                  idx === 0 ? 'stagger-1' : idx === 1 ? 'stagger-2' : 'stagger-3'
+                } group flex flex-col justify-between active:scale-98 transition-all`}
               >
                 {/* Image */}
                 <div className="aspect-[16/10] overflow-hidden bg-[#EDE5D8]">
                   <img
                     src={route.image}
                     alt={route.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                 </div>
 
@@ -308,10 +310,10 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
 
                   <button
                     onClick={() => handleOpenPlanner('hiace', route.title)}
-                    className="text-xs font-semibold text-[#C45437] hover:text-[#9C4328] flex items-center gap-1 cursor-pointer flex-shrink-0"
+                    className="text-xs font-semibold text-[#C45437] hover:text-[#9C4328] flex items-center gap-1 cursor-pointer flex-shrink-0 hover:scale-105 active:scale-95 transition-all"
                   >
                     <span>{route.action}</span>
-                    <ArrowUpRight size={14} />
+                    <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </button>
                 </div>
               </div>

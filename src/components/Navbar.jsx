@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Logo from './Logo'
 import { Menu, X, MessageCircle, Instagram, Facebook } from 'lucide-react'
 
 export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const toggleLanguage = () => {
     setLang(prev => (prev === 'en' ? 'ar' : 'en'))
@@ -50,17 +59,19 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FAF6EF]/95 backdrop-blur-md border-b border-[#EAE3D5] transition-all">
+    <header className={`sticky top-0 z-50 backdrop-blur-md border-b border-[#EAE3D5] transition-all duration-300 ${
+      isScrolled ? 'bg-[#FAF6EF]/98 shadow-sm py-0' : 'bg-[#FAF6EF]/90 py-1'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-18 sm:h-20 transition-all duration-300">
           
           {/* Brand Logo */}
           <div className="flex-shrink-0">
             <button
               onClick={handleLogoClick}
-              className="flex items-center focus:outline-none cursor-pointer"
+              className="flex items-center focus:outline-none cursor-pointer hover:opacity-90 active:scale-95 transition-transform duration-200"
             >
-              <Logo className="h-9 sm:h-10" />
+              <Logo className="h-9 sm:h-10 transition-transform duration-300" />
             </button>
           </div>
 
@@ -154,7 +165,7 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
               onClick={() => {
                 if (onNavigate) onNavigate('dahab-accommodation')
               }}
-              className="inline-flex items-center justify-center px-6 py-2.5 bg-[#C8553D] hover:bg-[#AB462C] text-white text-[15px] font-medium rounded-full shadow-sm hover:shadow transition-all active:scale-95 cursor-pointer"
+              className="btn-shimmer inline-flex items-center justify-center px-6 py-2.5 bg-[#C8553D] hover:bg-[#AB462C] text-white text-[15px] font-medium rounded-full shadow-sm hover:shadow-md hover:scale-102 transition-all duration-200 active:scale-95 cursor-pointer"
             >
               {t.nav.bookNow}
             </button>
@@ -164,16 +175,16 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
           <div className="flex sm:hidden items-center space-x-3 rtl:space-x-reverse">
             <button
               onClick={toggleLanguage}
-              className="px-2.5 py-1 text-xs font-semibold text-[#22211F] bg-[#EFE8DC] rounded-full"
+              className="px-3 py-1.5 text-xs font-semibold text-[#22211F] bg-[#EFE8DC] active:bg-[#E5DCCF] rounded-full transition-all"
             >
               {lang === 'en' ? 'عربي' : 'EN'}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-[#22211F] hover:bg-[#EFE8DC] focus:outline-none"
+              className="p-2.5 rounded-xl text-[#22211F] hover:bg-[#EFE8DC] active:scale-90 transition-transform duration-200 focus:outline-none"
               aria-label="Toggle Menu"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileMenuOpen ? <X size={24} className="animate-scale-in" /> : <Menu size={24} />}
             </button>
           </div>
         </div>
@@ -181,9 +192,9 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#EAE3D5] bg-[#FAF6EF] px-5 py-6 space-y-4 shadow-xl animate-in slide-in-from-top-2">
-          <nav className="flex flex-col space-y-3.5 text-base font-medium text-[#22211F]">
-            {links.map((link) => {
+        <div className="lg:hidden border-t border-[#EAE3D5] bg-[#FAF6EF]/98 backdrop-blur-xl px-5 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-4 duration-300">
+          <nav className="flex flex-col space-y-2 text-base font-medium text-[#22211F]">
+            {links.map((link, idx) => {
               const isActive = (link.page && currentPage === link.page)
               return (
                 <button
@@ -192,13 +203,14 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
                     setMobileMenuOpen(false)
                     handleLinkClick(e, link)
                   }}
-                  className={`py-2 flex items-center justify-between border-b border-[#F0E9DC] text-left rtl:text-right ${
-                    isActive ? 'text-[#C8553D] font-bold' : 'hover:text-[#C8553D]'
+                  className={`py-3 px-3 rounded-xl flex items-center justify-between border-b border-[#F0E9DC]/60 text-left rtl:text-right active:bg-[#EFE8DC] transition-all duration-150 ${
+                    isActive ? 'text-[#C8553D] font-bold bg-[#EFE8DC]/50' : 'hover:text-[#C8553D]'
                   }`}
+                  style={{ animationDelay: `${idx * 50}ms` }}
                 >
-                  <span>{link.label}</span>
+                  <span className="text-[15px]">{link.label}</span>
                   {link.badge && (
-                    <span className="px-2.5 py-0.5 text-xs font-semibold text-white bg-[#466B4E] rounded-full">
+                    <span className="px-2.5 py-0.5 text-xs font-semibold text-white bg-[#466B4E] rounded-full shadow-xs">
                       {link.badge}
                     </span>
                   )}
@@ -206,43 +218,45 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
               )
             })}
           </nav>
-          <div className="pt-2 space-y-2.5">
+          <div className="pt-3 space-y-3">
             <a
               href="https://wa.me/201116664591?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20Sinai%20Booking%D8%8C%20%D8%A3%D9%88%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D9%88%D8%A7%D9%84%D8%AD%D8%AC%D8%B2."
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3 bg-[#25D366] text-white font-semibold text-sm rounded-full shadow"
+              className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#25D366] active:bg-[#20BA5A] text-white font-semibold text-sm rounded-full shadow-md active:scale-98 transition-all"
             >
               <MessageCircle size={18} className="fill-white" />
               <span>واتساب 01116664591</span>
             </a>
 
-            <a
-              href="https://www.instagram.com/sinai_booking?vrfl=bHBxOTFqbzNyMW9h"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-semibold text-sm rounded-full shadow"
-            >
-              <Instagram size={18} />
-              <span>إنستجرام @sinai_booking</span>
-            </a>
+            <div className="grid grid-cols-2 gap-2.5">
+              <a
+                href="https://www.instagram.com/sinai_booking?vrfl=bHBxOTFqbzNyMW9h"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-semibold text-xs rounded-full shadow-sm active:scale-95 transition-all"
+              >
+                <Instagram size={16} />
+                <span>Instagram</span>
+              </a>
 
-            <a
-              href="https://www.facebook.com/share/1Er8aG2qfE/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3 bg-[#1877F2] text-white font-semibold text-sm rounded-full shadow"
-            >
-              <Facebook size={18} className="fill-white" />
-              <span>فيسبوك Sinai Booking</span>
-            </a>
+              <a
+                href="https://www.facebook.com/share/1Er8aG2qfE/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 py-3 bg-[#1877F2] text-white font-semibold text-xs rounded-full shadow-sm active:scale-95 transition-all"
+              >
+                <Facebook size={16} className="fill-white" />
+                <span>Facebook</span>
+              </a>
+            </div>
 
             <button
               onClick={() => {
                 setMobileMenuOpen(false)
                 if (onNavigate) onNavigate('dahab-accommodation')
               }}
-              className="w-full flex items-center justify-center py-3 bg-[#C8553D] text-white font-medium rounded-full shadow"
+              className="btn-shimmer w-full flex items-center justify-center py-3.5 bg-[#C8553D] hover:bg-[#AB462C] text-white font-medium rounded-full shadow-md active:scale-98 transition-all"
             >
               {t.nav.bookNow}
             </button>
