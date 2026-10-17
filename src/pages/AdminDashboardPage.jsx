@@ -29,7 +29,11 @@ import {
   ChevronRight,
   ArrowUpRight,
   Check,
-  AlertCircle
+  AlertCircle,
+  UploadCloud,
+  Loader2,
+  Image as ImageIcon,
+  X
 } from 'lucide-react'
 import {
   fetchApartmentBookings,
@@ -42,6 +46,7 @@ import {
   createApartment,
   updateApartment,
   deleteApartment,
+  uploadRoomImage,
   DEFAULT_APARTMENTS
 } from '../lib/supabase'
 
@@ -91,6 +96,8 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
     is_available: true
   })
   const [imageInputText, setImageInputText] = useState('')
+  const [uploadingImages, setUploadingImages] = useState(false)
+  const [uploadedImages, setUploadedImages] = useState([])
   const [statusMessage, setStatusMessage] = useState(null)
 
   // 1. Initial Load & Auth Check
@@ -222,17 +229,19 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
       max_guests: 3,
       description: '',
       description_ar: '',
-      images: ['/images/duplex-hero-loft.jpg'],
+      images: [],
       amenities: ['Air Conditioning', 'High-Speed Wi-Fi', 'Private Bathroom', 'Smart TV'],
       amenities_ar: ['تكييف هواء', 'واي فاي سريع', 'حمام خاص', 'تلفزيون ذكي'],
       is_available: true
     })
-    setImageInputText('/images/duplex-hero-loft.jpg')
+    setUploadedImages([])
+    setImageInputText('')
     setRoomModalOpen(true)
   }
 
   const handleOpenEditRoom = (room) => {
     setEditingRoom(room)
+    const currentImgs = room.images || []
     setRoomFormData({
       title: room.title || '',
       title_ar: room.title_ar || '',
@@ -248,21 +257,58 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
       max_guests: room.max_guests || 3,
       description: room.description || '',
       description_ar: room.description_ar || '',
-      images: room.images || ['/images/duplex-hero-loft.jpg'],
+      images: currentImgs,
       amenities: room.amenities || [],
       amenities_ar: room.amenities_ar || [],
       is_available: room.is_available !== false
     })
-    setImageInputText((room.images || []).join('\n'))
+    setUploadedImages(currentImgs)
+    setImageInputText(currentImgs.join('\n'))
     setRoomModalOpen(true)
+  }
+
+  // Handle direct file uploads from computer / phone to Supabase Storage
+  const handleFilesUpload = async (e) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    setUploadingImages(true)
+    const newUrls = []
+    for (const file of files) {
+      const res = await uploadRoomImage(file)
+      if (res.url) {
+        newUrls.push(res.url)
+      }
+    }
+    setUploadingImages(false)
+
+    if (newUrls.length > 0) {
+      setUploadedImages(prev => {
+        const combined = [...prev, ...newUrls]
+        setImageInputText(combined.join('\n'))
+        return combined
+      })
+      showNotification(isAr ? `تم رفع ${newUrls.length} صورة بنجاح إلى السحابة! 📸` : `Uploaded ${newUrls.length} photos successfully! 📸`)
+    } else {
+      alert(isAr ? 'تعذر رفع الصور، يرجى المحاولة مرة أخرى' : 'Failed to upload images, please try again')
+    }
+  }
+
+  const handleRemoveImage = (indexToRemove) => {
+    setUploadedImages(prev => {
+      const filtered = prev.filter((_, idx) => idx !== indexToRemove)
+      setImageInputText(filtered.join('\n'))
+      return filtered
+    })
   }
 
   const handleSaveRoom = async (e) => {
     e.preventDefault()
-    const imgs = imageInputText.split('\n').map(s => s.trim()).filter(Boolean)
+    const textImgs = imageInputText.split('\n').map(s => s.trim()).filter(Boolean)
+    const allImages = Array.from(new Set([...uploadedImages, ...textImgs]))
     const payload = {
       ...roomFormData,
-      images: imgs.length > 0 ? imgs : ['/images/duplex-hero-loft.jpg']
+      images: allImages.length > 0 ? allImages : ['/images/duplex-hero-loft.jpg']
     }
 
     if (editingRoom) {
@@ -1385,18 +1431,104 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                 </div>
               </div>
 
-              {/* Photos URLs */}
-              <div>
-                <label className="block font-bold text-[#22211F] mb-1">
-                  {isAr ? 'روابط صور الغرفة (رابط في كل سطر)' : 'Image URLs (one per line)'}
-                </label>
-                <textarea
-                  rows="3"
-                  value={imageInputText}
-                  onChange={(e) => setImageInputText(e.target.value)}
-                  placeholder="/images/duplex-hero-loft.jpg&#10;/images/duplex-full-structure.jpg"
-                  className="w-full bg-[#FAF5ED] border border-[#D9D0C2] rounded-xl p-3 text-[#22211F] font-mono text-[11px] focus:outline-none"
-                />
+              {/* Photos Upload & URLs */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-[#22211F]">
+                    {isAr ? 'صور الغرفة' : 'Room Photos'}
+                  </label>
+                  <span className="text-[11px] font-semibold text-[#7A7367]">
+                    {uploadedImages.length} {isAr ? 'صور مضافة' : 'photos added'}
+                  </span>
+                </div>
+
+                {/* Direct File Upload Drop Area */}
+                <div className="relative border-2 border-dashed border-[#D9D0C2] hover:border-[#C45437] rounded-2xl p-5 text-center bg-[#FAF5ED] hover:bg-[#F2ECE1] transition-all cursor-pointer group">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    disabled={uploadingImages}
+                    onChange={handleFilesUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                  />
+                  <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
+                    {uploadingImages ? (
+                      <>
+                        <Loader2 className="w-8 h-8 text-[#C45437] animate-spin" />
+                        <span className="text-sm font-bold text-[#C45437]">
+                          {isAr ? 'جاري رفع الصور إلى السحابة...' : 'Uploading photos to cloud...'}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-[#C45437] group-hover:scale-110 transition-transform">
+                          <UploadCloud size={20} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-[#22211F]">
+                            {isAr ? 'انقر لاختيار صور من جهازك أو اسحبها هنا' : 'Click to select photos or drag & drop here'}
+                          </p>
+                          <p className="text-[11px] text-[#7A7367] mt-0.5">
+                            {isAr ? 'يدعم JPG, PNG, WEBP — يمكنك تحديد عدة صور معاً' : 'Supports JPG, PNG, WEBP — multiple files allowed'}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Previews Grid */}
+                {uploadedImages.length > 0 && (
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] font-bold text-[#7A7367]">
+                      {isAr ? 'الصور المرفوعة (الصورة الأولى هي الصورة الرئيسية):' : 'Uploaded photos (1st is hero cover):'}
+                    </p>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 max-h-48 overflow-y-auto p-1 bg-white rounded-xl border border-[#D9D0C2]">
+                      {uploadedImages.map((imgUrl, idx) => (
+                        <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-[#D9D0C2] bg-[#FAF5ED]">
+                          <img
+                            src={imgUrl}
+                            alt={`Preview ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.src = '/images/duplex-hero-loft.jpg' }}
+                          />
+                          <div className="absolute top-1 left-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                            {idx === 0 ? (isAr ? 'رئيسية' : 'Hero') : `#${idx + 1}`}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(idx)}
+                            className="absolute top-1 right-1 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity shadow-sm"
+                            title={isAr ? 'حذف الصورة' : 'Remove photo'}
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Collapsible Manual Raw URLs */}
+                <details className="text-xs group">
+                  <summary className="cursor-pointer text-[#7A7367] hover:text-[#22211F] font-semibold flex items-center gap-1 select-none">
+                    <span>{isAr ? '⚙️ تعديل أو إضافة الروابط يدوياً (متقدم)' : '⚙️ View or edit raw image URLs (advanced)'}</span>
+                  </summary>
+                  <div className="mt-2">
+                    <textarea
+                      rows="3"
+                      value={imageInputText}
+                      onChange={(e) => {
+                        setImageInputText(e.target.value)
+                        const lines = e.target.value.split('\n').map(s => s.trim()).filter(Boolean)
+                        setUploadedImages(lines)
+                      }}
+                      placeholder="/images/duplex-hero-loft.jpg&#10;/images/duplex-full-structure.jpg"
+                      className="w-full bg-[#FAF5ED] border border-[#D9D0C2] rounded-xl p-3 text-[#22211F] font-mono text-[11px] focus:outline-none"
+                    />
+                  </div>
+                </details>
               </div>
 
               {/* Availability checkbox */}

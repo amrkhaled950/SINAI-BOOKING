@@ -320,6 +320,35 @@ export async function deleteApartment(id) {
   }
 }
 
+export async function uploadRoomImage(file) {
+  if (!supabase) return { url: null, error: 'Database not connected' }
+  try {
+    const fileExt = file.name.split('.').pop()
+    const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()
+    const filePath = `room_${Date.now()}_${cleanName}.${fileExt}`
+
+    const { data, error } = await supabase.storage
+      .from('rooms')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      })
+
+    if (error) {
+      console.error('Storage upload error:', error)
+      return { url: null, error }
+    }
+
+    const { data: pubData } = supabase.storage
+      .from('rooms')
+      .getPublicUrl(filePath)
+
+    return { url: pubData.publicUrl, error: null }
+  } catch (err) {
+    return { url: null, error: err }
+  }
+}
+
 // Backwards compatibility adapters
 export async function saveBooking(bookingData) {
   if (bookingData.booking_type === 'apartment') {
