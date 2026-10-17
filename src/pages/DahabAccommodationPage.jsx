@@ -264,11 +264,9 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
               </p>
               <div className="pt-1">
                 <a
-                  href="#taba-nuweiba"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    if (onNavigateHome) onNavigateHome()
-                  }}
+                  href="https://www.nirvana-camp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-[#E8A94C] hover:text-[#F3BA62] font-semibold text-sm transition-colors group cursor-pointer"
                 >
                   <span>{page.ctaBanner.secondaryLink}</span>

@@ -86,6 +86,8 @@ export default function Footer({ t, lang = 'en', onNavigate }) {
                         onNavigate('transportation')
                       } else if (idx === 3 && onNavigate) {
                         onNavigate('blog')
+                      } else if (idx === 4) {
+                        window.open('https://www.nirvana-camp.com/', '_blank')
                       } else if (onNavigate) {
                         onNavigate('home')
                       }

@@ -97,7 +97,7 @@ export default function App() {
             <ProcessStrip t={t} />
 
             {/* 3. Destinations: Dahab & Taba Nuweiba */}
-            <DestinationsSection t={t} />
+            <DestinationsSection t={t} onNavigate={navigate} />
 
             {/* 4. Featured Stay: Mashraba Duplex */}
             <DuplexSection t={t} onNavigate={navigate} />

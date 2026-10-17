@@ -14,7 +14,7 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
   // Links array tailored to match Figma exact layout order
   const links = isAr
     ? [
-        { id: 'taba-nuweiba', label: t.nav.tabaNuweiba, badge: t.nav.campsBadge, badgeFirst: true },
+        { id: 'taba-nuweiba', label: t.nav.tabaNuweiba, badge: t.nav.campsBadge, externalUrl: 'https://www.nirvana-camp.com/', badgeFirst: true },
         { id: 'blog', label: t.nav.blog, page: 'blog' },
         { id: 'transportation', label: t.nav.transportation, page: 'transportation' },
         { id: 'excursions', label: t.nav.excursions, page: 'excursions' },
@@ -25,12 +25,14 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
         { id: 'excursions', label: t.nav.excursions, page: 'excursions' },
         { id: 'transportation', label: t.nav.transportation, page: 'transportation' },
         { id: 'blog', label: t.nav.blog, page: 'blog' },
-        { id: 'taba-nuweiba', label: t.nav.tabaNuweiba, badge: t.nav.campsBadge, badgeFirst: false },
+        { id: 'taba-nuweiba', label: t.nav.tabaNuweiba, badge: t.nav.campsBadge, externalUrl: 'https://www.nirvana-camp.com/', badgeFirst: false },
       ]
 
   const handleLinkClick = (e, link) => {
     e.preventDefault()
-    if (link.page) {
+    if (link.externalUrl) {
+      window.open(link.externalUrl, '_blank')
+    } else if (link.page) {
       if (onNavigate) onNavigate(link.page)
     } else {
       if (currentPage !== 'home') {

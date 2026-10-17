@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowUpRight } from 'lucide-react'
 
-export default function DestinationsSection({ t }) {
+export default function DestinationsSection({ t, onNavigate }) {
   const images = [
     {
       src: "/images/camel-beach.png",
@@ -80,8 +80,16 @@ export default function DestinationsSection({ t }) {
 
                 <div>
                   <a
-                    href={`#${card.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="inline-flex items-center gap-1.5 text-[#C45437] font-semibold text-sm hover:text-[#AB462C] transition-colors group-hover:gap-2"
+                    href={idx === 1 ? "https://www.nirvana-camp.com/" : "#dahab"}
+                    target={idx === 1 ? "_blank" : undefined}
+                    rel={idx === 1 ? "noopener noreferrer" : undefined}
+                    onClick={(e) => {
+                      if (idx === 0 && onNavigate) {
+                        e.preventDefault()
+                        onNavigate('dahab-accommodation')
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 text-[#C45437] font-semibold text-sm hover:text-[#AB462C] transition-colors group-hover:gap-2 cursor-pointer"
                   >
                     <span>{card.link}</span>
                     <ArrowUpRight size={17} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

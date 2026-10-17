@@ -49,7 +49,7 @@ export default function NirvanaCampSection({ t }) {
               </a>
 
               <a
-                href="https://nirvanacamp.example"
+                href="https://www.nirvana-camp.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#C45437] hover:bg-[#AB462C] text-white text-sm sm:text-base font-medium rounded-full shadow-lg hover:shadow-xl transition-all group active:scale-95"
