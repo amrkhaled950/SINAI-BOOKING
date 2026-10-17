@@ -24,14 +24,14 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
 
   // 8 High-resolution photos of Mashraba Duplex (Studio 1)
   const gallery = [
-    { src: '/images/duplex-main.jpg', label: isAr ? 'السرير العلوي والدوبلكس' : 'Main Loft & Lounge' },
-    { src: '/images/duplex-wide.jpg', label: isAr ? 'المنظور الكامل مع الإضاءة' : 'Full Perspective' },
-    { src: '/images/duplex-living.jpg', label: isAr ? 'غرفة المعيشة والتلفاز' : 'Living Area & TV' },
-    { src: '/images/duplex-lounge-view.jpg', label: isAr ? 'إطلالة من الجلسة الداخلية' : 'Lounge Suite View' },
-    { src: '/images/duplex-sofa.jpg', label: isAr ? 'ركن الكنبة والاسترخاء' : 'Sofa Nook' },
-    { src: '/images/duplex-curtains.jpg', label: isAr ? 'الستائر وخصوصية الدور العلوي' : 'Privacy Curtains' },
-    { src: '/images/duplex-kitchen-view.jpg', label: isAr ? 'الممر وركن المطبخ' : 'Kitchenette View' },
-    { src: '/images/duplex-overhead.jpg', label: isAr ? 'زاوية علوية للمعيشة' : 'Overhead View' },
+    { src: '/images/duplex-hero-loft.jpg', label: isAr ? 'المنظور الكامل للدوبلكس والسرير العلوي' : 'Full Duplex Loft & Chandelier' },
+    { src: '/images/duplex-full-structure.jpg', label: isAr ? 'هيكل الدوبلكس والدرج الخشبي والجلسة' : 'Loft Bed Railing & Wooden Stairs' },
+    { src: '/images/duplex-lower-lounge.jpg', label: isAr ? 'الجلسة السفلية المريحة والستائر' : 'Lower Lounge Suite & Daybed' },
+    { src: '/images/duplex-living-room.jpg', label: isAr ? 'الركن الرئيسي للمعيشة والكنبة' : 'Living Area Sofa & Warm Lighting' },
+    { src: '/images/duplex-living-tv.jpg', label: isAr ? 'منطقة التلفزيون والأرفف والمطبخ' : 'Smart TV & Bookshelf Lounge' },
+    { src: '/images/duplex-living-wide.jpg', label: isAr ? 'زاوية واسعة للأرضية الرخام والمدخل' : 'Wide Perspective & Marble Flooring' },
+    { src: '/images/duplex-lounge-outward.jpg', label: isAr ? 'إطلالة من داخل جلسة الاسترخاء' : 'View Looking Out from Lower Lounge' },
+    { src: '/images/duplex-coffee-corner.jpg', label: isAr ? 'طاولة الضيافة الخشبية وركن الشاي' : 'Coffee Table & Cozy Armchair' },
   ]
 
   const [activePhoto, setActivePhoto] = useState(0)

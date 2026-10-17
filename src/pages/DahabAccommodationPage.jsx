@@ -69,7 +69,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 className="relative w-full max-w-[540px] aspect-[4/3] sm:aspect-[16/11] rounded-[32px] overflow-hidden shadow-xl border-4 border-white/70 group cursor-pointer"
               >
                 <img
-                  src="/images/duplex-main.jpg"
+                  src="/images/duplex-hero-loft.jpg"
                   alt="Mashraba Duplex in Dahab"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
@@ -119,7 +119,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 className="relative aspect-[4/3] sm:aspect-[16/11] rounded-[28px] overflow-hidden shadow-md border border-[#EAE3D5] bg-[#F2EDE4] group cursor-pointer"
               >
                 <img
-                  src="/images/duplex-main.jpg"
+                  src="/images/duplex-full-structure.jpg"
                   alt="Meet the Mashraba duplex"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
