@@ -81,7 +81,7 @@ export default function HeroSection({ t, lang = 'en' }) {
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#128C7E] text-sm font-semibold rounded-full shadow-sm hover:shadow-md hover:scale-102 active:scale-95 transition-all duration-300"
               >
                 <span className="w-2 h-2 rounded-full bg-[#25D366] animate-ping"></span>
-                <span>واتساب 01116664591</span>
+                <span>{lang === 'ar' ? 'واتساب 01116664591' : 'Send via WhatsApp'}</span>
               </a>
             </div>
 

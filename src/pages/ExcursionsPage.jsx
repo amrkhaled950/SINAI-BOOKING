@@ -593,7 +593,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-[#FAF6EF] text-[#9C4328] font-bold text-sm sm:text-base rounded-full shadow-lg transition-all active:scale-95"
               >
                 <MessageCircle size={20} />
-                <span>{isAr ? 'تواصل عبر واتساب: 01116664591' : 'Chat via WhatsApp: 01116664591'}</span>
+                <span>{isAr ? 'تواصل عبر واتساب: 01116664591' : 'Send via WhatsApp'}</span>
               </a>
             </div>
           </div>
@@ -956,7 +956,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
               >
                 <MessageCircle size={20} />
-                <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send Booking Request via WhatsApp'}</span>
+                <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send via WhatsApp'}</span>
               </button>
 
               <button

@@ -1,7 +1,8 @@
 import React from 'react'
 import { ArrowUpRight } from 'lucide-react'
 
-export default function ServicesSection({ t, onNavigate }) {
+export default function ServicesSection({ t, lang = 'en', onNavigate }) {
+  const isAr = lang === 'ar'
   const serviceImages = [
     {
       src: "/images/camel-beach.png",
@@ -107,7 +108,9 @@ export default function ServicesSection({ t, onNavigate }) {
                       {card.desc}
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-[#25D366] font-semibold group-hover:text-[#1F9D4D]">
-                      <span>{card.link} (واتساب)</span>
+                      <span>
+                        {idx < 2 ? card.link : isAr ? `${card.link} (واتساب)` : 'Send via WhatsApp'}
+                      </span>
                       <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </span>
                   </div>

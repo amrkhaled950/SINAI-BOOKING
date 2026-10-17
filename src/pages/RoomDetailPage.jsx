@@ -816,7 +816,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please let me know availabilit
                     className="btn-shimmer w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-[#25D366] hover:bg-[#20BA5A] text-white text-base font-semibold rounded-full shadow-md hover:shadow-xl hover:scale-102 transition-all active:scale-95 cursor-pointer"
                   >
                     <MessageCircle size={20} className="fill-white" />
-                    <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send request via WhatsApp'}</span>
+                    <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send via WhatsApp'}</span>
                   </a>
                 )}
 

@@ -1,6 +1,7 @@
 import React from 'react'
 
-export default function CtaBanner({ t }) {
+export default function CtaBanner({ t, lang = 'en' }) {
+  const isAr = lang === 'ar'
   return (
     <section className="py-16 lg:py-24 bg-[#FAF6EF] border-t border-[#ECE4D5] reveal">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +34,7 @@ export default function CtaBanner({ t }) {
               className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3.5 sm:py-4 bg-[#25D366] hover:bg-[#20BA5A] text-white text-sm sm:text-base font-semibold rounded-full shadow-md hover:shadow-xl hover:scale-102 transition-all active:scale-95"
             >
               <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-              <span>واتساب 01116664591</span>
+              <span>{isAr ? 'واتساب 01116664591' : 'Send via WhatsApp'}</span>
             </a>
 
             <a

@@ -226,7 +226,7 @@ export default function Navbar({ lang, setLang, t, currentPage = 'home', onNavig
               className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#25D366] active:bg-[#20BA5A] text-white font-semibold text-sm rounded-full shadow-md active:scale-98 transition-all"
             >
               <MessageCircle size={18} className="fill-white" />
-              <span>واتساب 01116664591</span>
+              <span>{isAr ? 'واتساب 01116664591' : 'Send via WhatsApp'}</span>
             </a>
 
             <div className="grid grid-cols-2 gap-2.5">

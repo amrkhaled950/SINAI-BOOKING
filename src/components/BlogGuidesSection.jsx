@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowUpRight, Instagram, Facebook } from 'lucide-react'
 
-export default function BlogGuidesSection({ t, onNavigate }) {
+export default function BlogGuidesSection({ t, lang = 'en', onNavigate }) {
   const guideImages = [
     {
       src: "/images/kitesurf.png",
@@ -82,7 +82,7 @@ export default function BlogGuidesSection({ t, onNavigate }) {
                 <div className="pt-4 border-t border-[#EBE1D0] flex items-center justify-between text-xs font-semibold tracking-wider text-[#6C6963] uppercase">
                   <span>{story.time}</span>
                   <span className="inline-flex items-center gap-1 text-[#25D366] font-bold group-hover:text-[#1F9D4D]">
-                    <span>{story.action} (واتساب)</span>
+                    <span>{story.action}</span>
                     <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </span>
                 </div>

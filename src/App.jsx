@@ -195,19 +195,19 @@ export default function App() {
             <DestinationsSection t={t} onNavigate={navigate} />
 
             {/* 4. Featured Stay: Mashraba Duplex */}
-            <DuplexSection t={t} onNavigate={navigate} />
+            <DuplexSection t={t} lang={lang} onNavigate={navigate} />
 
             {/* 5. Dark Section: Sleep Closer to the Stars (Nirvana Camp) */}
-            <NirvanaCampSection t={t} />
+            <NirvanaCampSection t={t} lang={lang} />
 
             {/* 6. Services & Help */}
-            <ServicesSection t={t} onNavigate={navigate} />
+            <ServicesSection t={t} lang={lang} onNavigate={navigate} />
 
             {/* 7. Notes From The Road (Guides & Blog) */}
-            <BlogGuidesSection t={t} onNavigate={navigate} />
+            <BlogGuidesSection t={t} lang={lang} onNavigate={navigate} />
 
             {/* 8. Call to Action Banner */}
-            <CtaBanner t={t} />
+            <CtaBanner t={t} lang={lang} />
           </>
         )}
       </main>

@@ -1,6 +1,7 @@
 import React from 'react'
 
-export default function DuplexSection({ t, onNavigate }) {
+export default function DuplexSection({ t, lang = 'en', onNavigate }) {
+  const isAr = lang === 'ar'
   return (
     <section id="dahab" className="py-16 lg:py-24 bg-[#FAF6EF]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,7 +106,7 @@ export default function DuplexSection({ t, onNavigate }) {
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#25D366] hover:bg-[#20BA5A] text-white text-xs sm:text-sm font-semibold rounded-full shadow transition-all active:scale-95"
                   >
-                    <span>واتساب 01116664591</span>
+                    <span>{isAr ? 'واتساب 01116664591' : 'Send via WhatsApp'}</span>
                   </a>
 
                   <button
