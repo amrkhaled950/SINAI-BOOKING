@@ -38,9 +38,14 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const [selectedDate, setSelectedDate] = useState('2026-10-25')
   const [selectedCamp, setSelectedCamp] = useState('zigzag') // for 2-day trip
   const [activeDay, setActiveDay] = useState(1) // for 2-day trip tab
+  const [essentialsTab, setEssentialsTab] = useState('one-day')
+  const [showModalItinerary, setShowModalItinerary] = useState(false)
+  const [showModalEssentials, setShowModalEssentials] = useState(false)
 
   const handleOpenTripModal = (trip) => {
     setSelectedTrip(trip)
+    setShowModalItinerary(false)
+    setShowModalEssentials(false)
   }
 
   const handleDirectWhatsApp = (trip) => {
@@ -314,15 +319,25 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
           <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-6 sm:p-8 lg:p-10 shadow-sm">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-[#EAE3D5]">
               <div>
-                <span className="text-xs font-bold text-[#C45437] uppercase tracking-wider">
-                  {currentTabTrip.tag}
+                <span className="text-xs font-bold text-[#C45437] uppercase tracking-wider block">
+                  {currentTabTrip.badge || currentTabTrip.tag}
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1E1D1A] mt-1">
                   {currentTabTrip.title}
                 </h3>
-                <p className="text-sm font-bold text-[#A8432B] mt-1">
-                  {currentTabTrip.price} · <span className="text-[#6B665E] font-normal">{currentTabTrip.minPeople}</span>
-                </p>
+                {currentTabTrip.subtitle && (
+                  <p className="text-xs sm:text-sm italic text-[#7A7367] mt-1 max-w-2xl">
+                    "{currentTabTrip.subtitle}"
+                  </p>
+                )}
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className="text-sm sm:text-base font-bold text-[#A8432B]">{currentTabTrip.price}</span>
+                  <span className="text-xs text-[#6B665E] font-medium">· {currentTabTrip.minPeople}</span>
+                  <span className="text-xs text-[#183B33] bg-[#E2ECE5] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                    <Clock size={12} />
+                    <span>{currentTabTrip.schedule}</span>
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -394,24 +409,32 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
               ))}
             </div>
 
-            {/* Photo Highlights Bar inside Itinerary */}
-            <div className="mt-6 pt-6 border-t border-[#EAE3D5]">
-              <span className="text-xs font-bold text-[#7A7367] uppercase tracking-wider block mb-3">
-                {isAr ? 'معالم موثقة من المسار' : 'Highlights from this route'}
+            {/* Photo Highlights Bar inside Itinerary (PDF Page 2 & 3) */}
+            <div className="mt-8 pt-6 border-t border-[#EAE3D5]">
+              <span className="text-xs font-bold text-[#7A7367] uppercase tracking-wider block mb-4">
+                {isAr ? 'معالم موثقة بالصور من خط سير الرحلة' : 'Photo Highlights From The Route'}
               </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#EDE5D8]">
-                  <img src="/images/excursion-inscriptions.jpg" alt="Inscriptions" className="w-full h-full object-cover" />
-                </div>
-                <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#EDE5D8]">
-                  <img src="/images/excursion-double-canyon.jpg" alt="Double Canyon" className="w-full h-full object-cover" />
-                </div>
-                <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#EDE5D8]">
-                  <img src="/images/excursion-nawamis-tombs.jpg" alt="Nawamis Tombs" className="w-full h-full object-cover" />
-                </div>
-                <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#EDE5D8]">
-                  <img src="/images/excursion-hedoda-dunes.jpg" alt="Hedoda Sand Dune" className="w-full h-full object-cover" />
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                {(page.galleryHighlights || [
+                  { title: isAr ? 'صخرة نقوش وادي عراضة' : 'Rock of Inscriptions', image: '/images/excursion-inscriptions.jpg' },
+                  { title: isAr ? 'مقابر النواميس الأثرية' : 'The Nawamis tombs', image: '/images/excursion-nawamis-tombs.jpg' },
+                  { title: isAr ? 'التزلج على كثبان هدودة' : 'Sandboarding on Hedoda', image: '/images/pdf_img_4.jpg' },
+                  { title: isAr ? 'قمة كثبان هدودة الرملية' : 'The crest of Hedoda', image: '/images/excursion-hedoda-dunes.jpg' },
+                  { title: isAr ? 'هايكنج الكانيون المزدوج' : 'The Double Canyon', image: '/images/excursion-double-canyon.jpg' }
+                ]).map((item, idx) => (
+                  <div key={idx} className="group flex flex-col space-y-1.5">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#EDE5D8] border border-[#E7DFCE] shadow-xs">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <span className="text-[11px] sm:text-xs font-semibold text-[#22211F] line-clamp-1 group-hover:text-[#C45437] transition-colors">
+                      {isAr ? (item.title || item.enTitle) : (item.enTitle || item.title)}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -500,72 +523,118 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
       <section className="py-16 bg-[#FAF6EF]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+          <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
             <span className="text-xs font-bold tracking-[0.16em] text-[#C45437] uppercase">
               {isAr ? 'كل ما تحتاج معرفته' : 'EVERYTHING YOU NEED TO KNOW'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#1E1D1A]">
-              {isAr ? 'تجهيزات وتفاصيل الرحلة' : 'What is included and what to bring'}
+              {page.tripEssentials.sectionTitle || (isAr ? 'تجهيزات وتفاصيل الرحلة' : 'Trip Essentials')}
             </h2>
+            <p className="text-sm sm:text-base text-[#6B665E]">
+              {page.tripEssentials.sectionSubtitle || (isAr ? 'تعرف على كل المشمول والمطلوب إحضاره لكل رحلة بالتفصيل:' : 'Everything included and what you should bring for each trip:')}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            
-            {/* 1. Included */}
-            <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-7 shadow-sm space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-[#E2ECE5] text-[#2A6543] flex items-center justify-center">
-                <Check size={20} />
-              </div>
-              <h3 className="text-xl font-serif font-bold text-[#22211F]">
-                {page.tripEssentials.includedTitle}
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#5C574F]">
-                {page.tripEssentials.included.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-[#2A6543] font-bold mt-0.5">✓</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 2. Not Included */}
-            <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-7 shadow-sm space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-[#FDE8E8] text-[#9C2727] flex items-center justify-center">
-                <X size={20} />
-              </div>
-              <h3 className="text-xl font-serif font-bold text-[#22211F]">
-                {page.tripEssentials.notIncludedTitle}
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#5C574F]">
-                {page.tripEssentials.notIncluded.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-[#9C2727] font-bold mt-0.5">✕</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 3. What to Bring */}
-            <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-7 shadow-sm space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center">
-                <Footprints size={20} />
-              </div>
-              <h3 className="text-xl font-serif font-bold text-[#22211F]">
-                {page.tripEssentials.bringTitle}
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#5C574F]">
-                {page.tripEssentials.bring.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-[#D97706] font-bold mt-0.5">•</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
+          {/* Switcher between 1-Day trips and 2-Day Overnight Trip (From PDF Page 2 & Page 4) */}
+          <div className="flex justify-center items-center gap-3 mb-10">
+            <button
+              onClick={() => setEssentialsTab('one-day')}
+              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                essentialsTab === 'one-day'
+                  ? 'bg-[#183B33] text-white shadow-md'
+                  : 'bg-white text-[#6B665E] hover:bg-[#EBE2D4] border border-[#E7DFCE]'
+              }`}
+            >
+              {isAr ? 'رحلات اليوم الواحد (95 USD)' : 'One-Day Trips (95 USD)'}
+            </button>
+            <button
+              onClick={() => setEssentialsTab('overnight')}
+              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                essentialsTab === 'overnight'
+                  ? 'bg-[#183B33] text-white shadow-md'
+                  : 'bg-white text-[#6B665E] hover:bg-[#EBE2D4] border border-[#E7DFCE]'
+              }`}
+            >
+              {isAr ? 'رحلة المبيت يومين وليلة (190 USD)' : 'The Overnight Trip (190 USD)'}
+            </button>
           </div>
+
+          {(() => {
+            const currentEssentials = (essentialsTab === 'one-day' ? page.tripEssentials.oneDay : page.tripEssentials.overnight) || page.tripEssentials.oneDay || page.tripEssentials
+            return (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DFCE] pb-3">
+                  <div>
+                    <span className="text-xs font-bold text-[#C45437] uppercase tracking-wider block">
+                      {currentEssentials.badge}
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#22211F]">
+                      {currentEssentials.title}
+                    </h3>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-[#A8432B] bg-[#FAF1EE] border border-[#E7DFCE] px-3.5 py-1.5 rounded-full w-fit">
+                    {currentEssentials.priceInfo}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                  {/* 1. Included */}
+                  <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-7 shadow-sm space-y-4">
+                    <div className="w-10 h-10 rounded-xl bg-[#E2ECE5] text-[#2A6543] flex items-center justify-center">
+                      <Check size={20} />
+                    </div>
+                    <h4 className="text-xl font-serif font-bold text-[#22211F]">
+                      {currentEssentials.includedTitle}
+                    </h4>
+                    <ul className="space-y-3 text-xs sm:text-sm text-[#5C574F]">
+                      {(currentEssentials.included || []).map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <span className="text-[#2A6543] font-bold mt-0.5">✓</span>
+                          <span className="leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* 2. Not Included */}
+                  <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-7 shadow-sm space-y-4">
+                    <div className="w-10 h-10 rounded-xl bg-[#FDE8E8] text-[#9C2727] flex items-center justify-center">
+                      <X size={20} />
+                    </div>
+                    <h4 className="text-xl font-serif font-bold text-[#22211F]">
+                      {currentEssentials.notIncludedTitle}
+                    </h4>
+                    <ul className="space-y-3 text-xs sm:text-sm text-[#5C574F]">
+                      {(currentEssentials.notIncluded || []).map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <span className="text-[#9C2727] font-bold mt-0.5">✕</span>
+                          <span className="leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* 3. What to Bring */}
+                  <div className="bg-white rounded-[24px] border border-[#E7DFCE] p-7 shadow-sm space-y-4">
+                    <div className="w-10 h-10 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center">
+                      <Footprints size={20} />
+                    </div>
+                    <h4 className="text-xl font-serif font-bold text-[#22211F]">
+                      {currentEssentials.bringTitle}
+                    </h4>
+                    <ul className="space-y-3 text-xs sm:text-sm text-[#5C574F]">
+                      {(currentEssentials.bring || []).map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <span className="text-[#D97706] font-bold mt-0.5">•</span>
+                          <span className="leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
 
         </div>
       </section>
@@ -694,6 +763,103 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 </div>
               </div>
             )}
+
+            {/* Quick Details Accordion inside Modal */}
+            <div className="space-y-2 pt-2 border-t border-[#E7DFCE]">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowModalItinerary(!showModalItinerary)
+                    if (!showModalItinerary) setShowModalEssentials(false)
+                  }}
+                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    showModalItinerary
+                      ? 'bg-[#183B33] text-white border-[#183B33]'
+                      : 'bg-white text-[#6B665E] border-[#D9D0C2] hover:bg-[#FAF6EF]'
+                  }`}
+                >
+                  <Clock size={13} />
+                  <span>{isAr ? 'محطات خط السير بالتفصيل' : 'Detailed Itinerary'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowModalEssentials(!showModalEssentials)
+                    if (!showModalEssentials) setShowModalItinerary(false)
+                  }}
+                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    showModalEssentials
+                      ? 'bg-[#183B33] text-white border-[#183B33]'
+                      : 'bg-white text-[#6B665E] border-[#D9D0C2] hover:bg-[#FAF6EF]'
+                  }`}
+                >
+                  <Check size={13} />
+                  <span>{isAr ? 'المشمول وما يلزمك' : 'Included & Bring'}</span>
+                </button>
+              </div>
+
+              {/* Itinerary Dropdown */}
+              {showModalItinerary && (
+                <div className="p-4 bg-white rounded-2xl border border-[#E7DFCE] space-y-3 max-h-56 overflow-y-auto text-xs animate-in fade-in duration-200">
+                  <span className="font-bold text-[#C45437] block">
+                    {selectedTrip.twoDays
+                      ? (isAr ? 'برنامج اليومين وليلة في الصحراء:' : '2-Day Desert Program:')
+                      : (isAr ? 'برنامج الرحلة اليومية:' : 'Full Day Schedule:')}
+                  </span>
+                  {(selectedTrip.twoDays ? [...(selectedTrip.day1 || []), ...(selectedTrip.day2 || [])] : (selectedTrip.itinerary || [])).map((st, i) => (
+                    <div key={i} className="border-b border-[#F2ECE1] pb-2 last:border-0 last:pb-0">
+                      <div className="flex items-center gap-1.5 font-bold text-[#22211F]">
+                        <span className="text-[#C45437]">{st.time}</span>
+                        <span>—</span>
+                        <span>{st.title}</span>
+                      </div>
+                      <p className="text-[#6B665E] mt-0.5 leading-relaxed">{st.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Essentials Dropdown */}
+              {showModalEssentials && (
+                <div className="p-4 bg-white rounded-2xl border border-[#E7DFCE] space-y-3 max-h-56 overflow-y-auto text-xs animate-in fade-in duration-200">
+                  {(() => {
+                    const ess = selectedTrip.twoDays ? page.tripEssentials.overnight : page.tripEssentials.oneDay
+                    return (
+                      <div className="space-y-3">
+                        <div>
+                          <span className="font-bold text-[#2A6543] block mb-1">
+                            {ess.includedTitle}:
+                          </span>
+                          <ul className="space-y-1 text-[#5C574F]">
+                            {(ess.included || []).map((inc, i) => (
+                              <li key={i} className="flex items-start gap-1.5">
+                                <span className="text-[#2A6543] font-bold">✓</span>
+                                <span>{inc}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <span className="font-bold text-[#D97706] block mb-1">
+                            {ess.bringTitle}:
+                          </span>
+                          <ul className="space-y-1 text-[#5C574F]">
+                            {(ess.bring || []).map((br, i) => (
+                              <li key={i} className="flex items-start gap-1.5">
+                                <span className="text-[#D97706] font-bold">•</span>
+                                <span>{br}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )
+                  })()}
+                </div>
+              )}
+            </div>
 
             {/* Booking Inputs */}
             <div className="space-y-4 pt-2 border-t border-[#E7DFCE]">

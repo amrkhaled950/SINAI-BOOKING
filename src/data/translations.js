@@ -203,6 +203,7 @@ export const translations = {
         {
           id: "arada-canyon",
           tag: "ONE DAY",
+          badge: "ONE-DAY TRIPS · 95 USD PER PERSON · MIN. 4 PEOPLE",
           title: "Arada Canyon Day Trip",
           price: "95 USD per person",
           minPeople: "minimum 4 people",
@@ -216,16 +217,17 @@ export const translations = {
             { time: "8:00", title: "Leave Dahab", desc: "We drive inland to Wadi Arada in comfortable 4x4 jeeps." },
             { time: "Morning", title: "Arada Rock of Inscriptions", desc: "Ancient carvings of camels and the daily life of the Bedouin and nomadic peoples of the area." },
             { time: "Mid-morning", title: "Hike the Double Canyon", desc: "We hike through Arada, the Double Canyon, while your lunch is prepared in the desert." },
-            { time: "Lunchtime", title: "Lunch in the desert", desc: "After the hike, fresh open-air lunch prepared on-site by our Bedouin desert chef." },
-            { time: "Afternoon", title: "The Nawamis tombs", desc: "A short stop at the circular stone tombs, some 5,000 years old — older than the pyramids." },
-            { time: "Late Afternoon", title: "Dragonhead Mountain (Gebel Makhroum)", desc: "Spectacular panoramic views across sandstone plateaus and surrounding dunes." },
-            { time: "Golden Hour", title: "Hedoda Sand Dune", desc: "Our final awe-inspiring stop of the day to enjoy the desert light and dunes." },
-            { time: "5pm / sunset", title: "Return to Dahab", desc: "Scenic drive back, reaching Dahab around 5pm or sunset." }
+            { time: "Lunchtime", title: "Lunch in the desert", desc: "After the hike, fresh open-air lunch prepared on-site by our special Bedouin desert chef." },
+            { time: "Afternoon", title: "The Nawamis tombs", desc: "A short stop at the 5,000-year-old circular stone tombs — older than the pyramids." },
+            { time: "Late Afternoon", title: "Dragonhead Mountain (Gebel Makhroum)", desc: "The view across the sandstone country and the dune fields below." },
+            { time: "Golden Hour", title: "Hedoda Sand Dune", desc: "Our last stop of the day to take in the vast sands and shifting light." },
+            { time: "5pm / sunset", title: "Return to Dahab", desc: "Back in Dahab around 5pm or sunset." }
           ]
         },
         {
           id: "sandboarding",
           tag: "ONE DAY",
+          badge: "ONE-DAY TRIPS · 95 USD PER PERSON · MIN. 4 PEOPLE",
           title: "Sandboarding Day Trip",
           price: "95 USD per person",
           minPeople: "minimum 4 people",
@@ -236,42 +238,51 @@ export const translations = {
           image: "/images/mountains-sea.png",
           button: "View details & book",
           itinerary: [
-            { time: "8:00", title: "Leave Dahab", desc: "We head inland into the desert by 4x4 safari jeep." },
-            { time: "Morning", title: "Wadi Jebi", desc: "Our first stretch through the desert, with ancient fossils and rock inscriptions along the way." },
-            { time: "Mid-morning", title: "The Nawamis tombs", desc: "Circular stone tombs some 5,000 years old — standing roofed structures older than the pyramids." },
-            { time: "Lunchtime", title: "Dragonhead Mountain (Gebel Makhroum)", desc: "Breathtaking view across the sandstone country and dune fields below, with fresh desert lunch." },
-            { time: "Afternoon", title: "Hedoda Sand Dune — Sandboarding", desc: "The main event: sandboarding down Hedoda dune, climbing it again, or watching the golden light shift across the Sinai." },
-            { time: "5pm / sunset", title: "Return to Dahab", desc: "Arrive back in Dahab around 5pm or sunset." }
+            { time: "8:00", title: "Leave Dahab", desc: "We head inland into the desert." },
+            { time: "Morning", title: "Wadi Jebi", desc: "Our first stretch through the desert, with fossils and ancient rock inscriptions along the way." },
+            { time: "Mid-morning", title: "The Nawamis tombs", desc: "Circular stone tombs some 5,000 years old — older than the pyramids." },
+            { time: "Lunchtime", title: "Dragonhead Mountain (Gebel Makhroum)", desc: "The view across the sandstone country and the dune fields below, with fresh desert lunch." },
+            { time: "Afternoon", title: "Hedoda Sand Dune — sandboarding", desc: "The main event: sandboarding down Hedoda, climbing it again and again, or watching the light move across the Sinai." },
+            { time: "5pm / sunset", title: "Return to Dahab", desc: "Back in Dahab around 5pm or sunset." }
           ]
         },
         {
           id: "overnight",
           tag: "TWO DAYS · ONE NIGHT",
+          badge: "TWO-DAY TRIP · 190 USD PER PERSON · MIN. 4 PEOPLE",
           title: "Overnight Desert Trip",
           price: "190 USD per person",
           minPeople: "minimum 4 people",
           priceEur: 150,
           priceUsd: 190,
           schedule: "Leaves Dahab 8:00 · Back on day two, around 5pm or sunset",
+          subtitle: "The same start as our day trip — but with a whole extra day ahead of us, nothing needs to be rushed.",
           desc: "The same route, taken slowly — plus dinner by the fire and a night in the desert at the camp of your choice.",
           image: "/images/kitesurf.png",
           button: "View details & book",
           twoDays: true,
           day1: [
             { time: "8:00", title: "Leaving Dahab", desc: "Your jeep safari begins on the inland road toward Wadi Arada." },
-            { time: "Morning", title: "The Arada Rock of Inscriptions", desc: "We take our time among ancient carvings: camels, hunters, and nomadic life crossed over thousands of years." },
-            { time: "Mid-day", title: "The Double Canyon — hiking, climbing and fossils", desc: "The trekking highlight without the clock: canyon hiking, climbing sections, rope descent, and touching fossilized coral reef high in the canyon walls." },
-            { time: "Afternoon", title: "A long desert lunch", desc: "Fresh meal prepared out in the open by our special desert chef — take your time over it." },
-            { time: "Late Afternoon", title: "The Nawamis tombs", desc: "5,000-year-old circular stone roofed structures standing proudly in the plateau." },
-            { time: "Evening", title: "Dinner and your desert camp", desc: "Reach camp as evening falls. Freshly cooked dinner around the crackling campfire under the stars." }
+            { time: "Morning", title: "The Arada Rock of Inscriptions", desc: "We take our time among the ancient rock inscriptions: camels, hunters, and the daily life of the Bedouin and nomadic peoples who crossed this valley for thousands of years. There's time to keep looking until you've found your own favourite carving." },
+            { time: "Mid-day", title: "The Double Canyon — hiking, climbing and fossils", desc: "The trekking highlight of the trip, without the clock. A proper canyon hike with sections of climbing and one steep rope-assisted descent — your guides help you the whole way. Halfway through, you'll walk past fossilized coral reef with shell fossils embedded in the canyon walls: this desert was once under the sea, and here you can touch the proof." },
+            { time: "Afternoon", title: "A long desert lunch", desc: "While you're in the canyon, our special desert chef prepares a fresh lunch out in the open. Today, lunch isn't a stop between stops — take your time over it." },
+            { time: "Late Afternoon", title: "The Nawamis tombs", desc: "Circular stone tombs some 5,000 years old — older than the pyramids, and among the oldest roofed structures still standing anywhere on earth." },
+            { time: "Evening", title: "Dinner and your desert camp", desc: "As evening falls we reach camp, where dinner is freshly prepared by our desert chef and eaten around the fire. Where you sleep is up to you — choose your camp." }
           ],
           day2: [
-            { time: "Morning", title: "Morning in camp", desc: "Wake in the quiet desert with hot breakfast prepared in camp — cool, peaceful, and golden." },
-            { time: "Mid-morning", title: "Dragonhead Mountain (Gebel Makhroum)", desc: "Time to sit and soak in the expansive view across the sandstone country, not just snap a quick photo." },
-            { time: "Afternoon", title: "Hedoda Sand Dune", desc: "The grand finale: sandboarding down the dunes or simply gazing as the desert glows in the sun." },
-            { time: "5pm / sunset", title: "Return to Dahab", desc: "A relaxed drive back to Dahab, with the whole desert still lingering in your head." }
+            { time: "Morning", title: "Morning in camp", desc: "Wake in the desert, with breakfast prepared in camp and no reason to hurry — cool, quiet, and golden." },
+            { time: "Mid-morning", title: "Dragonhead Mountain (Gebel Makhroum)", desc: "Take in the view across the sandstone country and the dune fields below, with time to sit with it, not just photograph it." },
+            { time: "Afternoon", title: "Hedoda Sand Dune", desc: "The grand finale: sandboarding, climbing it more than once, or simply watching the light move across the Sinai desert." },
+            { time: "5pm / sunset", title: "Return to Dahab", desc: "A relaxed drive back, with the whole desert still in your head." }
           ]
         }
+      ],
+      galleryHighlights: [
+        { title: "Rock of Inscriptions", image: "/images/excursion-inscriptions.jpg" },
+        { title: "The Nawamis tombs", image: "/images/excursion-nawamis-tombs.jpg" },
+        { title: "Sandboarding on Hedoda", image: "/images/pdf_img_4.jpg" },
+        { title: "The crest of Hedoda", image: "/images/excursion-hedoda-dunes.jpg" },
+        { title: "The Double Canyon", image: "/images/excursion-double-canyon.jpg" }
       ],
       whereYouSleep: {
         badge: "TWO-DAY TRIP ONLY",
@@ -296,26 +307,55 @@ export const translations = {
         ]
       },
       tripEssentials: {
-        includedTitle: "Included in all trips",
-        included: [
-          "All transportation from and back to Dahab in 4x4 safari jeeps",
-          "All meals, fresh fruits and drinks during the desert trip prepared by our desert chef",
-          "Bedouin desert guides with deep local knowledge",
-          "All national park and location entry fees",
-          "Overnight camp setup (Zigzag Canyon or open air near Gebel Makhroum for 2-day trip)"
-        ],
-        notIncludedTitle: "Not included",
-        notIncluded: [
-          "Tips for guides and driver",
-          "Personal souvenir expenses"
-        ],
-        bringTitle: "What to bring",
-        bring: [
-          "Good hiking shoes (essential for Arada Double Canyon)",
-          "Your passport (required for checkpoints on inland roads)",
-          "Warm layers (desert nights get chilly even when days are hot)",
-          "Some cash for handmade crafts from local Bedouin women"
-        ]
+        sectionTitle: "Trip Essentials",
+        sectionSubtitle: "Everything included and what you should bring for each trip",
+        oneDay: {
+          badge: "FOR BOTH ONE-DAY TRIPS",
+          title: "One-Day Desert Trips",
+          priceInfo: "95 USD PER PERSON · MIN. 4 PEOPLE",
+          includedTitle: "Included",
+          included: [
+            "All transportation",
+            "All meals and drinks during the desert trip",
+            "Desert guide",
+            "All location fees"
+          ],
+          notIncludedTitle: "Not included",
+          notIncluded: [
+            "Tips",
+            "Personal expenses"
+          ],
+          bringTitle: "Please bring",
+          bring: [
+            "Good shoes (hiking shoes for Arada)",
+            "Passport",
+            "Some cash for souvenirs from the local Bedouin"
+          ]
+        },
+        overnight: {
+          badge: "THE OVERNIGHT TRIP",
+          title: "The Two-Day Trip",
+          priceInfo: "190 USD PER PERSON · MIN. 4 PEOPLE",
+          includedTitle: "Included",
+          included: [
+            "All transportation from and back to Dahab",
+            "All meals and drinks during the desert trip — including dinner, breakfast and lunch prepared by our desert chef",
+            "Overnight desert camp — Zigzag Canyon or open air near Gebel Makhroum",
+            "Your desert guides",
+            "All location fees"
+          ],
+          notIncludedTitle: "Not included",
+          notIncluded: [
+            "Tips and personal expenses"
+          ],
+          bringTitle: "What to bring",
+          bring: [
+            "Good hiking shoes",
+            "Your passport (there are checkpoints on the inland roads)",
+            "Warm layers — desert nights get cold, even when the days are hot",
+            "Some cash for souvenirs from the local Bedouin"
+          ]
+        }
       }
     },
     transportationPage: {
@@ -693,6 +733,7 @@ export const translations = {
         {
           id: "arada-canyon",
           tag: "يوم واحد",
+          badge: "رحلات اليوم الواحد · 95 USD للفرد · أقل عدد 4 أفراد",
           title: "رحلة وادي عراضة اليومية",
           price: "95 USD للفرد",
           minPeople: "أقل عدد 4 أفراد",
@@ -703,109 +744,148 @@ export const translations = {
           image: "/images/camel-beach.png",
           button: "شوف التفاصيل واحجز",
           itinerary: [
-            { time: "8:00 ص", title: "التحرك من دهب", desc: "بننطلق بعربيات جيب 4x4 مجهزة لقلب الصحراء ووادي عراضة." },
-            { time: "صباحاً", title: "صخرة نقوش وادي عراضة", desc: "نقوش ورسومات أثرية قديمة للجمال وحياة البدو من آلاف السنين." },
-            { time: "قبل الظهر", title: "هايكنج الكانيون المزدوج (Double Canyon)", desc: "مسار ممتع بين ممرات الصخور وتسلق بالحبال، في نفس الوقت اللي شيف الصحراء بيجهز فيه الغدا." },
-            { time: "وقت الغدا", title: "غدا فريش في قلب الصحراء", desc: "بعد الهايكنج، قعدة رايقة مع غدا بدوي سخن ومشروبات يعدها الشيف في الهواء الطلق." },
-            { time: "الظهر", title: "مقابر النواميس الأثرية", desc: "وقفة عند مقابر حجرية دائرية مبنية من أكتر من 5000 سنة — أقدم من الأهرامات." },
-            { time: "العصر", title: "جبل رأس التنين (جبل مخروم)", desc: "إطلالة بانوراما تحفة على الهضاب وتكوينات الصخور المميزة." },
-            { time: "وقت الغروب", title: "كثبان هدودة الرملية", desc: "آخر محطة عشان تستمتع بمنظر الرملة الدهبية وألوان السما ساعة الغروب." },
-            { time: "5:00 م", title: "الرجوع لدهب", desc: "طريق رجوع مريح وبنوصل دهب على الساعة خمسة المغرب أو وقت الغروب." }
+            { time: "8:00 ص", title: "التحرك من دهب", desc: "بنتحرك لعمق الصحراء باتجاه وادي عراضة بعربيات جيب 4x4 مريحة ومجهزة." },
+            { time: "صباحاً", title: "صخرة نقوش وادي عراضة", desc: "نقوش ورسومات أثرية قديمة للجمال وحياة البدو وأهل الصحراء من آلاف السنين." },
+            { time: "قبل الظهر", title: "هايكنج الكانيون المزدوج (Double Canyon)", desc: "بنمشي في وادي عراضة والكانيون المزدوج، في نفس الوقت اللي شيف الصحراء بيجهز فيه الغداء." },
+            { time: "وقت الغدا", title: "غداء فريش في قلب الصحراء", desc: "بعد الهايكنج، قعدة وغداء بدوي طازة في الهواء الطلق بيجهزه شيف الصحراء." },
+            { time: "الظهر", title: "مقابر النواميس الأثرية", desc: "وقفة سريعة عند مقابر النواميس الحجرية الدائرية اللي عمرها 5,000 سنة — أقدم من الأهرامات." },
+            { time: "العصر", title: "جبل رأس التنين (جبل مخروم)", desc: "الإطلالة البانورامية الرائعة والكثبان الرملية المحيطة بالجبل." },
+            { time: "وقت الغروب", title: "كثبان هدودة الرملية", desc: "آخر محطة لينا في اليوم للاستمتاع بروعة الرمال وألوان الصحراء الذهبية." },
+            { time: "5:00 م", title: "الرجوع لدهب", desc: "الرجوع لدهب على الساعة خمسة المغرب أو مع الغروب." }
           ]
         },
         {
           id: "sandboarding",
           tag: "يوم واحد",
+          badge: "رحلات اليوم الواحد · 95 USD للفرد · أقل عدد 4 أفراد",
           title: "رحلة التزلج على الرمال (ساندبوردينج)",
           price: "95 USD للفرد",
           minPeople: "أقل عدد 4 أفراد",
           priceEur: 75,
           priceUsd: 95,
           schedule: "التحرك من دهب 8:00 الصبح · الرجوع حوالي 5:00 المغرب أو مع الغروب",
-          desc: "يوم معمول مخصوص عشان الكثبان والرملة: حفريات وادي جبي، مقابر النواميس، جبل رأس التنين، وساندبوردينج يجنن على كثبان هدودة الرملية.",
+          desc: "يوم معمول مخصوص عشان الكثبان والرملة: حفريات ونقوش وادي جبي، مقابر النواميس، وجبل رأس التنين، وبعدها ساندبوردينج يجنن على كثبان هدودة.",
           image: "/images/mountains-sea.png",
           button: "شوف التفاصيل واحجز",
           itinerary: [
-            { time: "8:00 ص", title: "الانطلاق من دهب", desc: "بنتحرك لعمق صحراء سينا بعربيات الدفع الرباعي المجهزة." },
-            { time: "صباحاً", title: "وادي جبي", desc: "أول وقفة وسط الحفريات البحرية القديمة والنقوش التاريخية." },
-            { time: "قبل الظهر", title: "مقابر النواميس", desc: "المقابر الحجرية اللي اتبنت من 5000 سنة ولسة مسقوفة لحد النهاردة." },
-            { time: "وقت الغدا", title: "جبل رأس التنين (جبل مخروم)", desc: "منظر خيالي للصحراء من فوق مع وجبة غدا بدوية معمولة مخصوص." },
-            { time: "العصر", title: "كثبان هدودة والساندبوردينج", desc: "الحدث الأهم: التزحلق بالبورد من أعلى قمة في كثبان هدودة وسط الرملة الدهبية الناعمة." },
-            { time: "5:00 م", title: "الرجوع لدهب", desc: "بنوصل دهب بالسلامة على الساعة خمسة المغرب أو مع الغروب." }
+            { time: "8:00 ص", title: "الانطلاق من دهب", desc: "بنتحرك لعمق الصحراء بعربيات الجيب 4x4." },
+            { time: "صباحاً", title: "وادي جبي", desc: "أول مرحلة في قلب الصحراء، مع حفريات بحرية ونقوش صخرية قديمة على طول المسار." },
+            { time: "قبل الظهر", title: "مقابر النواميس", desc: "مقابر حجرية دائرية عمرها حوالي 5,000 سنة — أقدم حتى من أهرامات الجيزة." },
+            { time: "وقت الغدا", title: "جبل رأس التنين (جبل مخروم)", desc: "إطلالة ساحرة ومفتوحة على أرض الصخور الرملية وبحور الكثبان الرملية تحت، مع وجبة غداء صحراوية طازة." },
+            { time: "العصر", title: "كثبان هدودة — ساندبوردينج", desc: "الحدث الأهم في الرحلة: التزحلق بالبورد من أعلى قمة في كثبان هدودة، تطلعها تاني وتتزحلق، أو تقعد تشوف حركة الضوء وألوان الشمس وهي بتتحرك على صحراء سيناء." },
+            { time: "5:00 م", title: "الرجوع لدهب", desc: "بنوصل دهب بالسلامة على الساعة خمسة المغرب أو وقت الغروب." }
           ]
         },
         {
           id: "overnight",
           tag: "يومين · ليلة واحدة",
+          badge: "رحلة اليومين وليلة · 190 USD للفرد · أقل عدد 4 أفراد",
           title: "رحلة المبيت في الصحراء",
           price: "190 USD للفرد",
           minPeople: "أقل عدد 4 أفراد",
           priceEur: 150,
           priceUsd: 190,
-          schedule: "التحرك من دهب 8:00 الصبح · الرجوع تاني يوم وقت الغروب",
-          desc: "نفس المسار الساحر، بس على مهلك ومن غير أي استعجال — مع قعدة شواء على نار الحطب، ومبيت ليلة خيالية تحت نجوم السما في الكامب اللي تختاره.",
+          schedule: "التحرك من دهب 8:00 الصبح · الرجوع تاني يوم حوالي 5:00 المغرب أو مع الغروب",
+          subtitle: "نفس بداية رحلتنا اليومية — بس مع يوم كامل زيادة قدامنا، مافيش أي حاجة محتاجة استعجال.",
+          desc: "نفس المسار الساحر، بس على مهلك ومن غير أي استعجال — مع عشاء شواء على نار الحطب ومبيت ليلة خيالية في الصحراء في الكامب اللي تختاره.",
           image: "/images/kitesurf.png",
           button: "شوف التفاصيل واحجز",
           twoDays: true,
           day1: [
-            { time: "8:00 ص", title: "بداية المغامرة من دهب", desc: "بنتحرك بالجيب سفاري على الطريق الصحراوي لوادي عراضة." },
-            { time: "صباحاً", title: "صخرة نقوش عراضة", desc: "وقت كفاية نتأمل النقوش والرسومات التاريخية على الصخر." },
-            { time: "الظهر", title: "الكانيون المزدوج ومسار الحفريات", desc: "أحلى مسارات الهايكنج: ممرات ضيقة، صعود بالحبال، ولمس الشعب المرجانية المتحجرة في حيطان الكانيون." },
-            { time: "غدا بدوي", title: "غدا شيف الصحراء", desc: "وجبة فريش وسخنة بيعملها شيف الصحراء ع الفحم — استمتع بيها بروقان ومن غير كروتة." },
-            { time: "العصر", title: "مقابر النواميس", desc: "زيارة متأنية لأقدم منشآت حجرية مسقوفة قائمة في العالم." },
-            { time: "مساءً", title: "العشا وقعدة الكامب بالليل", desc: "بنوصل الكامب وقت الغسق، وعشا شواء ساخن ع النار تحت ملايين النجوم في سماء سينا." }
+            { time: "8:00 ص", title: "بداية المغامرة من دهب", desc: "رحلة الجيب سفاري بتبدأ على الطريق الداخلي المتجه لوادي عراضة." },
+            { time: "صباحاً", title: "صخرة نقوش وادي عراضة", desc: "بناخد وقتنا بالكامل وسط النقوش الصخرية القديمة: الجمال، الصيادين، وتفاصيل حياة البدو والرحالة اللي عبروا الوادي دا على مدار آلاف السنين. معاك وقت براحتك لحد ما تلاقي النقش المفضل ليك." },
+            { time: "الظهر", title: "الكانيون المزدوج — هايكنج وتسلق وحفريات", desc: "أهم متعة تراكينج ومغامرة في الرحلة، من غير أي استعجال ولا حساب للساعة. هايكنج حقيقي في قلب الكانيون مع أجزاء تسلق ونزول منحدر بالحبال — المرشدين معاك وبيساعدوك خطوة بخطوة. وفي نص الطريق، هتمشي جنب شعب مرجانية متحجرة وحفريات قواقع بحرية متثبتة في جدران الكانيون: الصحراء دي كانت زمان قاع بحر كامل، وهنا هتقدر تلمس الحقيقة دي بإيدك." },
+            { time: "غدا بدوي", title: "غداء مطول في قلب الصحراء", desc: "وإنت في الكانيون، شيف الصحراء الخبير بتاعنا بيجهز غداء طازة في الهواء الطلق. النهاردة الغداء مش مجرد وقفة سريعة بين محطتين — خد راحتك ووقفك واستمتع بكل تفصيلة." },
+            { time: "العصر", title: "مقابر النواميس الأثرية", desc: "مقابر حجرية دائرية اتبنت من حوالي 5000 سنة — أقدم من الأهرامات، ومن أقدم المنشآت المسقوفة اللي لسة قائمة على وجه الأرض لحد النهاردة." },
+            { time: "مساءً", title: "العشاء والكامب الصحراوي", desc: "مع هبوط المساء بنوصل للكامب، ويكون الشيف مجهز عشاء مشويات طازة ع الفحم بناكله حولين نار الحطب الدافية. وهتبات فين دا اختيارك إنت — شوف الكامبات المتاحة." }
           ],
           day2: [
-            { time: "صباحاً", title: "صباح دهبي في الكامب", desc: "صحيان رايق مع فطار بدوي وشاي حبق في سكون الصباح الصحراوي." },
-            { time: "الضحى", title: "جبل رأس التنين (جبل مخروم)", desc: "قعدة تأمل طويلة نتمتع فيها بوسع الصحراء وجمال الطبيعة من غير أي عجلة." },
-            { time: "العصر", title: "كثبان هدودة الرملية", desc: "الختام الأسطوري: ساندبوردينج وصعود التلال الرملية وتأمل ألوان الغروب." },
-            { time: "5:00 م", title: "الرجوع براحة لدهب", desc: "طريق عودة مريح مع ذكريات وقصص هتفضل فاكرها سنين." }
+            { time: "صباحاً", title: "صباح رايق في الكامب", desc: "تصحى في قلب الصحراء مع فطار فريش جاهز في الكامب ومن غير أي سبب للاستعجال — الجو هادي، منعش، والضوء دهبي ساحر." },
+            { time: "الضحى", title: "جبل رأس التنين (جبل مخروم)", desc: "استمتع بالإطلالة الواسعة على أرض الحجر الرملي وبحور الكثبان الرملية تحت، مع وقت كافي تقعد وتتأمل المنظر بروقان مش مجرد تاخد صورة سريعة وتمشي." },
+            { time: "العصر", title: "كثبان هدودة الرملية", desc: "الختام الأسطوري: ساندبوردينج وتزحلق ع الرمل، تطلع القمة أكتر من مرة، أو تقعد تشوف حركة الضوء وألوان الشمس وهي بتتحرك على صحراء سيناء." },
+            { time: "5:00 م", title: "الرجوع لدهب (5:00 م أو الغروب)", desc: "طريق عودة هادي ومريح، وإنت راجع ولسة سحر الصحراء كله عايش في بالك." }
           ]
         }
       ],
+      galleryHighlights: [
+        { title: "صخرة نقوش وادي عراضة", enTitle: "Rock of Inscriptions", image: "/images/excursion-inscriptions.jpg" },
+        { title: "مقابر النواميس الأثرية", enTitle: "The Nawamis tombs", image: "/images/excursion-nawamis-tombs.jpg" },
+        { title: "التزلج على كثبان هدودة", enTitle: "Sandboarding on Hedoda", image: "/images/pdf_img_4.jpg" },
+        { title: "قمة كثبان هدودة الرملية", enTitle: "The crest of Hedoda", image: "/images/excursion-hedoda-dunes.jpg" },
+        { title: "هايكنج الكانيون المزدوج", enTitle: "The Double Canyon", image: "/images/excursion-double-canyon.jpg" }
+      ],
       whereYouSleep: {
-        badge: "مخصوص لرحلة اليومين وليلة",
-        title: "هتبات فين — اختار الكامب اللي ع مزاجك",
+        badge: "مخصوص لرحلة اليومين وليلة فقط",
+        title: "هتبات فين — اختار الكامب اللي على مزاجك",
         subtitle: "اختار بين خصوصية وهدوء الكانيون، أو النوم في الصحراء المفتوحة تحت مجرة درب التبانة.",
         camps: [
           {
             id: "zigzag",
-            badge: "الكامب الرومانسي والرايق",
+            badge: "الكامب الرومانسي",
             title: "كانيون زجزاج (Zigzag Canyon)",
-            desc: "بين جدران الكانيون المتعرجة، كامب مثالي معمول للهدوء والخصوصية التامة: عشا على ضوء الشموع، وسهرات دافية حولين نار الحطب ع الصخر. الخيار المظبوط للمناسبات الخاصة والاحتفالات الهادية.",
+            desc: "بين جدران كانيون زجزاج المتعرجة، الكامب دا معمول مخصوص لاتنين: عشاء رومانسي على ضوء الشموع في هدوء وسكون الكانيون، ونور نار الحطب بينعكس على الصخور الرملية، وليلة متغطية بسحر الصخر. لو بتحتفلوا بذكرى زواج، أو شهر عسل، أو حابين تعيشوا لحظة خاصة جداً سوا، دا هو الاختيار المثالي.",
             image: "/images/excursion-night-camp.jpg"
           },
           {
             id: "stargazer",
-            badge: "كامب عشاق النجوم والمجرة",
+            badge: "كامب عشاق النجوم",
             title: "في الهواء الطلق جنب جبل مخروم",
-            desc: "عشان تشوف سماء الليل زي ما عمرك ما شفتها قبل كدة، مافيش أحلى من النوم في الصحراء المفتوحة بعيد تماماً عن أي أنوار أو مدن. في الليالي الصافية، مجرة درب التبانة بتبقى واضحة من أول الأفق لآخره بالعين المجردة.",
-            tip: "نصيحة من القلب: نور القمر بيعتبر الإضاءة الطبيعية في الصحراء، وعشان تاخد أحسن مشهد للنجوم والمجرة يفضل تحجز في أيام المحاق (أول الشهر العربي). ابعت لنا تواريخك وهنشوف لك جدول القمر على طول.",
+            desc: "عشان سماء الليل، مافيش أي حاجة تقارن بالنوم في الصحراء المفتوحة جنب جبل رأس التنين (جبل مخروم)، بعيد تماماً عن أي تلوث ضوئي. في الليالي الصافية من غير قمر، مجرة درب التبانة بتمتد من الأفق للأفق قصاد عينك — مش محتاج أي تلسكوب.",
+            tip: "نصيحة صريحة من القلب: القمر هو الإضاءة الطبيعية للصحراء، فعشان تشوف أروع مشهد للنجوم والمجرة، خطط لرحلتك في أيام المحاق (الهلال الجديد أول الشهر العربي). ابعت لنا تواريخك وهنشوف لك جدول وحركة القمر بالظبط.",
             image: "/images/excursion-hedoda-dunes.jpg"
           }
         ]
       },
       tripEssentials: {
-        includedTitle: "إيه اللي مشمول في كل الرحلات؟",
-        included: [
-          "كل الانتقالات من وإلى دهب بعربيات جيب 4x4 مجهزة ومكيفة",
-          "كل الوجبات والمشروبات والفواكه الفريش بيجهزها شيف الصحراء مخصوص",
-          "مرشدين بدو من أهل المكان وعارفين كل شبر ومسار في الصحراء",
-          "تذاكر ورسوم دخول المحميات والمزارات الأثرية بالكامل",
-          "تجهيزات الكامب والمبيت بالكامل لرحلة اليومين وليلة"
-        ],
-        notIncludedTitle: "إيه اللي مش مشمول؟",
-        notIncluded: [
-          "الإكرامية (التيبس) اللطيفة للمرشد والسائق",
-          "المصاريف الشخصية وأي هدايا تذكارية تحب تشتريها"
-        ],
-        bringTitle: "حاجات مهمة تجيبها معاك",
-        bring: [
-          "كوتشي مريح للمشي (مهم جداً لهايكنج كانيون وادي عراضة)",
-          "البطاقة الشخصية أو الباسبور (عشان الكماين على الطرق الصحراوية)",
-          "جاكيت أو لبس تقيل زيادة (ليالي الصحراء بتسقع حتى لو الجو حر الصبح)",
-          "شوية كاش فكة لو حبيت تشتري مشغولات يدوية من سيدات البدو"
-        ]
+        sectionTitle: "تجهيزات وتفاصيل الرحلة",
+        sectionSubtitle: "كل التفاصيل المشمولة والحاجات اللي محتاج تجيبها معاك لكل رحلة بالتفصيل",
+        oneDay: {
+          badge: "لرحلات اليوم الواحد",
+          title: "رحلات اليوم الواحد",
+          priceInfo: "95 USD للفرد · أقل عدد 4 أفراد",
+          includedTitle: "مشمول في الرحلة",
+          included: [
+            "كل الانتقالات والمواصلات بعربيات جيب 4x4 مجهزة ومريحة",
+            "كل الوجبات والمشروبات خلال الرحلة الصحراوية",
+            "دليل ومرشد صحراوي خبير",
+            "جميع رسوم دخول المواقع والمحميات"
+          ],
+          notIncludedTitle: "غير مشمول",
+          notIncluded: [
+            "الإكراميات (التيبس)",
+            "المصاريف الشخصية"
+          ],
+          bringTitle: "برجاء إحضار",
+          bring: [
+            "كوتشي مريح للمشي (جزمة هايكنج ممتازة لمسار وادي عراضة)",
+            "الباسبور أو البطاقة الشخصية",
+            "شوية كاش فكة للهدايا التذكارية من أهل سيناء البدو"
+          ]
+        },
+        overnight: {
+          badge: "مخصوص لرحلة اليومين وليلة",
+          title: "رحلة المبيت في الصحراء",
+          priceInfo: "190 USD للفرد · أقل عدد 4 أفراد",
+          includedTitle: "مشمول في الرحلة",
+          included: [
+            "كل الانتقالات ذهاباً وإياباً من وإلى دهب",
+            "كل الوجبات والمشروبات خلال الرحلة الصحراوية — شاملة العشاء والفطار والغداء فريش بإيد شيف الصحراء",
+            "مبيت الكامب الصحراوي — كانيون زجزاج أو في الهواء الطلق جنب جبل مخروم",
+            "مرشدو الصحراء البدو المعتمدين",
+            "جميع رسوم وتذاكر دخول المواقع"
+          ],
+          notIncludedTitle: "غير مشمول",
+          notIncluded: [
+            "الإكراميات والمصاريف الشخصية"
+          ],
+          bringTitle: "حاجات مهمة تجيبها معاك",
+          bring: [
+            "كوتشي أو جزمة هايكنج كويسة",
+            "الباسبور أو البطاقة الشخصية (في كَمائن تفتيش على الطرق الصحراوية الداخلية)",
+            "لبس وجاكيت دافي — ليالي الصحراء بتسقع حتى لو النهار حر",
+            "شوية كاش فكة للهدايا التذكارية من أهل سيناء البدو"
+          ]
+        }
       }
     },
     transportationPage: {
