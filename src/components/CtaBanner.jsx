@@ -28,7 +28,7 @@ export default function CtaBanner({ t, lang = 'en' }) {
           {/* CTA Buttons */}
           <div className="flex-shrink-0 flex items-center gap-4 flex-wrap">
             <a
-              href="https://wa.me/201116664591?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20Sinai%20Booking%D8%8C%20%D8%A3%D9%88%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D9%88%D8%A7%D9%84%D8%AD%D8%AC%D8%B2."
+              href={`https://wa.me/201116664591?text=${encodeURIComponent('مساء الخير Sinai Booking، حابب استفسر واحجز.')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3.5 sm:py-4 bg-[#25D366] hover:bg-[#20BA5A] text-white text-sm sm:text-base font-semibold rounded-full shadow-md hover:shadow-xl hover:scale-102 transition-all active:scale-95"

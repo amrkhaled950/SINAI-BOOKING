@@ -45,7 +45,7 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
 
   const handleDirectWhatsApp = (trip) => {
     const msg = isAr
-      ? `السلام عليكم، أود الاستفسار والحجز لـ "${trip.title}" (${trip.price}) من خلال Sinai Booking.`
+      ? `مساء الخير، حابب استفسر واحجز "${trip.title}" (${trip.price}) عن طريق Sinai Booking.`
       : `Hello! I would like to book the "${trip.title}" (${trip.price}) through Sinai Booking.`
     window.open(`https://wa.me/201116664591?text=${encodeURIComponent(msg)}`, '_blank')
   }
@@ -53,19 +53,19 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const handleModalWhatsApp = () => {
     if (!selectedTrip) return
     const campNote = selectedTrip.twoDays
-      ? (isAr ? `\nالكامب المفضل: ${selectedCamp === 'zigzag' ? 'كانيون زجزاج (الرومانسي)' : 'الهواء الطلق قرب جبل مخروم (النجوم)'}` : `\nPreferred Camp: ${selectedCamp === 'zigzag' ? 'Zigzag Canyon (Romantic)' : 'Open Air near Gebel Makhroum (Stargazer)'}`)
+      ? (isAr ? `\nالكامب المفضل: ${selectedCamp === 'zigzag' ? 'كانيون زجزاج (الرومانسي)' : 'الهواء الطلق جنب جبل مخروم (النجوم)'}` : `\nPreferred Camp: ${selectedCamp === 'zigzag' ? 'Zigzag Canyon (Romantic)' : 'Open Air near Gebel Makhroum (Stargazer)'}`)
       : ''
 
     const cairoStationsMap = {
-      riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
-      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
-      rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
-      madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
-      none: isAr ? 'بدون انتقالات (بمعرفتي)' : 'Without transportation (on my own)'
+      riad: isAr ? 'عبد المنعم رياض (12:00 بالليل)' : 'Abdel Moneim Riad (12:00 AM)',
+      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 بالليل)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+      rehab: isAr ? 'الرحاب (1:00 صباحاً)' : 'Rehab (1:00 AM)',
+      madinaty: isAr ? 'مدينتي (1:15 صباحاً)' : 'Madinaty (1:15 AM)',
+      none: isAr ? 'من غير انتقالات (هاجي بمعرفتي)' : 'Without transportation (on my own)'
     }
 
     const paymentLabels = {
-      wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
+      wallet: isAr ? 'محفظة كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
       instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
       card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
     }
@@ -73,17 +73,17 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
     const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
     
     const msg = isAr
-      ? `السلام عليكم، أود حجز رحلة "${selectedTrip.title}" عبر Sinai Booking.
+      ? `مساء الخير، حابب احجز رحلة "${selectedTrip.title}" عن طريق Sinai Booking.
 • الجنسية: ${nationalityLabel}
 • التاريخ المطلوب: ${selectedDate}
-• عدد الأفراد: ${guestCount} أفراد (الحد الأدنى 4)
+• عدد الأفراد: ${guestCount} أفراد (أقل عدد 4)
 • عدد الأطفال: ${childrenCount}
-• الاسم: ${customerName || 'غير محدد'}
-• رقم الهاتف: ${customerPhone || 'غير محدد'}
+• الاسم: ${customerName || 'مش محدد'}
+• رقم الهاتف: ${customerPhone || 'مش محدد'}
 • الانتقالات من القاهرة: ${cairoStationsMap[cairoStation]}
 • طريقة الدفع: ${paymentLabels[paymentMethod]}${campNote}
 • السعر التقديري: $${selectedTrip.priceUsd * guestCount}
-${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}برجاء تأكيد التوافر وإمكانية الحجز.`
+${notes ? `• طلبات خاصة: ${notes}\n` : ''}يا ريت تأكدوا لنا التوافر ومواعيد الحجز.`
       : `Hello! I would like to book "${selectedTrip.title}" via Sinai Booking.
 • Nationality: ${nationalityLabel}
 • Requested Date: ${selectedDate}
@@ -330,7 +330,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                   onClick={() => handleOpenTripModal(currentTabTrip)}
                   className="px-6 py-3 rounded-full bg-[#9C4328] hover:bg-[#85371F] text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                 >
-                  <span>{isAr ? 'احجز هذه الرحلة' : 'Book this trip'}</span>
+                  <span>{isAr ? 'احجز الرحلة دي' : 'Book this trip'}</span>
                   <ArrowUpRight size={16} />
                 </button>
               </div>
@@ -347,7 +347,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                       : 'bg-[#F2ECE1] text-[#6B665E] hover:bg-[#E5DDCF]'
                   }`}
                 >
-                  {isAr ? 'اليوم الأول: النقوش، الكانيون، والمخيم' : 'Day 1 — Inscriptions, canyon and camp'}
+                  {isAr ? 'اليوم الأول: النقوش، الكانيون، والمبيت' : 'Day 1 — Inscriptions, canyon and camp'}
                 </button>
                 <button
                   onClick={() => setActiveDay(2)}
@@ -357,7 +357,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                       : 'bg-[#F2ECE1] text-[#6B665E] hover:bg-[#E5DDCF]'
                   }`}
                 >
-                  {isAr ? 'اليوم الثاني: الجبال، الكثبان، والعودة' : 'Day 2 — Mountains, dunes, home'}
+                  {isAr ? 'اليوم الثاني: الجبال، الكثبان، والرجوع' : 'Day 2 — Mountains, dunes, home'}
                 </button>
               </div>
             )}
@@ -575,15 +575,15 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#9C4328] text-white rounded-[28px] p-8 sm:p-12 shadow-lg text-center space-y-5">
             <h3 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">
-              {isAr ? 'أي رحلة تناسب مغامرتك القادمة؟' : 'Which trip is yours?'}
+              {isAr ? 'أي رحلة تناسب مغامرتك الجاية؟' : 'Which trip is yours?'}
             </h3>
             <p className="text-sm sm:text-base text-white/90 max-w-2xl mx-auto">
               {isAr
-                ? 'رحلة اليوم الواحد 95 دولار · رحلة التزلج على الرمال 95 دولار · رحلة المبيت ليلتين 190 دولار للفرد · الحد الأدنى 4 أفراد · جميع الرحلات قابلة للتعديل والتخصيص.'
+                ? 'رحلة اليوم الواحد 95 دولار · رحلة التزلج على الرمال 95 دولار · رحلة المبيت ليلتين 190 دولار للفرد · أقل عدد 4 أفراد · كل الرحلات نقدر نعدلها ونفصلها على مقاسك.'
                 : 'Day trip 95 USD · Sandboarding 95 USD · Overnight 190 USD per person · min. 4 people · all trips can be adapted.'}
             </p>
             <p className="font-script text-2xl sm:text-3xl text-white/95">
-              {isAr ? 'أرسل لنا تواريخك وسنساعدك في الاختيار.' : 'Send us your dates and we\'ll help you choose.'}
+              {isAr ? 'ابعت لنا تواريخك ومجموعتك وهنساعدك تختار الأنسب.' : 'Send us your dates and we\'ll help you choose.'}
             </p>
             <div className="pt-2 flex justify-center">
               <a
@@ -593,7 +593,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-[#FAF6EF] text-[#9C4328] font-bold text-sm sm:text-base rounded-full shadow-lg transition-all active:scale-95"
               >
                 <MessageCircle size={20} />
-                <span>{isAr ? 'تواصل عبر واتساب: 01116664591' : 'Send via WhatsApp'}</span>
+                <span>{isAr ? 'كلمنا واتساب: 01116664591' : 'Send via WhatsApp'}</span>
               </a>
             </div>
           </div>
@@ -877,7 +877,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 {cairoStation !== 'none' && (
                   <p className="text-[11px] text-[#7A756C] mt-2 bg-[#F6EFE5] p-2 rounded-lg leading-relaxed">
                     ℹ️ {isAr
-                      ? 'سنرسل لك رقم كابتن الرحلة في الساعة 11 مساءً ليلة المغادرة (يتغير يومياً).'
+                      ? 'هنبعت لك رقم كابتن الرحلة الساعة 11 بالليل يوم السفر (بيتغير كل يوم).'
                       : "We'll send you the trip captain's number at 11 PM the night before departure (it changes daily)."}
                   </p>
                 )}
@@ -914,7 +914,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
 
                 <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
                   💵 {isAr
-                    ? 'أرسل العربون إلى رقم المحفظة الموضح أدناه، ثم أرفق لقطة شاشة للتحويل مع رسالة الواتساب. — 01116664591+'
+                    ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
                     : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
                 </p>
               </div>
@@ -937,7 +937,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
               <div className="p-4 bg-[#F2ECE1] rounded-2xl flex items-center justify-between">
                 <div>
                   <span className="text-xs text-[#7A7367] font-medium block">
-                    {isAr ? `إجمالي التقدير (${guestCount} أفراد)` : `Estimated Total (${guestCount} guests)`}
+                    {isAr ? `إجمالي التكلفة التقديرية (${guestCount} أفراد)` : `Estimated Total (${guestCount} guests)`}
                   </span>
                   <span className="text-xl font-bold text-[#183B33]">
                     ${selectedTrip.priceUsd * guestCount}
@@ -956,14 +956,14 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
               >
                 <MessageCircle size={20} />
-                <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send via WhatsApp'}</span>
+                <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
               </button>
 
               <button
                 onClick={() => handleDirectWhatsApp(selectedTrip)}
                 className="w-full py-2.5 text-xs text-[#7A7367] hover:text-[#22211F] text-center font-medium cursor-pointer"
               >
-                {isAr ? 'أو تحدث معنا مباشرة بخصوص هذه الرحلة: 01116664591' : 'Or ask a question directly: 01116664591'}
+                {isAr ? 'أو كلمنا مباشرة لو عندك أي استفسار: 01116664591' : 'Or ask a question directly: 01116664591'}
               </button>
             </div>
 

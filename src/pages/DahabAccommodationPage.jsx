@@ -211,10 +211,10 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div>
               <span className="text-xs font-semibold tracking-[0.2em] text-[#C8553D] uppercase block">
-                {isAr ? 'المزيد من الوحدات المتاحة' : 'More Available Units'}
+                {isAr ? 'أماكن تانية متاحة للإقامة' : 'More Available Units'}
               </span>
               <h3 className="text-2xl sm:text-3xl font-serif text-[#22211F]">
-                {isAr ? 'اختر الغرفة أو الاستوديو المناسب لإقامتك في دهب' : 'Select from Our Curated Dahab Stays'}
+                {isAr ? 'نقي الغرفة أو الاستوديو المناسب لروقانك في دهب' : 'Select from Our Curated Dahab Stays'}
               </h3>
             </div>
 
@@ -257,7 +257,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                         onClick={() => handleOpenApartment(apt)}
                         className="btn-shimmer px-5 py-2.5 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-xs font-semibold rounded-full shadow hover:shadow-md hover:scale-105 transition-all active:scale-95 cursor-pointer"
                       >
-                        {isAr ? 'عرض وحجز' : 'View & Book'}
+                        {isAr ? 'شوف التفاصيل واحجز' : 'View & Book'}
                       </button>
                     </div>
                   </div>

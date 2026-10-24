@@ -41,7 +41,7 @@ export default function NirvanaCampSection({ t, lang = 'en' }) {
 
             <div className="pt-2 flex items-center gap-4 flex-wrap">
               <a
-                href={`https://wa.me/201116664591?text=${encodeURIComponent('السلام عليكم سيناء بوكينج، أود الاستفسار والحجز في كامات طابا ونويبع (Nirvana Camp).')}`}
+                href={`https://wa.me/201116664591?text=${encodeURIComponent('مساء الخير سيناء بوكينج، حابب استفسر واحجز في كامات طابا ونويبع (Nirvana Camp).')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#25D366] hover:bg-[#20BA5A] text-white text-sm sm:text-base font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-102 transition-all active:scale-95"

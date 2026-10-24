@@ -101,7 +101,7 @@ export default function DuplexSection({ t, lang = 'en', onNavigate }) {
 
                 <div className="flex items-center gap-3 flex-wrap">
                   <a
-                    href="https://wa.me/201116664591?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D9%88%D8%AF%20%D8%A7%D9%84%D8%AD%D8%AC%D8%B2%20%D9%81%D9%8A%20Studio%201%20(%D8%A7%D8%B3%D8%AA%D9%88%D8%AF%D9%8A%D9%88%20%D8%AF%D9%88%D8%A8%D9%84%D9%83%D8%B3%20%D9%85%D8%B4%D8%B1%D8%A8%D9%87)"
+                    href={`https://wa.me/201116664591?text=${encodeURIComponent('مساء الخير، حابب احجز في Studio 1 (استوديو دوبلكس المشربة)')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#25D366] hover:bg-[#20BA5A] text-white text-xs sm:text-sm font-semibold rounded-full shadow transition-all active:scale-95"

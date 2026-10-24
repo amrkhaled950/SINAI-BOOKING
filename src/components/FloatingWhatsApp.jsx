@@ -6,7 +6,7 @@ export default function FloatingWhatsApp({ lang = 'en' }) {
   const [showTooltip, setShowTooltip] = useState(false)
 
   const defaultMsg = isAr
-    ? 'السلام عليكم سيناء بوكينج، أود الاستفسار والحجز.'
+    ? 'مساء الخير سيناء بوكينج، حابب استفسر واحجز.'
     : 'Hello Sinai Booking, I would like to inquire and book.'
 
   const waUrl = `https://wa.me/201116664591?text=${encodeURIComponent(defaultMsg)}`
@@ -46,7 +46,7 @@ export default function FloatingWhatsApp({ lang = 'en' }) {
         onMouseLeave={() => setShowTooltip(false)}
         className="relative flex items-center justify-center w-13 h-13 sm:w-14 sm:h-14 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full shadow-2xl hover:shadow-[#25D366]/40 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
         aria-label="Direct WhatsApp Chat 01116664591"
-        title={isAr ? 'تواصل معنا عبر واتساب 01116664591' : 'Chat with Sinai Booking 01116664591'}
+        title={isAr ? 'كلمنا على الواتساب: 01116664591' : 'Chat with Sinai Booking 01116664591'}
       >
         {/* Subtle Ambient Pulse Ring */}
         <span className="absolute -inset-1 rounded-full bg-[#25D366]/25 animate-ping opacity-60 pointer-events-none" />

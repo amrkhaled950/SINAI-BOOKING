@@ -41,19 +41,19 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
 
   const handleSendWhatsApp = () => {
     const vehicleLabel = rideType === 'hiace'
-      ? (isAr ? 'ميكروباص هايس (Hiace Bus - عائلي/مجموعات)' : 'Hiace Bus (Group/Family)')
-      : (isAr ? 'سيارة ملاكي خاصة (Private Car)' : 'Private Car Transfer')
+      ? (isAr ? 'ميكروباص هايس (Hiace - عائلي ومجموعات)' : 'Hiace Bus (Group/Family)')
+      : (isAr ? 'عربية ملاكي خاصة (Private Car)' : 'Private Car Transfer')
 
     const cairoStationsMap = {
-      riad: isAr ? 'عبد المنعم رياض (12:00 AM)' : 'Abdel Moneim Riad (12:00 AM)',
-      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 AM)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
-      rehab: isAr ? 'الرحاب (1:00 AM)' : 'Rehab (1:00 AM)',
-      madinaty: isAr ? 'مدينتي (1:15 AM)' : 'Madinaty (1:15 AM)',
+      riad: isAr ? 'عبد المنعم رياض (12:00 بالليل)' : 'Abdel Moneim Riad (12:00 AM)',
+      embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 بالليل)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+      rehab: isAr ? 'الرحاب (1:00 صباحاً)' : 'Rehab (1:00 AM)',
+      madinaty: isAr ? 'مدينتي (1:15 صباحاً)' : 'Madinaty (1:15 AM)',
       custom: isAr ? 'نقطة تحرك مخصصة' : 'Custom Pick-up'
     }
 
     const paymentLabels = {
-      wallet: isAr ? 'محفظة إلكترونية كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
+      wallet: isAr ? 'محفظة كاش (+201116664591)' : 'Mobile Wallet (+201116664591)',
       instapay: isAr ? 'انستاباي (InstaPay)' : 'InstaPay',
       card: isAr ? 'دفع أونلاين بالفيزا/كارت' : 'Pay online by card'
     }
@@ -61,18 +61,18 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
     const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
 
     const msg = isAr
-      ? `السلام عليكم سيناء بوكينج، أود حجز خدمة انتقالات ومواصلات:
+      ? `مساء الخير سيناء بوكينج، حابب احجز خدمة انتقالات ومواصلات:
 • نوع النقل: ${vehicleLabel}
 • الجنسية: ${nationalityLabel}
 • من (المحطة): ${cairoStation === 'custom' ? pickup : cairoStationsMap[cairoStation]}
 • إلى (الوجهة): ${dropoff}
-• تاريخ السفر: ${travelDate}
+• ميعاد السفر: ${travelDate}
 • عدد الركاب: ${passengers}
 • عدد الأطفال: ${children}
-• الاسم: ${customerName || 'غير محدد'}
-• رقم الهاتف: ${customerPhone || 'غير محدد'}
+• الاسم: ${customerName || 'مش محدد'}
+• رقم التليفون: ${customerPhone || 'مش محدد'}
 • طريقة الدفع: ${paymentLabels[paymentMethod]}
-${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}برجاء موافاتنا بالتوافر والتكلفة وتأكيد الحجز.`
+${notes ? `• طلبات خاصة: ${notes}\n` : ''}يا ريت تأكدوا لنا التوافر والتكلفة وميعاد الحجز.`
       : `Hello Sinai Booking! I would like to book a transfer:
 • Vehicle Preference: ${vehicleLabel}
 • Nationality: ${nationalityLabel}
@@ -687,7 +687,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
 
                 <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
                   💵 {isAr
-                    ? 'أرسل العربون إلى رقم المحفظة الموضح أدناه، ثم أرفق لقطة شاشة للتحويل مع رسالة الواتساب. — 01116664591+'
+                    ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
                     : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
                 </p>
               </div>
@@ -715,10 +715,10 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
               >
                 <MessageCircle size={20} />
-                <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send via WhatsApp'}</span>
+                <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
               </button>
               <p className="text-[11px] text-[#7A7367] text-center">
-                {isAr ? 'سنفتح الواتساب مع تفاصيل حجزك الكاملة جاهزة للإرسال.' : "We'll open WhatsApp with your full booking details ready to send."}
+                {isAr ? 'هنفتحلك الواتساب وكل تفاصيل حجزك جاهزة ومكتوبة.' : "We'll open WhatsApp with your full booking details ready to send."}
               </p>
             </div>
 

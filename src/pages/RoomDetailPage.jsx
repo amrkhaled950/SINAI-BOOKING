@@ -676,7 +676,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
 
                   <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
                     💵 {isAr
-                      ? 'أرسل العربون إلى رقم المحفظة الموضح أدناه، ثم أرفق لقطة شاشة للتحويل مع رسالة الواتساب. — 01116664591+'
+                      ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
                       : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
                   </p>
                 </div>
@@ -749,20 +749,20 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                       const nationalityLabel = nationality === 'egyptian' ? (isAr ? '🇪🇬 مصري' : '🇪🇬 Egyptian') : (isAr ? '🌍 أجنبي' : '🌍 Foreign')
 
                       const msg = isAr
-                        ? `السلام عليكم، أود تقديم طلب حجز ${roomTitle}:
-• كود الوحدة: ${roomCode}
+                        ? `مساء الخير، حابب احجز ${roomTitle}:
+• كود الغرفة: ${roomCode}
 • الجنسية: ${nationalityLabel}
 • نوع الإقامة: ${stayLabel}
 • تاريخ الوصول: ${checkIn}
 • تاريخ المغادرة: ${checkOut}
 • عدد الأفراد: ${guests} أفراد
 • عدد الأطفال: ${children}
-• الاسم: ${guestName || 'غير محدد'}
-• رقم الهاتف: ${guestPhone || 'غير محدد'}
+• الاسم: ${guestName || 'مش محدد'}
+• رقم التليفون: ${guestPhone || 'مش محدد'}
 • الانتقالات من القاهرة: ${cairoStationsMap[cairoStation]}
 • طريقة الدفع: ${paymentLabels[paymentMethod]}
-• السعر التقديري: $${totUsd} / ${totEgp.toLocaleString()} جم
-${notes ? `• ملاحظات خاصة: ${notes}\n` : ''}أرجو تأكيد التوافر وإتمام الحجز.`
+• السعر التقريبي: $${totUsd} / ${totEgp.toLocaleString()} جم
+${notes ? `• طلبات خاصة: ${notes}\n` : ''}يا ريت تأكدوا لنا التوافر وطريقة تأكيد الحجز.`
                         : `Hello! I would like to request a booking for ${roomTitle}:
 • Unit Code: ${roomCode}
 • Nationality: ${nationalityLabel}
@@ -816,12 +816,12 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please let me know availabilit
                     className="btn-shimmer w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-[#25D366] hover:bg-[#20BA5A] text-white text-base font-semibold rounded-full shadow-md hover:shadow-xl hover:scale-102 transition-all active:scale-95 cursor-pointer"
                   >
                     <MessageCircle size={20} className="fill-white" />
-                    <span>{isAr ? 'إرسال طلب الحجز عبر واتساب' : 'Send via WhatsApp'}</span>
+                    <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
                   </a>
                 )}
 
                 <p className="text-[11px] text-center text-[#8C867C]">
-                  {isAr ? 'سنفتح الواتساب مع تفاصيل حجزك الكاملة جاهزة للإرسال.' : "We'll open WhatsApp with your full booking details ready to send."}
+                  {isAr ? 'هنفتحلك الواتساب وكل تفاصيل حجزك جاهزة ومكتوبة.' : "We'll open WhatsApp with your full booking details ready to send."}
                 </p>
 
                 <div className="flex items-center justify-center gap-2 text-xs text-[#5A554E] pt-1">
