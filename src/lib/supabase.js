@@ -74,13 +74,17 @@ export async function saveApartmentBooking(b) {
       stay_type: b.stay_type || 'daily',
       transportation_station: b.transportation_station || null,
       payment_method: b.payment_method || 'wallet',
+      paytabs_tran_ref: b.paytabs_tran_ref || null,
+      payment_status: b.payment_status || 'unpaid',
+      paid_amount: b.paid_amount || null,
+      paid_currency: b.paid_currency || null,
       estimated_total_usd: b.estimated_total_usd || null,
       estimated_total_egp: b.estimated_total_egp || null,
       status: b.status || 'pending',
       notes: b.notes || null,
     }
-    const { error } = await supabase.from('apartment_bookings').insert([payload])
-    return { data: !error, error }
+    const { data, error } = await supabase.from('apartment_bookings').insert([payload]).select().single()
+    return { data: data || !error, error }
   } catch (err) {
     return { data: null, error: err }
   }
@@ -102,14 +106,18 @@ export async function saveSafariBooking(s) {
       children_count: s.children_count || 0,
       transportation_station: s.transportation_station || null,
       payment_method: s.payment_method || 'wallet',
+      paytabs_tran_ref: s.paytabs_tran_ref || null,
+      payment_status: s.payment_status || 'unpaid',
+      paid_amount: s.paid_amount || null,
+      paid_currency: s.paid_currency || null,
       duration: s.duration || null,
       estimated_price_usd: s.estimated_price_usd || s.estimated_total_usd || null,
       estimated_price_egp: s.estimated_price_egp || s.estimated_total_egp || null,
       status: s.status || 'pending',
       notes: s.notes || null,
     }
-    const { error } = await supabase.from('safari_bookings').insert([payload])
-    return { data: !error, error }
+    const { data, error } = await supabase.from('safari_bookings').insert([payload]).select().single()
+    return { data: data || !error, error }
   } catch (err) {
     return { data: null, error: err }
   }
@@ -130,11 +138,56 @@ export async function saveTransferBooking(t) {
       customer_name: t.customer_name || null,
       customer_phone: t.customer_phone || null,
       payment_method: t.payment_method || 'wallet',
+      paytabs_tran_ref: t.paytabs_tran_ref || null,
+      payment_status: t.payment_status || 'unpaid',
+      paid_amount: t.paid_amount || null,
+      paid_currency: t.paid_currency || null,
       status: t.status || 'pending',
       notes: t.notes || null,
     }
-    const { error } = await supabase.from('transfer_bookings').insert([payload])
-    return { data: !error, error }
+    const { data, error } = await supabase.from('transfer_bookings').insert([payload]).select().single()
+    return { data: data || !error, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+export async function updateBookingPaymentStatus(type, id, updateData = {}) {
+  if (!supabase || !id) return { data: null, error: null }
+  const tableMap = {
+    apartment: 'apartment_bookings',
+    safari: 'safari_bookings',
+    transfer: 'transfer_bookings'
+  }
+  const table = tableMap[type] || 'apartment_bookings'
+  try {
+    const { data, error } = await supabase
+      .from(table)
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
+    return { data, error }
+  } catch (err) {
+    return { data: null, error: err }
+  }
+}
+
+export async function getBookingById(type, id) {
+  if (!supabase || !id) return { data: null, error: null }
+  const tableMap = {
+    apartment: 'apartment_bookings',
+    safari: 'safari_bookings',
+    transfer: 'transfer_bookings'
+  }
+  const table = tableMap[type] || 'apartment_bookings'
+  try {
+    const { data, error } = await supabase
+      .from(table)
+      .select('*')
+      .eq('id', id)
+      .single()
+    return { data, error }
   } catch (err) {
     return { data: null, error: err }
   }

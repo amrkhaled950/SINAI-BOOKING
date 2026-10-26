@@ -16,9 +16,11 @@ import {
   Footprints,
   Utensils,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  CreditCard
 } from 'lucide-react'
 import { saveSafariBooking } from '../lib/supabase'
+import { createPayTabsSession } from '../lib/paytabs'
 
 export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const page = t.excursionsPage
@@ -41,11 +43,77 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const [essentialsTab, setEssentialsTab] = useState('one-day')
   const [showModalItinerary, setShowModalItinerary] = useState(false)
   const [showModalEssentials, setShowModalEssentials] = useState(false)
+  const [isPaying, setIsPaying] = useState(false)
+  const [payError, setPayError] = useState('')
 
   const handleOpenTripModal = (trip) => {
     setSelectedTrip(trip)
     setShowModalItinerary(false)
     setShowModalEssentials(false)
+    setPayError('')
+    setIsPaying(false)
+  }
+
+  const handlePayTabsSafariCheckout = async () => {
+    if (!selectedTrip) return
+    try {
+      setIsPaying(true)
+      setPayError('')
+
+      const totalUsd = (selectedTrip.priceUsd || 95) * guestCount
+      const totalEgp = totalUsd * 50
+
+      const cairoStationsMap = {
+        riad: 'Abdel Moneim Riad (12:00 AM)',
+        embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',
+        rehab: 'Rehab (1:00 AM)',
+        madinaty: 'Madinaty (1:15 AM)',
+        none: 'None'
+      }
+
+      const { data: savedBooking } = await saveSafariBooking({
+        tour_name: selectedTrip.title,
+        tour_id: selectedTrip.id,
+        customer_name: customerName || null,
+        customer_phone: customerPhone || null,
+        nationality: nationality,
+        tour_date: selectedDate,
+        travelers_count: guestCount,
+        children_count: childrenCount,
+        transportation_station: cairoStationsMap[cairoStation],
+        payment_method: 'card',
+        payment_status: 'pending_payment',
+        preferred_camp: selectedTrip.twoDays ? selectedCamp : null,
+        duration: selectedTrip.twoDays ? '2 Days / 1 Night' : 'Full Day',
+        estimated_price_usd: totalUsd,
+        estimated_price_egp: totalEgp,
+        notes: notes || null,
+        status: 'pending'
+      })
+
+      const bookingId = savedBooking?.id || `safari_${Date.now()}`
+
+      const session = await createPayTabsSession({
+        bookingId,
+        bookingType: 'safari',
+        title: `${selectedTrip.title} (${guestCount} ${isAr ? 'أفراد' : 'guests'})`,
+        customerName,
+        customerPhone,
+        amount: totalEgp,
+        currency: 'EGP',
+        returnUrl: `${window.location.origin}/#payment-result?bookingId=${encodeURIComponent(bookingId)}&type=safari`
+      })
+
+      if (session.success && session.redirect_url) {
+        window.location.href = session.redirect_url
+      } else {
+        setPayError(session.error || (isAr ? 'تعذر الاتصال ببوابة PayTabs حالياً' : 'Could not connect to payment gateway'))
+        setIsPaying(false)
+      }
+    } catch (err) {
+      setPayError(err.message || 'Payment error')
+      setIsPaying(false)
+    }
   }
 
   const handleDirectWhatsApp = (trip) => {
@@ -1078,11 +1146,19 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                   ))}
                 </div>
 
-                <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
-                  💵 {isAr
-                    ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
-                    : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
-                </p>
+                {paymentMethod === 'card' ? (
+                  <p className="text-[11px] text-[#183B33] mt-2 bg-[#E8F3EE] p-2 rounded-lg border border-[#BCD9CD] leading-relaxed flex items-center gap-1.5 font-medium">
+                    💳 {isAr
+                      ? 'الدفع الإلكتروني عبر بوابة PayTabs الآمنة بالفيزا أو الماستركارد أو ميزة.'
+                      : 'Secure online payment via PayTabs with Visa, MasterCard, or Meeza.'}
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
+                    💵 {isAr
+                      ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
+                      : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
+                  </p>
+                )}
               </div>
 
               {/* Notes (optional) */}
@@ -1115,19 +1191,53 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
               </div>
             </div>
 
+            {/* Error Message */}
+            {payError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium">
+                {payError}
+              </div>
+            )}
+
             {/* Actions */}
             <div className="space-y-2 pt-2">
-              <button
-                onClick={handleModalWhatsApp}
-                className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
-              >
-                <MessageCircle size={20} />
-                <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
-              </button>
+              {paymentMethod === 'card' ? (
+                <button
+                  type="button"
+                  onClick={handlePayTabsSafariCheckout}
+                  disabled={isPaying}
+                  className="w-full py-4 px-6 rounded-xl bg-[#183B33] hover:bg-[#122c26] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
+                >
+                  <CreditCard size={20} />
+                  <span>
+                    {isPaying
+                      ? (isAr ? 'جاري فتح بوابة الدفع...' : 'Connecting to PayTabs...')
+                      : (isAr ? `ادفع الآن بالفيزا (${(selectedTrip.priceUsd || 95) * guestCount * 50} ج.م)` : `Pay Now with Card ($${(selectedTrip.priceUsd || 95) * guestCount})`)}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleModalWhatsApp}
+                  className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  <MessageCircle size={20} />
+                  <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
+                </button>
+              )}
+
+              {paymentMethod === 'card' && (
+                <button
+                  type="button"
+                  onClick={handleModalWhatsApp}
+                  className="w-full py-2 text-xs text-[#7A7367] hover:text-[#22211F] text-center font-medium cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <MessageCircle size={14} className="text-[#25D366]" />
+                  <span>{isAr ? 'أو احجز بالواتساب وادفع نقداً / محفظة' : 'Or book via WhatsApp instead'}</span>
+                </button>
+              )}
 
               <button
                 onClick={() => handleDirectWhatsApp(selectedTrip)}
-                className="w-full py-2.5 text-xs text-[#7A7367] hover:text-[#22211F] text-center font-medium cursor-pointer"
+                className="w-full py-2 text-xs text-[#7A7367] hover:text-[#22211F] text-center font-medium cursor-pointer"
               >
                 {isAr ? 'أو كلمنا مباشرة لو عندك أي استفسار: 01116664591' : 'Or ask a question directly: 01116664591'}
               </button>

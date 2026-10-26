@@ -16,9 +16,11 @@ import {
   MapPin,
   Home,
   Lock,
-  AlertCircle
+  AlertCircle,
+  CreditCard
 } from 'lucide-react'
 import { saveApartmentBooking, fetchConfirmedApartmentBookings } from '../lib/supabase'
+import { createPayTabsSession } from '../lib/paytabs'
 
 export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome, selectedApartment }) {
   const isAr = lang === 'ar'
@@ -67,6 +69,8 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const [cairoStation, setCairoStation] = useState('none') // 'riad' | 'embassy' | 'rehab' | 'madinaty' | 'none'
   const [paymentMethod, setPaymentMethod] = useState('wallet') // 'wallet' | 'instapay' | 'card'
   const [notes, setNotes] = useState('')
+  const [isPaying, setIsPaying] = useState(false)
+  const [payError, setPayError] = useState('')
 
   // Confirmed Locked Dates State
   const [confirmedBookings, setConfirmedBookings] = useState([])
@@ -725,6 +729,112 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                     <Lock size={18} className="text-red-600" />
                     <span>{isAr ? 'عذراً، هذا الميعاد محجوز ومغلق بالفعل' : 'Dates Already Booked - Please Select Other Dates'}</span>
                   </button>
+                ) : paymentMethod === 'card' ? (
+                  <div className="space-y-2.5">
+                    <button
+                      type="button"
+                      disabled={isPaying || !isRangeValid}
+                      onClick={async () => {
+                        try {
+                          setIsPaying(true)
+                          setPayError('')
+
+                          const stay = stayType === 'monthly' ? calculateMonthDays() : calculateNights()
+                          const nightsCount = stay.count || nights
+                          const cairoStationsMap = {
+                            riad: 'Abdel Moneim Riad (12:00 AM)',
+                            embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',
+                            rehab: 'Rehab (1:00 AM)',
+                            madinaty: 'Madinaty (1:15 AM)',
+                            none: 'None'
+                          }
+
+                          const { data: savedBooking } = await saveApartmentBooking({
+                            apartment_name: roomTitle,
+                            apartment_code: roomCode,
+                            customer_name: guestName || null,
+                            customer_phone: guestPhone || null,
+                            nationality: nationality,
+                            check_in_date: checkIn,
+                            check_out_date: checkOut,
+                            nights_count: nightsCount,
+                            guests_count: guests,
+                            children_count: children,
+                            stay_type: stayType,
+                            transportation_station: cairoStationsMap[cairoStation],
+                            payment_method: 'card',
+                            payment_status: 'pending_payment',
+                            estimated_total_usd: totUsd,
+                            estimated_total_egp: totEgp,
+                            notes: notes || null,
+                            status: 'pending'
+                          })
+
+                          const bookingId = savedBooking?.id || `apt_${Date.now()}`
+
+                          const session = await createPayTabsSession({
+                            bookingId,
+                            bookingType: 'apartment',
+                            title: `${roomTitle} - ${roomCode}`,
+                            customerName: guestName,
+                            customerPhone: guestPhone,
+                            amount: totEgp,
+                            currency: 'EGP',
+                            returnUrl: `${window.location.origin}/#payment-result?bookingId=${encodeURIComponent(bookingId)}&type=apartment`
+                          })
+
+                          if (session.success && session.redirect_url) {
+                            window.location.href = session.redirect_url
+                          } else {
+                            setPayError(session.error || (isAr ? 'تعذر الاتصال ببوابة PayTabs حالياً' : 'Could not connect to payment gateway'))
+                            setIsPaying(false)
+                          }
+                        } catch (err) {
+                          setPayError(err.message || 'Payment error')
+                          setIsPaying(false)
+                        }
+                      }}
+                      className="btn-shimmer w-full inline-flex items-center justify-center gap-2.5 py-4 px-6 bg-[#183B33] hover:bg-[#122A24] text-white text-base font-semibold rounded-full shadow-md hover:shadow-xl hover:scale-102 transition-all active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isPaying ? (
+                        <>
+                          <Clock size={20} className="animate-spin" />
+                          <span>{isAr ? 'جاري تحويلك لبوابة PayTabs...' : 'Redirecting to PayTabs...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard size={20} />
+                          <span>
+                            {isAr
+                              ? `ادفع الآن بالفيزا / PayTabs (${totEgp.toLocaleString()} جم)`
+                              : `Pay with Card / PayTabs (${totEgp.toLocaleString()} EGP)`}
+                          </span>
+                        </>
+                      )}
+                    </button>
+
+                    {payError && (
+                      <p className="text-xs text-red-600 font-medium text-center">
+                        {payError}
+                      </p>
+                    )}
+
+                    <div className="text-center pt-1">
+                      <a
+                        href={(() => {
+                          const msg = isAr
+                            ? `مساء الخير، حابب استفسر واحجز ${roomTitle} (${roomCode}) بمبلغ ${totEgp.toLocaleString()} جم.`
+                            : `Hello, I would like to inquire about booking ${roomTitle} (${roomCode}).`
+                          return `https://wa.me/201116664591?text=${encodeURIComponent(msg)}`
+                        })()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#1F7A8C] hover:underline"
+                      >
+                        {isAr ? 'أو تفضل الحجز والتواصل عبر واتساب أولاً؟' : 'Or prefer to chat via WhatsApp first?'}
+                      </a>
+                    </div>
+                  </div>
                 ) : (
                   <a
                     href={(() => {

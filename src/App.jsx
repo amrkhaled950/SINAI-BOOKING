@@ -17,6 +17,7 @@ import ExcursionsPage from './pages/ExcursionsPage'
 import TransportationPage from './pages/TransportationPage'
 import BlogPage from './pages/BlogPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import PaymentResultPage from './pages/PaymentResultPage'
 import { useScrollReveal } from './hooks/useScrollReveal'
 
 const VALID_PAGES = [
@@ -26,7 +27,8 @@ const VALID_PAGES = [
   'excursions',
   'transportation',
   'blog',
-  'admin'
+  'admin',
+  'payment-result'
 ]
 
 function getPageFromUrl() {
@@ -141,7 +143,13 @@ export default function App() {
       />
 
       <main className="flex-1 bg-[#FAF6EF]">
-        {currentPage === 'blog' ? (
+        {currentPage === 'payment-result' ? (
+          /* PayTabs Payment Result & Confirmation Page */
+          <PaymentResultPage
+            lang={lang}
+            onNavigateHome={() => navigate('home')}
+          />
+        ) : currentPage === 'blog' ? (
           /* Dedicated Field Notes & Blog Inner Page */
           <BlogPage
             t={t}

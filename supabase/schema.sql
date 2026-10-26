@@ -92,6 +92,10 @@ ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS nationality VARCH
 ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS children_count INT DEFAULT 0;
 ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS transportation_station VARCHAR(255);
 ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'wallet';
+ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS paytabs_tran_ref VARCHAR(100);
+ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'unpaid';
+ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS paid_amount NUMERIC(10, 2);
+ALTER TABLE public.apartment_bookings ADD COLUMN IF NOT EXISTS paid_currency VARCHAR(10);
 
 -- ==========================================================
 -- 3. جدول حجوزات رحلات السفاري والديزرت (Safari Bookings)
@@ -122,6 +126,10 @@ ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS nationality VARCHAR(
 ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS children_count INT DEFAULT 0;
 ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS transportation_station VARCHAR(255);
 ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'wallet';
+ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS paytabs_tran_ref VARCHAR(100);
+ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'unpaid';
+ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS paid_amount NUMERIC(10, 2);
+ALTER TABLE public.safari_bookings ADD COLUMN IF NOT EXISTS paid_currency VARCHAR(10);
 
 -- ==========================================================
 -- 4. جدول حجوزات الباصات والانتقالات (Transfer Bookings)
@@ -148,6 +156,10 @@ ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS cairo_station VARC
 ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS children_count INT DEFAULT 0;
 ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS nationality VARCHAR(50) DEFAULT 'egyptian';
 ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'wallet';
+ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS paytabs_tran_ref VARCHAR(100);
+ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'unpaid';
+ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS paid_amount NUMERIC(10, 2);
+ALTER TABLE public.transfer_bookings ADD COLUMN IF NOT EXISTS paid_currency VARCHAR(10);
 
 -- ==========================================================
 -- 5. جدول المشتركين في النشرة البريدية (Newsletter Subscribers)

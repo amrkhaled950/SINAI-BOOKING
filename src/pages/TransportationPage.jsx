@@ -10,9 +10,11 @@ import {
   Bus,
   CheckCircle2,
   Clock,
-  Sparkles
+  Sparkles,
+  CreditCard
 } from 'lucide-react'
 import { saveTransferBooking } from '../lib/supabase'
+import { createPayTabsSession } from '../lib/paytabs'
 
 export default function TransportationPage({ t, lang, onNavigateHome }) {
   const page = t.transportationPage
@@ -32,11 +34,74 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
   const [paymentMethod, setPaymentMethod] = useState('wallet')
   const [notes, setNotes] = useState('')
   const [rideType, setRideType] = useState('hiace') // 'hiace' | 'private'
+  const [isPaying, setIsPaying] = useState(false)
+  const [payError, setPayError] = useState('')
 
   const handleOpenPlanner = (type, dest) => {
     if (type) setRideType(type)
     if (dest) setDropoff(dest)
+    setPayError('')
+    setIsPaying(false)
     setModalOpen(true)
+  }
+
+  const handlePayTabsTransferCheckout = async () => {
+    try {
+      setIsPaying(true)
+      setPayError('')
+
+      const totalEgp = rideType === 'private' ? 4500 : (Number(passengers) || 1) * 650
+
+      const cairoStationsMap = {
+        riad: isAr ? 'عبد المنعم رياض (12:00 بالليل)' : 'Abdel Moneim Riad (12:00 AM)',
+        embassy: isAr ? 'سفارة الإمارات — مصر الجديدة (12:30 بالليل)' : 'UAE Embassy — Masr El Gedida (12:30 AM)',
+        rehab: isAr ? 'الرحاب (1:00 صباحاً)' : 'Rehab (1:00 AM)',
+        madinaty: isAr ? 'مدينتي (1:15 صباحاً)' : 'Madinaty (1:15 AM)',
+        custom: isAr ? 'نقطة تحرك مخصصة' : 'Custom Pick-up'
+      }
+
+      const { data: savedBooking } = await saveTransferBooking({
+        service_type: rideType === 'private' ? 'private_car' : 'hiace_bus',
+        pickup_location: cairoStation === 'custom' ? pickup : cairoStationsMap[cairoStation],
+        dropoff_location: dropoff,
+        cairo_station: cairoStation !== 'custom' ? cairoStationsMap[cairoStation] : null,
+        travel_date: travelDate,
+        passengers_count: Number(passengers) || 1,
+        children_count: Number(children) || 0,
+        nationality: nationality,
+        customer_name: customerName || null,
+        customer_phone: customerPhone || null,
+        payment_method: 'card',
+        payment_status: 'pending_payment',
+        paid_amount: totalEgp,
+        paid_currency: 'EGP',
+        notes: notes || null,
+        status: 'pending'
+      })
+
+      const bookingId = savedBooking?.id || `transfer_${Date.now()}`
+
+      const session = await createPayTabsSession({
+        bookingId,
+        bookingType: 'transfer',
+        title: `${rideType === 'private' ? (isAr ? 'عربية خاصة' : 'Private Car') : (isAr ? 'ميكروباص هايس' : 'Hiace Bus')} - ${dropoff} (${passengers} ${isAr ? 'ركاب' : 'passengers'})`,
+        customerName,
+        customerPhone,
+        amount: totalEgp,
+        currency: 'EGP',
+        returnUrl: `${window.location.origin}/#payment-result?bookingId=${encodeURIComponent(bookingId)}&type=transfer`
+      })
+
+      if (session.success && session.redirect_url) {
+        window.location.href = session.redirect_url
+      } else {
+        setPayError(session.error || (isAr ? 'تعذر الاتصال ببوابة PayTabs حالياً' : 'Could not connect to payment gateway'))
+      }
+    } catch (err) {
+      setPayError(err.message || 'Payment initiation failed')
+    } finally {
+      setIsPaying(false)
+    }
   }
 
   const handleSendWhatsApp = () => {
@@ -685,11 +750,19 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                   ))}
                 </div>
 
-                <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
-                  💵 {isAr
-                    ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
-                    : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
-                </p>
+                {paymentMethod === 'card' ? (
+                  <p className="text-[11px] text-[#183B33] mt-2 bg-[#E8F3EE] p-2 rounded-lg border border-[#BCD9CD] leading-relaxed flex items-center gap-1.5 font-medium">
+                    💳 {isAr
+                      ? 'الدفع الإلكتروني عبر بوابة PayTabs الآمنة بالفيزا أو الماستركارد أو ميزة.'
+                      : 'Secure online payment via PayTabs with Visa, MasterCard, or Meeza.'}
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-[#7A756C] mt-2 bg-[#FAF5ED] p-2 rounded-lg border border-[#EDE3D3] leading-relaxed">
+                    💵 {isAr
+                      ? 'ابعت العربون لرقم المحفظة اللي تحت، وابعثلنا سكرين شوت بالتحويل على الواتساب. — 01116664591+'
+                      : 'Send the deposit to the wallet number shown below, then attach a screenshot of the transfer to your WhatsApp message. — +201116664591'}
+                  </p>
+                )}
               </div>
 
               {/* Notes (optional) */}
@@ -706,19 +779,75 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                 />
               </div>
 
+              {/* Estimated Total */}
+              <div className="p-3.5 bg-[#F2ECE1] rounded-2xl flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-[#7A7367] font-medium block">
+                    {isAr ? 'إجمالي التكلفة التقديرية' : 'Estimated Cost'}
+                  </span>
+                  <span className="text-lg font-bold text-[#183B33]">
+                    {rideType === 'private'
+                      ? (isAr ? '4,500 ج.م' : '4,500 EGP')
+                      : (isAr ? `${(Number(passengers) || 1) * 650} ج.م` : `${(Number(passengers) || 1) * 650} EGP`)}
+                  </span>
+                </div>
+                <span className="text-[11px] text-[#7A7367] font-medium text-right rtl:text-left">
+                  {rideType === 'private'
+                    ? (isAr ? 'مشوار خاص مريح بالكامل' : 'Private transfer')
+                    : (isAr ? `${passengers} أفراد في هايس مكيف` : `${passengers} seats in Hiace`)}
+                </span>
+              </div>
+
             </div>
 
-            {/* Direct WhatsApp Action Button */}
+            {/* Error Message */}
+            {payError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium">
+                {payError}
+              </div>
+            )}
+
+            {/* Actions */}
             <div className="pt-2 space-y-2">
-              <button
-                onClick={handleSendWhatsApp}
-                className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
-              >
-                <MessageCircle size={20} />
-                <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
-              </button>
+              {paymentMethod === 'card' ? (
+                <button
+                  type="button"
+                  onClick={handlePayTabsTransferCheckout}
+                  disabled={isPaying}
+                  className="w-full py-4 px-6 rounded-xl bg-[#183B33] hover:bg-[#122c26] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
+                >
+                  <CreditCard size={20} />
+                  <span>
+                    {isPaying
+                      ? (isAr ? 'جاري فتح بوابة الدفع...' : 'Connecting to PayTabs...')
+                      : (isAr
+                          ? `ادفع الآن بالفيزا (${rideType === 'private' ? '4,500' : (Number(passengers) || 1) * 650} ج.م)`
+                          : `Pay Now with Card (${rideType === 'private' ? '4,500' : (Number(passengers) || 1) * 650} EGP)`)}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleSendWhatsApp}
+                  className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  <MessageCircle size={20} />
+                  <span>{isAr ? 'ابعت طلب الحجز ع الواتساب' : 'Send via WhatsApp'}</span>
+                </button>
+              )}
+
+              {paymentMethod === 'card' && (
+                <button
+                  type="button"
+                  onClick={handleSendWhatsApp}
+                  className="w-full py-2 text-xs text-[#7A7367] hover:text-[#22211F] text-center font-medium cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <MessageCircle size={14} className="text-[#25D366]" />
+                  <span>{isAr ? 'أو كمّل الحجز بالواتساب والدفع عند الوصول / محفظة' : 'Or book via WhatsApp instead'}</span>
+                </button>
+              )}
+
               <p className="text-[11px] text-[#7A7367] text-center">
-                {isAr ? 'هنفتحلك الواتساب وكل تفاصيل حجزك جاهزة ومكتوبة.' : "We'll open WhatsApp with your full booking details ready to send."}
+                {isAr ? 'تأكيد فوري وآمن مع فريق خدمة عملاء سيناء بوكينج على مدار الساعة.' : 'Instant, secure confirmation with Sinai Booking 24/7 team.'}
               </p>
             </div>
 

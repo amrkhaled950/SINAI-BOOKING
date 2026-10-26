@@ -977,9 +977,21 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                             {b.transportation_station || 'None'}
                           </td>
                           <td className="px-4 py-3 text-[#5A554E]">
-                            <span className="px-2 py-0.5 rounded-md bg-[#FAF5ED] font-mono text-[10px]">
-                              {b.payment_method || 'wallet'}
-                            </span>
+                            <div className="flex flex-col gap-1 items-start">
+                              <span className="px-2 py-0.5 rounded-md bg-[#FAF5ED] font-mono text-[10px]">
+                                {b.payment_method || 'wallet'}
+                              </span>
+                              {b.payment_status === 'paid' && (
+                                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-800 border border-green-200">
+                                  ✓ {isAr ? 'مدفوع PayTabs' : 'Paid PayTabs'}
+                                </span>
+                              )}
+                              {b.paytabs_tran_ref && (
+                                <span className="text-[9px] text-[#7A7367] font-mono" title={b.paytabs_tran_ref}>
+                                  Ref: {b.paytabs_tran_ref.slice(-8)}
+                                </span>
+                              )}
+                            </div>
                           </td>
                           <td className="px-4 py-3 font-bold text-[#2A6543] whitespace-nowrap">
                             ${b.estimated_total_usd || '—'}
@@ -1057,6 +1069,7 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                       <th className="px-4 py-3.5">{isAr ? 'الأفراد' : 'Guests'}</th>
                       <th className="px-4 py-3.5">{isAr ? 'الكامب' : 'Camp'}</th>
                       <th className="px-4 py-3.5">{isAr ? 'انتقال القاهرة' : 'Cairo Transport'}</th>
+                      <th className="px-4 py-3.5">{isAr ? 'الدفع' : 'Payment'}</th>
                       <th className="px-4 py-3.5">{isAr ? 'الحالة' : 'Status'}</th>
                       <th className="px-4 py-3.5 text-center">{isAr ? 'إجراءات' : 'Actions'}</th>
                     </tr>
@@ -1086,6 +1099,23 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                         </td>
                         <td className="px-4 py-3 text-[#5A554E] text-[11px]">
                           {s.transportation_station || 'None'}
+                        </td>
+                        <td className="px-4 py-3 text-[#5A554E]">
+                          <div className="flex flex-col gap-1 items-start">
+                            <span className="px-2 py-0.5 rounded-md bg-[#FAF5ED] font-mono text-[10px]">
+                              {s.payment_method || 'wallet'}
+                            </span>
+                            {s.payment_status === 'paid' && (
+                              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-800 border border-green-200">
+                                ✓ {isAr ? 'مدفوع PayTabs' : 'Paid PayTabs'}
+                              </span>
+                            )}
+                            {s.paytabs_tran_ref && (
+                              <span className="text-[9px] text-[#7A7367] font-mono" title={s.paytabs_tran_ref}>
+                                Ref: {s.paytabs_tran_ref.slice(-8)}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3">
                           <select
@@ -1149,6 +1179,7 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                       <th className="px-4 py-3.5">{isAr ? 'المسار (من → إلى)' : 'Route'}</th>
                       <th className="px-4 py-3.5">{isAr ? 'التاريخ' : 'Date'}</th>
                       <th className="px-4 py-3.5">{isAr ? 'الركاب' : 'Passengers'}</th>
+                      <th className="px-4 py-3.5">{isAr ? 'الدفع' : 'Payment'}</th>
                       <th className="px-4 py-3.5">{isAr ? 'الحالة' : 'Status'}</th>
                       <th className="px-4 py-3.5 text-center">{isAr ? 'إجراءات' : 'Actions'}</th>
                     </tr>
@@ -1174,6 +1205,23 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                         </td>
                         <td className="px-4 py-3 text-[#22211F]">
                           {t.passengers_count} {isAr ? 'ركاب' : 'passengers'}
+                        </td>
+                        <td className="px-4 py-3 text-[#5A554E]">
+                          <div className="flex flex-col gap-1 items-start">
+                            <span className="px-2 py-0.5 rounded-md bg-[#FAF5ED] font-mono text-[10px]">
+                              {t.payment_method || 'wallet'}
+                            </span>
+                            {t.payment_status === 'paid' && (
+                              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-800 border border-green-200">
+                                ✓ {isAr ? 'مدفوع PayTabs' : 'Paid PayTabs'}
+                              </span>
+                            )}
+                            {t.paytabs_tran_ref && (
+                              <span className="text-[9px] text-[#7A7367] font-mono" title={t.paytabs_tran_ref}>
+                                Ref: {t.paytabs_tran_ref.slice(-8)}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3">
                           <select
