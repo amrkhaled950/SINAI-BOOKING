@@ -32,12 +32,31 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
   const [guestCount, setGuestCount] = useState(4) // default 4 (minimum per brochure)
   const [childrenCount, setChildrenCount] = useState(0)
   const [nationality, setNationality] = useState('egyptian')
+  const getTodayStr = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  const addDaysStr = (dateStr, days = 1) => {
+    const base = dateStr || getTodayStr()
+    const parts = base.split('-').map(Number)
+    const d = new Date(parts[0], parts[1] - 1, parts[2])
+    d.setDate(d.getDate() + days)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
   const [cairoStation, setCairoStation] = useState('none')
   const [paymentMethod, setPaymentMethod] = useState('wallet')
   const [notes, setNotes] = useState('')
-  const [selectedDate, setSelectedDate] = useState('2026-10-25')
+  const [selectedDate, setSelectedDate] = useState(() => addDaysStr(getTodayStr(), 1))
   const [selectedCamp, setSelectedCamp] = useState('zigzag') // for 2-day trip
   const [activeDay, setActiveDay] = useState(1) // for 2-day trip tab
   const [essentialsTab, setEssentialsTab] = useState('one-day')
@@ -101,7 +120,7 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
         customerPhone,
         amount: totalEgp,
         currency: 'EGP',
-        returnUrl: `${window.location.origin}/#payment-result?bookingId=${encodeURIComponent(bookingId)}&type=safari`
+        returnUrl: `${window.location.origin}/payment-result?bookingId=${encodeURIComponent(bookingId)}&type=safari`
       })
 
       if (session.success && session.redirect_url) {
@@ -974,6 +993,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                   </label>
                   <input
                     type="date"
+                    min={getTodayStr()}
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                     className="w-full px-3 py-2 bg-white rounded-xl border border-[#D9D0C2] text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"

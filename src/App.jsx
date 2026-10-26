@@ -40,6 +40,10 @@ function getPageFromUrl() {
   if (VALID_PAGES.includes(path)) {
     return path
   }
+  const search = window.location.search || ''
+  if (search.includes('tranRef') || search.includes('payment-result') || search.includes('respStatus')) {
+    return 'payment-result'
+  }
   return 'home'
 }
 

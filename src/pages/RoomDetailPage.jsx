@@ -57,10 +57,29 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
   // Booking Form State
+  const getTodayStr = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  const addDaysStr = (dateStr, days = 1) => {
+    const base = dateStr || getTodayStr()
+    const parts = base.split('-').map(Number)
+    const d = new Date(parts[0], parts[1] - 1, parts[2])
+    d.setDate(d.getDate() + days)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   const [stayType, setStayType] = useState('daily') // 'daily' or 'monthly'
-  const todayStr = new Date().toISOString().split('T')[0]
-  const [checkIn, setCheckIn] = useState('2026-10-20')
-  const [checkOut, setCheckOut] = useState('2026-10-25')
+  const todayStr = getTodayStr()
+  const [checkIn, setCheckIn] = useState(() => getTodayStr())
+  const [checkOut, setCheckOut] = useState(() => addDaysStr(getTodayStr(), 2))
   const [nationality, setNationality] = useState('egyptian') // 'egyptian' | 'foreign'
   const [guests, setGuests] = useState(2) // 1, 2, 3
   const [children, setChildren] = useState(0) // 0, 1, 2
@@ -76,28 +95,14 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const [confirmedBookings, setConfirmedBookings] = useState([])
   const [loadingBookings, setLoadingBookings] = useState(false)
 
-  useEffect(() => {
-    let isMounted = true
-    async function loadConfirmed() {
-      setLoadingBookings(true)
-      const res = await fetchConfirmedApartmentBookings(roomCode)
-      if (isMounted && res.data) {
-        setConfirmedBookings(res.data)
-      }
-      if (isMounted) setLoadingBookings(false)
-    }
-    loadConfirmed()
-    return () => { isMounted = false }
-  }, [roomCode])
-
   // Overlap & Conflict Check
-  const getConflictingBooking = (inDate, outDate) => {
+  const getConflictingBooking = (inDate, outDate, list = confirmedBookings) => {
     if (!inDate || !outDate) return null
     const dIn = new Date(inDate).getTime()
     const dOut = new Date(outDate).getTime()
     if (dOut <= dIn) return null
 
-    for (const b of confirmedBookings) {
+    for (const b of list) {
       if (!b.check_in_date || !b.check_out_date) continue
       const bIn = new Date(b.check_in_date).getTime()
       const bOut = new Date(b.check_out_date).getTime()
@@ -109,8 +114,50 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
     return null
   }
 
+  useEffect(() => {
+    let isMounted = true
+    async function loadConfirmed() {
+      setLoadingBookings(true)
+      const res = await fetchConfirmedApartmentBookings(roomCode)
+      if (isMounted && res.data) {
+        setConfirmedBookings(res.data)
+
+        // If today or the initial candidate dates conflict with an existing confirmed booking,
+        // automatically shift to the first available open date!
+        const today = getTodayStr()
+        let candidateIn = today
+        let candidateOut = addDaysStr(candidateIn, 2)
+
+        const conflict = getConflictingBooking(candidateIn, candidateOut, res.data)
+        if (conflict) {
+          const sorted = [...res.data].sort((a, b) => new Date(a.check_out_date) - new Date(b.check_out_date))
+          for (const b of sorted) {
+            if (b.check_out_date >= candidateIn) {
+              candidateIn = b.check_out_date
+              candidateOut = addDaysStr(candidateIn, 2)
+              if (!getConflictingBooking(candidateIn, candidateOut, res.data)) {
+                break
+              }
+            }
+          }
+          setCheckIn(candidateIn)
+          setCheckOut(candidateOut)
+        }
+      }
+      if (isMounted) setLoadingBookings(false)
+    }
+    loadConfirmed()
+    return () => { isMounted = false }
+  }, [roomCode])
+
   const conflictingBooking = getConflictingBooking(checkIn, checkOut)
   const isDatesConflict = Boolean(conflictingBooking)
+  const isRangeValid = Boolean(
+    checkIn &&
+    checkOut &&
+    new Date(checkOut).getTime() > new Date(checkIn).getTime() &&
+    !isDatesConflict
+  )
 
   const handlePrev = (e) => {
     e.stopPropagation()
@@ -739,8 +786,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                           setIsPaying(true)
                           setPayError('')
 
-                          const stay = stayType === 'monthly' ? calculateMonthDays() : calculateNights()
-                          const nightsCount = stay.count || nights
+                          const nightsCount = stayType === 'monthly' ? 30 : nights
                           const cairoStationsMap = {
                             riad: 'Abdel Moneim Riad (12:00 AM)',
                             embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',
@@ -780,7 +826,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                             customerPhone: guestPhone,
                             amount: totEgp,
                             currency: 'EGP',
-                            returnUrl: `${window.location.origin}/#payment-result?bookingId=${encodeURIComponent(bookingId)}&type=apartment`
+                            returnUrl: `${window.location.origin}/payment-result?bookingId=${encodeURIComponent(bookingId)}&type=apartment`
                           })
 
                           if (session.success && session.redirect_url) {
@@ -893,8 +939,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please let me know availabilit
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {
-                      const stay = stayType === 'monthly' ? calculateMonthDays() : calculateNights()
-                      const nightsCount = stay.count || nights
+                      const nightsCount = stayType === 'monthly' ? 30 : nights
                       const cairoStationsMap = {
                         riad: 'Abdel Moneim Riad (12:00 AM)',
                         embassy: 'UAE Embassy — Masr El Gedida (12:30 AM)',

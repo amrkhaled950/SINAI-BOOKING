@@ -20,11 +20,19 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
   const page = t.transportationPage
   const isAr = lang === 'ar'
 
+  const getTodayStr = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   // Booking / Enquiry Modal State
   const [modalOpen, setModalOpen] = useState(false)
   const [pickup, setPickup] = useState('Cairo')
   const [dropoff, setDropoff] = useState('Dahab')
-  const [travelDate, setTravelDate] = useState('2026-10-25')
+  const [travelDate, setTravelDate] = useState(() => getTodayStr())
   const [passengers, setPassengers] = useState(2)
   const [children, setChildren] = useState(0)
   const [nationality, setNationality] = useState('egyptian')
@@ -89,7 +97,7 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
         customerPhone,
         amount: totalEgp,
         currency: 'EGP',
-        returnUrl: `${window.location.origin}/#payment-result?bookingId=${encodeURIComponent(bookingId)}&type=transfer`
+        returnUrl: `${window.location.origin}/payment-result?bookingId=${encodeURIComponent(bookingId)}&type=transfer`
       })
 
       if (session.success && session.redirect_url) {
@@ -657,6 +665,7 @@ ${notes ? `• Special requests: ${notes}\n` : ''}Please confirm availability an
                   </label>
                   <input
                     type="date"
+                    min={getTodayStr()}
                     value={travelDate}
                     onChange={(e) => setTravelDate(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-[#D9D0C2] text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C45437]"

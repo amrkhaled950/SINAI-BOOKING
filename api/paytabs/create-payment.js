@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const origin = `${protocol}://${host}`;
 
-    const finalReturnUrl = returnUrl || `${origin}/#payment-result?bookingId=${encodeURIComponent(bookingId || '')}&type=${encodeURIComponent(bookingType || '')}`;
+    const finalReturnUrl = returnUrl || `${origin}/payment-result?bookingId=${encodeURIComponent(bookingId || '')}&type=${encodeURIComponent(bookingType || '')}`;
     const callbackUrl = `${origin}/api/paytabs/callback`;
 
     // PayTabs Egypt processes primary card transactions in EGP.
