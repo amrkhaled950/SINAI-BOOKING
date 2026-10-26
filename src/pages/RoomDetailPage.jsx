@@ -297,8 +297,8 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
               </div>
             </div>
 
-            {/* 8 Clickable Thumbnails */}
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+            {/* Clickable Thumbnails Grid */}
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-56 overflow-y-auto p-1.5 rounded-2xl bg-[#F6F1E7]/70 border border-[#EAE3D5]/60">
               {gallery.map((photo, idx) => (
                 <button
                   key={idx}
@@ -320,43 +320,22 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
               <h3 className="text-xl font-serif text-[#22211F] mb-4">
                 {isAr ? 'تجهيزات ومواصفات الوحدة' : 'Unit Amenities & Features'}
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-[#5A554E] font-medium">
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'تكييف هواء' : 'Air conditioning'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'حمام بسخان وشاور' : 'Heated shower'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'شاشة LCD' : 'LCD Screen'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'واي فاي سريع' : 'High-speed Wi-Fi'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'ميني بار' : 'Mini bar'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'مطبخ ومستلزمات' : 'Mini kitchen'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'كنبة أمريكية' : 'American sofa'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'مرتبة عالية الجودة' : 'Quality mattress'}</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-[#FAF6EF] rounded-xl">
-                  <Check size={14} className="text-[#2A6543]" />
-                  <span>{isAr ? 'حتى ٣ أفراد' : 'Up to 3 guests'}</span>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#5A554E] font-medium">
+                {((isAr ? selectedApartment?.amenities_ar : selectedApartment?.amenities) || []).length > 0 ? (
+                  (isAr ? selectedApartment.amenities_ar : selectedApartment.amenities).map((amenity, idx) => (
+                    <div key={idx} className="flex items-center gap-2.5 p-2.5 bg-[#FAF6EF] rounded-xl border border-[#F0EBE1]">
+                      <Check size={15} className="text-[#2A6543] shrink-0" />
+                      <span>{amenity}</span>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2.5 p-2.5 bg-[#FAF6EF] rounded-xl border border-[#F0EBE1]"><Check size={15} className="text-[#2A6543] shrink-0" /><span>{isAr ? 'تكييف هواء' : 'Air conditioning'}</span></div>
+                    <div className="flex items-center gap-2.5 p-2.5 bg-[#FAF6EF] rounded-xl border border-[#F0EBE1]"><Check size={15} className="text-[#2A6543] shrink-0" /><span>{isAr ? 'حمام بسخان وشاور' : 'Heated shower'}</span></div>
+                    <div className="flex items-center gap-2.5 p-2.5 bg-[#FAF6EF] rounded-xl border border-[#F0EBE1]"><Check size={15} className="text-[#2A6543] shrink-0" /><span>{isAr ? 'واي فاي سريع' : 'High-speed Wi-Fi'}</span></div>
+                    <div className="flex items-center gap-2.5 p-2.5 bg-[#FAF6EF] rounded-xl border border-[#F0EBE1]"><Check size={15} className="text-[#2A6543] shrink-0" /><span>{isAr ? 'مطبخ ومستلزمات' : 'Equipped Kitchen'}</span></div>
+                  </>
+                )}
               </div>
             </div>
 
