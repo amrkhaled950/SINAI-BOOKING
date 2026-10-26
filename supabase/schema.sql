@@ -59,6 +59,33 @@ INSERT INTO public.apartments (
     ],
     ARRAY['Air Conditioning', 'High-Speed Wi-Fi', 'Private Bathroom', 'Smart TV', 'Kitchenette', 'Sea/Garden View'],
     ARRAY['تكييف هواء سبليت', 'واي فاي سريع', 'حمام خاص متكامل', 'تلفزيون ذكي سمارت', 'مطبخ تحضيري', 'إطلالة هادئة'],
+) ON CONFLICT (code) DO NOTHING;
+
+-- Seed Boho Stone Studio (Studio 2)
+INSERT INTO public.apartments (
+    title, title_ar, code, location, location_ar, badge, badge_ar,
+    price_usd, price_egp, monthly_usd, monthly_egp, max_guests,
+    description, description_ar, images, amenities, amenities_ar, is_available
+) VALUES (
+    'Boho Stone Studio (Between Lighthouse & Assala)',
+    'استوديو بوهو حجري (بين اللايت هاوس والعصلة)',
+    'studio-2',
+    'Dahab - Between Lighthouse & Assala',
+    'دهب - بين اللايت هاوس والعصلة',
+    'BOHO STONE STUDIO',
+    'استوديو بوهيمي حجري',
+    60, 3000, 1300, 65000, 5,
+    'Authentic boho stone studio located between Lighthouse and Assala. Accommodates up to 5 guests with a private outdoor garden, spiral staircase to rooftop terrace, rustic brick arches and private bathroom.',
+    'استوديو بوهيمي حجري مميز في موقع استراتيجي بين اللايت هاوس والعصلة. يسع حتى 5 أفراد، ويتميز بمدخل طوب أحمر مقوس، وجلسة خارجية رايقة محاطة بالزهور، وسلم حلزوني لتراس الروف، وحمام رخامي متكامل.',
+    ARRAY[
+        '/images/studio-assala-patio.jpg',
+        '/images/studio-assala-entrance.jpg',
+        '/images/studio-assala-corridor.jpg',
+        '/images/studio-assala-bathroom-1.jpg',
+        '/images/studio-assala-bathroom-2.jpg'
+    ],
+    ARRAY['Up to 5 Guests', 'Private Garden & Patio', 'Rooftop Terrace Access', 'Air Conditioning', 'Private Bathroom & Heated Shower', 'High-Speed Wi-Fi', 'Rustic Boho Architecture'],
+    ARRAY['يسع حتى 5 أفراد', 'جلسة خارجية وحديقة خاصة', 'روف وتراس بإطلالة مفتوحة', 'تكييف هواء سبليت', 'حمام خاص وسخان مياه', 'واي فاي سريع', 'طراز معماري بوهو وحجري'],
     TRUE
 ) ON CONFLICT (code) DO NOTHING;
 

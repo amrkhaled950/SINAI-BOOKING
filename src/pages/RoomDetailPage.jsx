@@ -52,6 +52,8 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const dailyPriceEgp = Number(selectedApartment?.price_egp) || 2000
   const monthlyPriceUsd = Number(selectedApartment?.monthly_usd) || 1200
   const monthlyPriceEgp = Number(selectedApartment?.monthly_egp) || 60000
+  const maxGuests = Number(selectedApartment?.max_guests) || 3
+  const guestOptions = Array.from({ length: Math.max(3, maxGuests) }, (_, i) => i + 1)
 
   const [activePhoto, setActivePhoto] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -565,7 +567,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                       {isAr ? 'عدد الأفراد' : 'No. of guests'}
                     </label>
                     <div className="flex items-center gap-1">
-                      {[1, 2, 3].map((num) => (
+                      {guestOptions.map((num) => (
                         <button
                           key={num}
                           type="button"

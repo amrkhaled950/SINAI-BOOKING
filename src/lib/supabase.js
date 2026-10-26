@@ -18,7 +18,7 @@ export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, activeKey)
   : null
 
-// Default Studio 1 fallback room
+// Default Studio 1 & 2 fallback rooms
 export const DEFAULT_APARTMENTS = [
   {
     id: 'studio-1',
@@ -48,6 +48,33 @@ export const DEFAULT_APARTMENTS = [
     ],
     amenities: ['Air Conditioning', 'High-Speed Wi-Fi', 'Private Bathroom', 'Smart TV', 'Kitchenette', 'Sea/Garden View'],
     amenities_ar: ['تكييف هواء سبليت', 'واي فاي سريع', 'حمام خاص متكامل', 'تلفزيون ذكي سمارت', 'مطبخ تحضيري', 'إطلالة هادئة'],
+    is_available: true,
+  },
+  {
+    id: 'studio-2',
+    title: 'Boho Stone Studio (Between Lighthouse & Assala)',
+    title_ar: 'استوديو بوهو حجري (بين اللايت هاوس والعصلة)',
+    code: 'studio-2',
+    location: 'Dahab - Between Lighthouse & Assala',
+    location_ar: 'دهب - بين اللايت هاوس والعصلة',
+    badge: 'BOHO STONE STUDIO',
+    badge_ar: 'استوديو بوهيمي حجري',
+    price_usd: 60,
+    price_egp: 3000,
+    monthly_usd: 1300,
+    monthly_egp: 65000,
+    max_guests: 5,
+    description: 'Authentic boho stone studio located between Lighthouse and Assala. Accommodates up to 5 guests with a private outdoor garden, spiral staircase to rooftop terrace, rustic brick arches and private bathroom.',
+    description_ar: 'استوديو بوهيمي حجري مميز في موقع استراتيجي بين اللايت هاوس والعصلة. يسع حتى 5 أفراد، ويتميز بمدخل طوب أحمر مقوس، وجلسة خارجية رايقة محاطة بالزهور، وسلم حلزوني لتراس الروف، وحمام رخامي متكامل.',
+    images: [
+      '/images/studio-assala-patio.jpg',
+      '/images/studio-assala-entrance.jpg',
+      '/images/studio-assala-corridor.jpg',
+      '/images/studio-assala-bathroom-1.jpg',
+      '/images/studio-assala-bathroom-2.jpg'
+    ],
+    amenities: ['Up to 5 Guests', 'Private Garden & Patio', 'Rooftop Terrace Access', 'Air Conditioning', 'Private Bathroom & Heated Shower', 'High-Speed Wi-Fi', 'Rustic Boho Architecture'],
+    amenities_ar: ['يسع حتى 5 أفراد', 'جلسة خارجية وحديقة خاصة', 'روف وتراس بإطلالة مفتوحة', 'تكييف هواء سبليت', 'حمام خاص وسخان مياه', 'واي فاي سريع', 'طراز معماري بوهو وحجري'],
     is_available: true,
   }
 ]
