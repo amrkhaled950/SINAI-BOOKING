@@ -347,7 +347,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
               
               <div>
                 <span className="inline-block px-3 py-1 bg-[#E2ECE5] text-[#2A6543] text-xs font-semibold rounded-full uppercase tracking-wider">
-                  {page.place.badge}
+                  {isAr ? (selectedApartment?.badge_ar || selectedApartment?.badge || page.place.badge) : (selectedApartment?.badge || page.place.badge)}
                 </span>
               </div>
 
@@ -356,14 +356,14 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                 <div className="flex items-baseline justify-between flex-wrap gap-2">
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl sm:text-3xl font-bold text-[#22211F]">
-                      40 $
+                      {stayType === 'monthly' ? monthlyPriceUsd : dailyPriceUsd} $
                     </span>
                     <span className="text-xs text-[#8C867C] font-medium">
-                      / night
+                      / {stayType === 'monthly' ? (isAr ? 'شهر' : 'month') : (isAr ? 'ليلة' : 'night')}
                     </span>
                   </div>
                   <span className="text-base sm:text-lg font-bold text-[#1F7A8C]">
-                    2000 جم ليله
+                    {(stayType === 'monthly' ? monthlyPriceEgp : dailyPriceEgp)?.toLocaleString()} جم {stayType === 'monthly' ? (isAr ? '/ شهر' : '/ month') : (isAr ? '/ ليلة' : '/ night')}
                   </span>
                 </div>
 
@@ -373,7 +373,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                     {isAr ? 'الشهر 30 يوم / 31 يوم' : 'Monthly stay: 30 / 31 days'}
                   </span>
                   <span className="text-[11px] bg-[#FAF5ED] px-2 py-0.5 rounded border border-[#E9DFCF]">
-                    {isAr ? 'حتى ٣ أفراد' : 'Max 3 guests'}
+                    {isAr ? `حتى ${maxGuests} أفراد` : `Max ${maxGuests} guests`}
                   </span>
                 </div>
               </div>
@@ -589,7 +589,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
 
                 {/* Room Feature Spec */}
                 <div className="bg-[#FAF6EF] rounded-xl p-2.5 border border-[#EBE3D5] text-[11px] text-[#5A554E] leading-relaxed">
-                  ✨ {isAr ? 'غرفة دوبلكس مريحة، إطلالة بحرية، تكييف وحمام خاص.' : 'Comfortable duplex loft, sea view, AC and private bathroom.'}
+                  ✨ {isAr ? (selectedApartment?.description_ar || selectedApartment?.description || 'إقامة مريحة ومميزة في دهب.') : (selectedApartment?.description || 'Comfortable accommodation in Dahab.')}
                 </div>
 
                 {/* Name & Phone number */}
