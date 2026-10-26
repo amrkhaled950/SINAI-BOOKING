@@ -67,8 +67,13 @@ export const DEFAULT_APARTMENTS = [
     description: 'Authentic boho stone studio located between Lighthouse and Assala. Accommodates up to 5 guests with a private outdoor garden, spiral staircase to rooftop terrace, rustic brick arches and private bathroom.',
     description_ar: 'استوديو بوهيمي حجري مميز في موقع استراتيجي بين اللايت هاوس والعصلة. يسع حتى 5 أفراد، ويتميز بمدخل طوب أحمر مقوس، وجلسة خارجية رايقة محاطة بالزهور، وسلم حلزوني لتراس الروف، وحمام رخامي متكامل.',
     images: [
+      '/images/studio-assala-bedroom.jpg',
+      '/images/studio-assala-firepit.jpg',
+      '/images/studio-assala-rooftop-view.jpg',
       '/images/studio-assala-patio.jpg',
+      '/images/studio-assala-bed-detail.jpg',
       '/images/studio-assala-entrance.jpg',
+      '/images/studio-assala-stairs.jpg',
       '/images/studio-assala-corridor.jpg',
       '/images/studio-assala-bathroom-1.jpg',
       '/images/studio-assala-bathroom-2.jpg'
