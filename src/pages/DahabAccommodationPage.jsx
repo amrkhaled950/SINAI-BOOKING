@@ -221,43 +221,57 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {additionalApartments.map((apt, idx) => (
                 <div
-                  key={apt.id}
-                  className={`bg-[#FAF6EF] rounded-3xl overflow-hidden border border-[#EAE1D1] shadow-xs card-shadow-hover reveal-scale ${
-                    idx % 3 === 0 ? 'stagger-1' : idx % 3 === 1 ? 'stagger-2' : 'stagger-3'
-                  } flex flex-col active:scale-98 transition-all`}
+                  key={apt.id || apt.code || idx}
+                  onClick={() => handleOpenApartment(apt)}
+                  className="bg-[#FAF6EF] rounded-3xl overflow-hidden border border-[#EAE1D1] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col group cursor-pointer"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
                     <img
-                      src={apt.images?.[0] || '/images/duplex-hero-loft.jpg'}
+                      src={apt.images?.[0] || '/images/studio-assala-courtyard-day.jpg'}
                       alt={apt.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
+                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                     />
-                    <span className="absolute top-3 left-3 rtl:left-auto rtl:right-3 px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold rounded-full uppercase">
-                      {apt.code || 'Studio'}
-                    </span>
+                    <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3 flex items-center gap-1.5">
+                      <span className="px-3 py-1 bg-black/75 backdrop-blur-md text-white text-[11px] font-bold rounded-full uppercase tracking-wider shadow">
+                        {isAr ? (apt.badge_ar || apt.badge || 'استوديو') : (apt.badge || 'Studio')}
+                      </span>
+                    </div>
+                    {apt.max_guests && (
+                      <span className="absolute bottom-3 right-3 rtl:right-auto rtl:left-3 px-3 py-1 bg-white/90 backdrop-blur-md text-[#22211F] text-xs font-semibold rounded-full shadow-sm">
+                        {isAr ? `حتى ${apt.max_guests} أفراد` : `Up to ${apt.max_guests} guests`}
+                      </span>
+                    )}
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div>
-                      <h4 className="text-xl font-serif font-bold text-[#22211F]">
+                      <h4 className="text-xl font-serif font-bold text-[#22211F] group-hover:text-[#BA4B33] transition-colors">
                         {isAr ? (apt.title_ar || apt.title) : apt.title}
                       </h4>
-                      <p className="text-xs text-[#8C867C] mt-1 line-clamp-2">
+                      <p className="text-xs text-[#8C867C] mt-2 line-clamp-2 leading-relaxed">
                         {isAr ? (apt.description_ar || apt.description) : apt.description}
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-[#EAE1D1] flex items-center justify-between">
+                    <div className="pt-4 border-t border-[#EAE1D1] flex items-center justify-between">
                       <div>
-                        <span className="text-xl font-bold text-[#BA4B33]">${apt.price_usd}</span>
-                        <span className="text-xs text-[#8C867C]"> / {isAr ? 'ليلة' : 'night'}</span>
-                        <div className="text-xs font-medium text-[#1F7A8C]">{apt.price_egp?.toLocaleString()} EGP</div>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-2xl font-bold text-[#BA4B33]">${apt.price_usd}</span>
+                          <span className="text-xs text-[#8C867C]"> / {isAr ? 'ليلة' : 'night'}</span>
+                        </div>
+                        <div className="text-xs font-semibold text-[#1F7A8C]">
+                          {apt.price_egp?.toLocaleString()} EGP
+                        </div>
                       </div>
 
                       <button
-                        onClick={() => handleOpenApartment(apt)}
-                        className="btn-shimmer px-5 py-2.5 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-xs font-semibold rounded-full shadow hover:shadow-md hover:scale-105 transition-all active:scale-95 cursor-pointer"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleOpenApartment(apt)
+                        }}
+                        className="btn-shimmer px-5 py-2.5 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-xs font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all active:scale-95 cursor-pointer"
                       >
-                        {isAr ? 'شوف التفاصيل واحجز' : 'View & Book'}
+                        {isAr ? 'احجز وشوف التفاصيل' : 'View & Book'}
                       </button>
                     </div>
                   </div>

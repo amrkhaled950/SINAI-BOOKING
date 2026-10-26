@@ -36,14 +36,28 @@ export function useScrollReveal(dependency) {
       }
     )
 
-    const timer = setTimeout(() => {
+    const timer1 = setTimeout(() => {
       const elements = document.querySelectorAll('.reveal:not(.is-revealed), .reveal-scale:not(.is-revealed)')
       elements.forEach((el) => observer.observe(el))
     }, 60)
 
+    const timer2 = setTimeout(() => {
+      const elements = document.querySelectorAll('.reveal:not(.is-revealed), .reveal-scale:not(.is-revealed)')
+      elements.forEach((el) => observer.observe(el))
+    }, 500)
+
+    // MutationObserver to safely catch asynchronously loaded cards/components
+    const mutationObserver = new MutationObserver(() => {
+      const elements = document.querySelectorAll('.reveal:not(.is-revealed), .reveal-scale:not(.is-revealed)')
+      elements.forEach((el) => observer.observe(el))
+    })
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
+
     return () => {
-      clearTimeout(timer)
+      clearTimeout(timer1)
+      clearTimeout(timer2)
       observer.disconnect()
+      mutationObserver.disconnect()
     }
   }, [dependency])
 }
