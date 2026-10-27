@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ArrowUpRight, Bed, Users, Sparkles, Check, MapPin, Flame } from 'lucide-react'
+import { ArrowUpRight, Bed, Users, Sparkles, Check, MapPin, Flame, Share2 } from 'lucide-react'
 import { fetchApartments, DEFAULT_APARTMENTS } from '../lib/supabase'
 
 export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSelectApartment }) {
@@ -8,6 +8,30 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
   const [apartments, setApartments] = useState(DEFAULT_APARTMENTS)
   const [loading, setLoading] = useState(false)
   const [selectedPhotoMap, setSelectedPhotoMap] = useState({})
+  const [copiedAptId, setCopiedAptId] = useState(null)
+
+  const handleShareApartment = async (apt) => {
+    const code = apt.code || apt.id || 'studio-1'
+    const shareUrl = `https://sinaibooking.com/room/${code}`
+    const title = isAr ? (apt.title_ar || apt.title) : apt.title
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: isAr ? `حجز وتفاصيل ${title} في دهب:` : `Book ${title} in Dahab:`,
+          url: shareUrl,
+        })
+        return
+      } catch (err) {}
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopiedAptId(code)
+      setTimeout(() => setCopiedAptId(null), 3000)
+    } catch (err) {}
+  }
 
   useEffect(() => {
     let isMounted = true
@@ -362,15 +386,34 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                         </p>
                       </div>
 
-                      {/* CTA Button: Ask about your dates */}
-                      <div className="pt-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenApartment(apt)}
-                          className="w-full inline-flex items-center justify-center py-4 px-6 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-base font-semibold rounded-full shadow hover:shadow-md transition-all active:scale-95 cursor-pointer"
-                        >
-                          {page.place.button}
-                        </button>
+                      {/* CTA Button: Ask about your dates & Share */}
+                      <div className="pt-2 space-y-2">
+                        {copiedAptId === (apt.code || apt.id) && (
+                          <div className="text-center">
+                            <span className="inline-block text-[11px] font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 animate-in fade-in">
+                              {isAr ? '✅ تم نسخ الرابط! عند إرساله في واتساب ستظهر صورة وتفاصيل الشقة' : '✅ Link copied! Photo preview will show on WhatsApp'}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenApartment(apt)}
+                            className="flex-1 inline-flex items-center justify-center py-4 px-6 bg-[#BA4B33] hover:bg-[#A33E28] text-white text-base font-semibold rounded-full shadow hover:shadow-md transition-all active:scale-95 cursor-pointer"
+                          >
+                            {page.place.button}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleShareApartment(apt)}
+                            className="p-3.5 sm:p-4 bg-white hover:bg-[#FAF3E8] border border-[#EAE1D1] hover:border-[#BA4B33] text-[#22211F] rounded-full shadow-xs hover:shadow transition-all active:scale-90 cursor-pointer flex-shrink-0"
+                            title={isAr ? 'مشاركة رابط هذه الشقة بالصور على واتساب' : 'Share this apartment on WhatsApp'}
+                          >
+                            <Share2 size={18} className="text-[#BA4B33]" />
+                          </button>
+                        </div>
                       </div>
 
                     </div>

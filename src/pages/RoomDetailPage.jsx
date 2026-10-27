@@ -17,7 +17,9 @@ import {
   Home,
   Lock,
   AlertCircle,
-  CreditCard
+  CreditCard,
+  Share2,
+  Copy
 } from 'lucide-react'
 import { saveApartmentBooking, fetchConfirmedApartmentBookings } from '../lib/supabase'
 import { createPayTabsSession } from '../lib/paytabs'
@@ -92,6 +94,37 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
   const [notes, setNotes] = useState('')
   const [isPaying, setIsPaying] = useState(false)
   const [payError, setPayError] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  const handleShareRoom = async () => {
+    const aptCode = selectedApartment?.code || selectedApartment?.id || 'studio-1'
+    const shareUrl = `https://sinaibooking.com/room/${aptCode}`
+    const shareTitle = roomTitle
+    const shareText = isAr
+      ? `شاهد تفاصيل وحجز ${roomTitle} في دهب على موقع Sinai Booking:`
+      : `Check out ${roomTitle} in Dahab on Sinai Booking:`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        })
+        return
+      } catch (err) {
+        // User cancelled or fallback
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 3500)
+    } catch {
+      // Fallback
+    }
+  }
 
   // Confirmed Locked Dates State
   const [confirmedBookings, setConfirmedBookings] = useState([])
@@ -232,13 +265,31 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
             </p>
           </div>
 
-          <button
-            onClick={onNavigateBack}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-[#E3DBD0] rounded-full text-xs font-semibold text-[#5A554E] hover:border-[#C8553D] hover:text-[#C8553D] transition-all self-start md:self-auto shadow-sm cursor-pointer"
-          >
-            {isAr ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
-            <span>{isAr ? 'العودة لقائمة الشقق' : 'Back to Dahab Accommodations'}</span>
-          </button>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 self-start md:self-auto">
+            {copied && (
+              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 animate-in fade-in">
+                {isAr ? '✅ تم نسخ الرابط الخاص بالشقة! ستظهر صورتها في الواتساب' : '✅ Link copied! Photo preview will show on WhatsApp'}
+              </span>
+            )}
+
+            <button
+              type="button"
+              onClick={handleShareRoom}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-[#FAF3E8] border border-[#E3DBD0] hover:border-[#BA4B33] rounded-full text-xs font-semibold text-[#22211F] transition-all shadow-xs cursor-pointer active:scale-95"
+              title={isAr ? 'مشاركة رابط هذه الشقة عبر الواتساب' : 'Share this apartment link on WhatsApp'}
+            >
+              {copied ? <Check size={14} className="text-emerald-600" /> : <Share2 size={14} className="text-[#BA4B33]" />}
+              <span>{copied ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'مشاركة رابط الشقة' : 'Share Room Link')}</span>
+            </button>
+
+            <button
+              onClick={onNavigateBack}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-[#E3DBD0] rounded-full text-xs font-semibold text-[#5A554E] hover:border-[#C8553D] hover:text-[#C8553D] transition-all shadow-xs cursor-pointer"
+            >
+              {isAr ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
+              <span>{isAr ? 'العودة لقائمة الشقق' : 'Back to Dahab Accommodations'}</span>
+            </button>
+          </div>
         </div>
 
         {/* 2-Column: 8-Photo Gallery on Left, Complete Booking Widget on Right */}

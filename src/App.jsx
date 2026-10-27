@@ -19,6 +19,7 @@ import BlogPage from './pages/BlogPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import PaymentResultPage from './pages/PaymentResultPage'
 import { useScrollReveal } from './hooks/useScrollReveal'
+import { DEFAULT_APARTMENTS } from './lib/supabase'
 
 const VALID_PAGES = [
   'home',
@@ -31,14 +32,35 @@ const VALID_PAGES = [
   'payment-result'
 ]
 
-function getPageFromUrl() {
-  const hash = (window.location.hash || '').replace(/^#\/?/, '').split('?')[0].split('/')[0]
-  if (VALID_PAGES.includes(hash)) {
-    return hash
+function getApartmentFromUrl() {
+  const path = (window.location.pathname || '').toLowerCase()
+  const hash = (window.location.hash || '').toLowerCase()
+  const search = (window.location.search || '').toLowerCase()
+
+  if (path.includes('studio-2') || hash.includes('studio-2') || search.includes('studio-2')) {
+    return DEFAULT_APARTMENTS.find(a => a.code === 'studio-2' || a.id === 'studio-2') || DEFAULT_APARTMENTS[1]
   }
-  const path = (window.location.pathname || '').replace(/^\//, '').split('?')[0].split('/')[0]
+  if (path.includes('studio-1') || hash.includes('studio-1') || search.includes('studio-1')) {
+    return DEFAULT_APARTMENTS.find(a => a.code === 'studio-1' || a.id === 'studio-1') || DEFAULT_APARTMENTS[0]
+  }
+  return null
+}
+
+function getPageFromUrl() {
+  const path = (window.location.pathname || '').replace(/^\//, '').split('?')[0].split('#')[0]
+  const hash = (window.location.hash || '').replace(/^#\/?/, '').split('?')[0].split('/')[0]
+
+  if (path.startsWith('room/') || path.startsWith('rooms/') || path.startsWith('room') || path.startsWith('rooms')) {
+    return 'room-detail'
+  }
+  if (hash.startsWith('room/') || hash.startsWith('rooms/')) {
+    return 'room-detail'
+  }
   if (VALID_PAGES.includes(path)) {
     return path
+  }
+  if (VALID_PAGES.includes(hash)) {
+    return hash
   }
   const search = window.location.search || ''
   if (search.includes('tranRef') || search.includes('payment-result') || search.includes('respStatus')) {
@@ -51,11 +73,13 @@ export default function App() {
   const [lang, setLang] = useState('en')
   const [currentPage, setCurrentPage] = useState(() => getPageFromUrl())
   const [selectedApartment, setSelectedApartment] = useState(() => {
+    const fromUrl = getApartmentFromUrl()
+    if (fromUrl) return fromUrl
     try {
       const saved = sessionStorage.getItem('sinai_selected_apt')
-      return saved ? JSON.parse(saved) : null
+      return saved ? JSON.parse(saved) : DEFAULT_APARTMENTS[0]
     } catch {
-      return null
+      return DEFAULT_APARTMENTS[0]
     }
   })
   const t = translations[lang]
@@ -84,6 +108,10 @@ export default function App() {
     const handleUrlChange = () => {
       const page = getPageFromUrl()
       setCurrentPage(page)
+      const aptFromUrl = getApartmentFromUrl()
+      if (aptFromUrl) {
+        setSelectedApartment(aptFromUrl)
+      }
     }
 
     // Run on initial mount
@@ -97,20 +125,25 @@ export default function App() {
     }
   }, [])
 
-  const navigate = (page, sectionHash) => {
+  const navigate = (page, sectionHash, extraApt) => {
     setCurrentPage(page)
 
-    // Update URL hash smoothly
-    if (page === 'home') {
+    // Update URL path cleanly for each section and room
+    if (page === 'room-detail') {
+      const apt = extraApt || selectedApartment || DEFAULT_APARTMENTS[0]
+      const aptCode = apt.code || apt.id || 'studio-1'
+      window.history.pushState(null, '', `/room/${aptCode}`)
+      window.location.hash = ''
+    } else if (page === 'home') {
       if (sectionHash) {
         window.location.hash = sectionHash
       } else {
-        if (window.location.hash) {
-          window.history.pushState(null, '', window.location.pathname)
-        }
+        window.history.pushState(null, '', '/')
+        window.location.hash = ''
       }
     } else {
-      window.location.hash = page
+      window.history.pushState(null, '', `/${page}`)
+      window.location.hash = ''
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -191,7 +224,7 @@ export default function App() {
             onNavigateHome={() => navigate('home')}
             onSelectApartment={(apt) => {
               setSelectedApartment(apt)
-              navigate('room-detail')
+              navigate('room-detail', null, apt)
             }}
           />
         ) : (
