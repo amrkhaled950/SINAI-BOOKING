@@ -16,6 +16,34 @@ const baseHtml = fs.readFileSync(baseHtmlPath, 'utf8')
 
 const routes = [
   {
+    path: 'room/villa-mashraba',
+    title: '3BR Luxury Villa with Private Pool (Mashraba) — Sinai Booking | فيلا المشربة بحمام سباحة دهب',
+    description: 'Exclusive 3-bedroom luxury villa in Mashraba, Dahab with private swimming pool, 3 AC bedrooms, 2 bathrooms, shaded pergola lounge. $120 / 6,000 EGP per night. تسع حتى 6 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-villa-mashraba.jpg',
+    url: 'https://sinaibooking.com/room/villa-mashraba'
+  },
+  {
+    path: 'rooms/villa-mashraba',
+    title: '3BR Luxury Villa with Private Pool (Mashraba) — Sinai Booking | فيلا المشربة بحمام سباحة دهب',
+    description: 'Exclusive 3-bedroom luxury villa in Mashraba, Dahab with private swimming pool, 3 AC bedrooms, 2 bathrooms, shaded pergola lounge. $120 / 6,000 EGP per night. تسع حتى 6 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-villa-mashraba.jpg',
+    url: 'https://sinaibooking.com/rooms/villa-mashraba'
+  },
+  {
+    path: 'room/room3',
+    title: '3BR Luxury Villa with Private Pool (Mashraba) — Sinai Booking | فيلا المشربة بحمام سباحة دهب',
+    description: 'Exclusive 3-bedroom luxury villa in Mashraba, Dahab with private swimming pool, 3 AC bedrooms, 2 bathrooms, shaded pergola lounge. $120 / 6,000 EGP per night. تسع حتى 6 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-villa-mashraba.jpg',
+    url: 'https://sinaibooking.com/room/room3'
+  },
+  {
+    path: 'rooms/room3',
+    title: '3BR Luxury Villa with Private Pool (Mashraba) — Sinai Booking | فيلا المشربة بحمام سباحة دهب',
+    description: 'Exclusive 3-bedroom luxury villa in Mashraba, Dahab with private swimming pool, 3 AC bedrooms, 2 bathrooms, shaded pergola lounge. $120 / 6,000 EGP per night. تسع حتى 6 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-villa-mashraba.jpg',
+    url: 'https://sinaibooking.com/rooms/room3'
+  },
+  {
     path: 'room/studio-1',
     title: 'Mashraba duplex (Studio 1) — Sinai Booking | دوبلكس المشربة دهب',
     description: 'Comfortable duplex loft, sea view, AC and private bathroom · Dahab, South Sinai. $40 / 2,000 EGP per night. استوديو دوبلكس المشربة دهب.',

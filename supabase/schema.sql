@@ -119,6 +119,48 @@ INSERT INTO public.apartments (
     TRUE
 ) ON CONFLICT (code) DO NOTHING;
 
+-- Seed Mashraba Villa with Pool (villa-mashraba)
+INSERT INTO public.apartments (
+    title, title_ar, code, location, location_ar, badge, badge_ar,
+    price_usd, price_egp, monthly_usd, monthly_egp, max_guests,
+    description, description_ar, images, amenities, amenities_ar, is_available
+) VALUES (
+    '3BR Luxury Villa with Private Pool (Mashraba)',
+    'فيلا المشربة الفاخرة بحمام سباحة خاص (3 غرف مكيّفة)',
+    'villa-mashraba',
+    'Dahab - Mashraba',
+    'دهب - المشربة',
+    'LUXURY VILLA & PRIVATE POOL',
+    'فيلا خاصة بحمام سباحة',
+    120, 6000, 2800, 140000, 6,
+    'Exclusive 3-bedroom luxury villa in Dahab - Mashraba. Accommodates up to 6 guests with private crystal swimming pool, outdoor shaded pergola lounge with swing chair, 3 air-conditioned bedrooms, grand living salon with smart TV, 2 full bathrooms (with bathtub), and fully equipped modern kitchen with dining island & washing machine.',
+    'فيلا فاخرة راقية في قلب المشربة بدهب تسع حتى 6 أفراد. تضم حمام سباحة خاص بمياه نقية، جلسة خارجية مظللة ببرجولة ومرجيحة استرخاء، 3 غرف نوم مكيّفة بالكامل، صالون معيشة واسع وشاشة ذكية، 2 حمام متكاملين (منهم حمام ببانيو)، ومطبخ حديث مجهز بالكامل بجزيرة طعام وغسالة ملابس.',
+    ARRAY[
+        '/images/villa-mashraba-pool.jpg',
+        '/images/villa-mashraba-patio-gazebo.jpg',
+        '/images/villa-mashraba-living-main.jpg',
+        '/images/villa-mashraba-living-grand.jpg',
+        '/images/villa-mashraba-living-red-sofas.jpg',
+        '/images/villa-mashraba-master-bedroom.jpg',
+        '/images/villa-mashraba-bedroom-2.jpg',
+        '/images/villa-mashraba-bedroom-3.jpg',
+        '/images/villa-mashraba-bedroom-wardrobe.jpg',
+        '/images/villa-mashraba-kitchen-full.jpg',
+        '/images/villa-mashraba-kitchen-counter.jpg',
+        '/images/villa-mashraba-kitchen-angle.jpg',
+        '/images/villa-mashraba-staircase.jpg',
+        '/images/villa-mashraba-staircase-view.jpg',
+        '/images/villa-mashraba-bathroom-1.jpg',
+        '/images/villa-mashraba-bathroom-1-bathtub.jpg',
+        '/images/villa-mashraba-bathroom-1-wide.jpg',
+        '/images/villa-mashraba-bathroom-2.jpg',
+        '/images/villa-mashraba-bathroom-2-shower.jpg'
+    ],
+    ARRAY['Private Swimming Pool', 'Up to 6 Guests', '3 Air-Conditioned Bedrooms', '2 Full Bathrooms with Bathtub', 'Outdoor Shaded Pergola Lounge & Swing Chair', 'Grand Living Salon with Smart TV', 'Fully Equipped Kitchen & Dining Island', 'Washing Machine & Microwave', 'High-Speed Wi-Fi', 'Prime Mashraba Location'],
+    ARRAY['حمام سباحة خاص', 'تسع حتى 6 أفراد', '3 غرف نوم مكيّفة بالكامل', '2 حمام متكامل (مع بانيو وشاور)', 'جلسة خارجية مظللة ببرجولة ومرجيحة استرخاء', 'صالون معيشة واسع وشاشة سمارت', 'مطبخ متكامل حديث مع جزيرة طعام', 'غسالة ملابس وميكروويف وبوتاجاز فرن', 'واي فاي سريع ومجاني', 'موقع هادئ ومميز في قلب المشربة'],
+    TRUE
+) ON CONFLICT (code) DO NOTHING;
+
 -- ==========================================================
 -- 2. جدول حجوزات الشقق والإقامة (Apartment Bookings)
 -- ==========================================================

@@ -47,14 +47,15 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
     return () => { isMounted = false }
   }, [])
 
-  // Order apartments so the new 2BR Boho Stone House (studio-2) is showcased first, followed by studio-1
+  // Order apartments: 3BR Luxury Villa first, followed by 2BR Boho Stone House, then Mashraba Duplex
   const sortedApartments = [...apartments].sort((a, b) => {
-    if (a.code === 'studio-2' || a.id === 'studio-2') return -1
-    if (b.code === 'studio-2' || b.id === 'studio-2') return 1
-    return 0
+    const order = { 'villa-mashraba': 1, 'studio-2': 2, 'studio-1': 3 }
+    const orderA = order[a.code] || order[a.id] || 99
+    const orderB = order[b.code] || order[b.id] || 99
+    return orderA - orderB
   })
 
-  const primaryApartment = sortedApartments[0] || DEFAULT_APARTMENTS[1]
+  const primaryApartment = sortedApartments[0] || DEFAULT_APARTMENTS[2]
 
   const handleOpenApartment = (apt = primaryApartment) => {
     if (onSelectApartment) {
@@ -105,11 +106,11 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
 
               <p className="text-base sm:text-lg text-[#6C6963] font-normal leading-relaxed max-w-lg">
                 {isAr
-                  ? 'بيوت واستوديوهات خاصة ومريحة في المشربة وبين اللايت هاوس والعصلة، متجهزة لكل تفاصيل روقانك في دهب.'
+                  ? 'فيلات خاصة بحمام سباحة، استوديوهات بوهو بروف خاص، وشقق دوبلكس مريحة في قلب المشربة والعصلة، متجهزة لكل تفاصيل روقانك في دهب.'
                   : page.hero.subtitle}
               </p>
 
-              {/* Quick Jump Buttons to Both Units */}
+              {/* Quick Jump Buttons to Available Stays */}
               <div className="pt-1 flex flex-wrap items-center gap-2.5 sm:gap-3">
                 {sortedApartments.map((apt) => (
                   <button
@@ -121,8 +122,16 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                     <span className="w-2 h-2 rounded-full bg-[#BA4B33]"></span>
                     <span>
                       {isAr
-                        ? (apt.code === 'studio-2' ? 'استوديو وبيت بوهو وروف (العصلة)' : 'دوبلكس المشربة')
-                        : (apt.code === 'studio-2' ? '2BR Boho Stone House' : 'Mashraba Duplex')}
+                        ? (apt.code === 'villa-mashraba'
+                            ? 'فيلا المشربة بحمام سباحة'
+                            : apt.code === 'studio-2'
+                            ? 'بيت بوهو وروف (العصلة)'
+                            : 'دوبلكس المشربة')
+                        : (apt.code === 'villa-mashraba'
+                            ? '3BR Villa & Pool'
+                            : apt.code === 'studio-2'
+                            ? '2BR Boho Stone House'
+                            : 'Mashraba Duplex')}
                     </span>
                     <span className="text-[#8C867C] font-normal">
                       ${apt.price_usd} / {isAr ? 'ليلة' : 'nt'}
@@ -134,29 +143,29 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
               {/* Feature Highlights */}
               <div className="pt-2 flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs text-[#5A554E]">
                 <span className="px-3.5 py-1.5 bg-[#F0ECE1] rounded-full font-medium">
-                  {isAr ? 'حتى 5 أفراد' : 'Up to 5 guests'}
+                  {isAr ? 'حتى 6 أفراد' : 'Up to 6 guests'}
                 </span>
                 <span className="px-3.5 py-1.5 bg-[#F0ECE1] rounded-full font-medium">
-                  {isAr ? 'واي فاي سريع وتكييف' : 'Wi-Fi & AC'}
+                  {isAr ? 'حمام سباحة خاص' : 'Private Swimming Pool'}
                 </span>
                 <span className="px-3.5 py-1.5 bg-[#F0ECE1] rounded-full font-medium">
-                  {isAr ? 'روف وتراس خاص' : 'Private Roof Terrace'}
+                  {isAr ? 'واي فاي وتكييف' : 'Wi-Fi & AC'}
                 </span>
                 <span className="px-3.5 py-1.5 bg-[#F0ECE1] rounded-full font-medium">
-                  {isAr ? 'كانون نار وشواء' : 'Fire Pit & BBQ'}
+                  {isAr ? 'برجولة وروف وحديقة' : 'Pergola, Roof & Garden'}
                 </span>
               </div>
             </div>
 
-            {/* Right: Featured Boho House Preview Photo with Overlay Badge */}
+            {/* Right: Featured Villa/House Preview Photo with Overlay Badge */}
             <div className="lg:col-span-6 relative flex justify-center lg:justify-end animate-fade-in-up stagger-2">
               <div
                 onClick={() => handleOpenApartment(primaryApartment)}
                 className="relative w-full max-w-[540px] aspect-[4/3] sm:aspect-[16/11] rounded-[28px] sm:rounded-[32px] overflow-hidden shadow-xl border-4 border-white/80 group cursor-pointer active:scale-98 transition-transform"
               >
                 <img
-                  src={primaryApartment.images?.[0] || '/images/studio-assala-courtyard-day.jpg'}
-                  alt={primaryApartment.title || 'Boho Stone House in Dahab'}
+                  src={primaryApartment.images?.[0] || '/images/villa-mashraba-pool.jpg'}
+                  alt={primaryApartment.title || 'Luxury Villa with Private Pool in Dahab'}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
 
@@ -164,10 +173,10 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                 <div className="absolute bottom-4 sm:bottom-5 right-4 sm:right-5 rtl:right-auto rtl:left-4 sm:rtl:left-5">
                   <div className="bg-white/95 backdrop-blur-md rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg border border-black/5">
                     <p className="text-xs sm:text-sm font-bold text-[#22211F]">
-                      {isAr ? (primaryApartment.badge_ar || 'بيت واستوديو بوهو') : (primaryApartment.badge || 'Boho Stone House')}
+                      {isAr ? (primaryApartment.badge_ar || 'فيلا خاصة بحمام سباحة') : (primaryApartment.badge || 'Luxury Villa & Pool')}
                     </p>
                     <p className="text-[11px] sm:text-xs text-[#8C867C] font-normal">
-                      {isAr ? (primaryApartment.location_ar || 'بين اللايت هاوس والعصلة') : (primaryApartment.location || 'Between Lighthouse & Assala')}
+                      {isAr ? (primaryApartment.location_ar || 'دهب - المشربة') : (primaryApartment.location || 'Dahab - Mashraba')}
                     </p>
                   </div>
                 </div>
@@ -205,20 +214,27 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
 
           {/* Render Each Apartment in the Luxury 2-Column Figma Layout */}
           {sortedApartments.map((apt, index) => {
+            const isVilla = apt.code === 'villa-mashraba' || apt.id === 'villa-mashraba'
             const isStudio2 = apt.code === 'studio-2' || apt.id === 'studio-2'
-            const currentPhoto = selectedPhotoMap[apt.id || apt.code] || apt.images?.[0] || '/images/studio-assala-courtyard-day.jpg'
-            const previewThumbnails = (apt.images || []).slice(0, 5)
+            const currentPhoto = selectedPhotoMap[apt.id || apt.code] || apt.images?.[0] || '/images/villa-mashraba-pool.jpg'
+            const previewThumbnails = (apt.images || []).slice(0, 6)
 
             // Section titles customized for each stay
-            const sectionTag = isStudio2
+            const sectionTag = isVilla
+              ? (isAr ? 'المكان · فيلا المشربة الفاخرة بحمام سباحة' : 'THE PLACE · 3BR LUXURY VILLA & POOL')
+              : isStudio2
               ? (isAr ? 'المكان · بيت بوهو حجري وروف خاص' : 'THE PLACE · 2BR BOHO STONE HOUSE')
               : (isAr ? 'المكان · دوبلكس المشربة' : 'THE PLACE · MASHRABA DUPLEX')
 
-            const sectionTitle = isStudio2
+            const sectionTitle = isVilla
+              ? (isAr ? (apt.title_ar || 'فيلا المشربة الفاخرة بحمام سباحة خاص') : (apt.title || 'Meet the 3BR Luxury Villa with Private Pool'))
+              : isStudio2
               ? (isAr ? 'بيت واستوديو بوهو غرفتين وروف خاص' : 'Meet the 2BR Boho Stone House & Private Roof')
               : (isAr ? (apt.title_ar || page.place.title) : (apt.title || page.place.title))
 
-            const sectionSubtitle = isStudio2
+            const sectionSubtitle = isVilla
+              ? (isAr ? 'المشربة · حمام سباحة خاص، جلسة برجولة مظللة بمرجيحة استرخاء، 3 غرف نوم مكيّفة، صالون معيشة واسع ومطبخ كامل بجزيرة طعام.' : 'Mashraba · Private Swimming Pool, Shaded Pergola Lounge with Swing Chair, 3 AC Bedrooms, Grand Salon & Fully Equipped Kitchen.')
+              : isStudio2
               ? (isAr ? 'بين اللايت هاوس والعصلة · غرفتين نوم مكيفتين، حديقة خاصة، كانون نار وروف ببرجولة خشبية وإطلالة جبلية.' : 'Between Lighthouse & Assala · 2 AC Bedrooms, Private Garden & Rooftop Mountain Views.')
               : (isAr ? page.place.subtitle : 'Thoughtful essentials, with room to settle in.')
 
@@ -234,9 +250,9 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                     <span className="text-xs font-semibold tracking-[0.2em] text-[#C8553D] uppercase block">
                       {sectionTag}
                     </span>
-                    {isStudio2 && (
+                    {apt.max_guests && (
                       <span className="px-2.5 py-0.5 bg-[#E8A94C] text-[#22211F] text-[11px] font-bold rounded-full">
-                        {isAr ? 'حتى 5 أفراد' : 'Up to 5 guests'}
+                        {isAr ? `حتى ${apt.max_guests} أفراد` : `Up to ${apt.max_guests} guests`}
                       </span>
                     )}
                   </div>
@@ -275,7 +291,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                       <div className="absolute bottom-4 right-4 rtl:right-auto rtl:left-4">
                         <span className="px-3 py-1.5 bg-white/90 backdrop-blur-md text-[#22211F] text-xs font-bold rounded-full shadow-sm flex items-center gap-1.5">
                           <Sparkles size={14} className="text-[#C8553D]" />
-                          <span>{isAr ? `${apt.images?.length || 35}+ صورة حصرية` : `${apt.images?.length || 35}+ photos`}</span>
+                          <span>{isAr ? `${apt.images?.length || 19} صورة حصرية` : `${apt.images?.length || 19} photos`}</span>
                         </span>
                       </div>
                     </div>
@@ -331,9 +347,24 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                           )}
                         </div>
 
-                        {/* Feature Badges for Studio 2 or Studio 1 */}
+                        {/* Feature Badges for Villa, Studio 2 or Studio 1 */}
                         <div className="flex flex-wrap gap-1.5 pt-1">
-                          {isStudio2 ? (
+                          {isVilla ? (
+                            <>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? 'حمام سباحة خاص' : 'Private Pool'}
+                              </span>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? '3 غرف نوم مكيّفة' : '3 AC Bedrooms'}
+                              </span>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? '2 حمام متكامل' : '2 Full Bathrooms'}
+                              </span>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? 'برجولة ومرجيحة' : 'Pergola & Swing'}
+                              </span>
+                            </>
+                          ) : isStudio2 ? (
                             <>
                               <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
                                 {isAr ? 'غرفتين نوم مكيفتين' : '2 AC Bedrooms'}
