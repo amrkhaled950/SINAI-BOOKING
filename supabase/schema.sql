@@ -161,6 +161,62 @@ INSERT INTO public.apartments (
     TRUE
 ) ON CONFLICT (code) DO NOTHING;
 
+-- Seed Mashraba Family Studio (studio-mashraba)
+INSERT INTO public.apartments (
+    title, title_ar, code, location, location_ar, badge, badge_ar,
+    price_usd, price_egp, monthly_usd, monthly_egp, max_guests,
+    description, description_ar, images, amenities, amenities_ar, is_available
+) VALUES (
+    'Mashraba Family Studio (Up to 4 Guests)',
+    'ستوديو المشربة العائلي (يسع حتى 4 أفراد)',
+    'studio-mashraba',
+    'Dahab - Mashraba',
+    'دهب - المشربة',
+    'COZY FAMILY STUDIO',
+    'ستوديو عائلي',
+    50, 2500, 1100, 55000, 4,
+    'Cozy family studio in prime Mashraba, Dahab. Accommodates up to 4 guests with 2 comfortable beds plus an American sofa bed, air conditioning, private bathroom with water heater, fully equipped kitchenette, and high-speed Wi-Fi.',
+    'ستوديو عائلي هادئ ومريح في قلب المشربة بدهب يسع حتى 4 أفراد. يضم 2 سرير مريح بالإضافة لكنبة أمريكي، تكييف هواء سبليت، حمام خاص بسخان مياه، مطبخ مجهز متكامل، وإنترنت واي فاي سريع.',
+    ARRAY[
+        '/images/studio-mashraba-1.jpg',
+        '/images/studio-mashraba-2.jpg',
+        '/images/studio-mashraba-3.jpg',
+        '/images/studio-mashraba-4.jpg',
+        '/images/studio-mashraba-5.jpg',
+        '/images/studio-mashraba-6.jpg',
+        '/images/studio-mashraba-7.jpg',
+        '/images/studio-mashraba-8.jpg',
+        '/images/studio-mashraba-9.jpg',
+        '/images/studio-mashraba-10.jpg',
+        '/images/studio-mashraba-11.jpg',
+        '/images/studio-mashraba-12.jpg',
+        '/images/studio-mashraba-13.jpg',
+        '/images/studio-mashraba-14.jpg',
+        '/images/studio-mashraba-15.jpg',
+        '/images/studio-mashraba-16.jpg',
+        '/images/studio-mashraba-17.jpg',
+        '/images/studio-mashraba-18.jpg',
+        '/images/studio-mashraba-19.jpg',
+        '/images/studio-mashraba-20.jpg',
+        '/images/studio-mashraba-21.jpg',
+        '/images/studio-mashraba-22.jpg',
+        '/images/studio-mashraba-23.jpg',
+        '/images/studio-mashraba-24.jpg',
+        '/images/studio-mashraba-25.jpg',
+        '/images/studio-mashraba-26.jpg',
+        '/images/studio-mashraba-27.jpg',
+        '/images/studio-mashraba-28.jpg',
+        '/images/studio-mashraba-29.jpg',
+        '/images/studio-mashraba-30.jpg',
+        '/images/studio-mashraba-31.jpg',
+        '/images/studio-mashraba-32.jpg',
+        '/images/studio-mashraba-33.jpg'
+    ],
+    ARRAY['Up to 4 Guests', '2 Beds + American Sofa Bed', 'Air Conditioning', 'Private Bathroom & Water Heater', 'Equipped Kitchenette', 'High-Speed Wi-Fi', 'Prime Mashraba Location'],
+    ARRAY['يسع حتى 4 أفراد', '2 سرير مريح + كنبة أمريكي', 'تكييف هواء سبليت', 'حمام خاص وسخان مياه', 'مطبخ مجهز متكامل', 'إنترنت واي فاي سريع ومجاني', 'موقع مميز في قلب المشربة'],
+    TRUE
+) ON CONFLICT (code) DO NOTHING;
+
 -- ==========================================================
 -- 2. جدول حجوزات الشقق والإقامة (Apartment Bookings)
 -- ==========================================================

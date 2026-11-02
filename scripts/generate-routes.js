@@ -44,6 +44,48 @@ const routes = [
     url: 'https://sinaibooking.com/rooms/room3'
   },
   {
+    path: 'room/studio-mashraba',
+    title: 'Mashraba Family Studio (Up to 4 Guests) — Sinai Booking | ستوديو المشربة العائلي دهب',
+    description: 'Cozy family studio in prime Mashraba, Dahab · 2 Beds + American Sofa, Split A/C, Private Bathroom with Water Heater, Kitchenette, Wi-Fi · $50 / 2,500 EGP per night. يسع حتى 4 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-studio-mashraba.jpg',
+    url: 'https://sinaibooking.com/room/studio-mashraba'
+  },
+  {
+    path: 'rooms/studio-mashraba',
+    title: 'Mashraba Family Studio (Up to 4 Guests) — Sinai Booking | ستوديو المشربة العائلي دهب',
+    description: 'Cozy family studio in prime Mashraba, Dahab · 2 Beds + American Sofa, Split A/C, Private Bathroom with Water Heater, Kitchenette, Wi-Fi · $50 / 2,500 EGP per night. يسع حتى 4 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-studio-mashraba.jpg',
+    url: 'https://sinaibooking.com/rooms/studio-mashraba'
+  },
+  {
+    path: 'room/room4',
+    title: 'Mashraba Family Studio (Up to 4 Guests) — Sinai Booking | ستوديو المشربة العائلي دهب',
+    description: 'Cozy family studio in prime Mashraba, Dahab · 2 Beds + American Sofa, Split A/C, Private Bathroom with Water Heater, Kitchenette, Wi-Fi · $50 / 2,500 EGP per night. يسع حتى 4 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-studio-mashraba.jpg',
+    url: 'https://sinaibooking.com/room/room4'
+  },
+  {
+    path: 'rooms/room4',
+    title: 'Mashraba Family Studio (Up to 4 Guests) — Sinai Booking | ستوديو المشربة العائلي دهب',
+    description: 'Cozy family studio in prime Mashraba, Dahab · 2 Beds + American Sofa, Split A/C, Private Bathroom with Water Heater, Kitchenette, Wi-Fi · $50 / 2,500 EGP per night. يسع حتى 4 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-studio-mashraba.jpg',
+    url: 'https://sinaibooking.com/rooms/room4'
+  },
+  {
+    path: 'room/studio-4',
+    title: 'Mashraba Family Studio (Up to 4 Guests) — Sinai Booking | ستوديو المشربة العائلي دهب',
+    description: 'Cozy family studio in prime Mashraba, Dahab · 2 Beds + American Sofa, Split A/C, Private Bathroom with Water Heater, Kitchenette, Wi-Fi · $50 / 2,500 EGP per night. يسع حتى 4 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-studio-mashraba.jpg',
+    url: 'https://sinaibooking.com/room/studio-4'
+  },
+  {
+    path: 'rooms/studio-4',
+    title: 'Mashraba Family Studio (Up to 4 Guests) — Sinai Booking | ستوديو المشربة العائلي دهب',
+    description: 'Cozy family studio in prime Mashraba, Dahab · 2 Beds + American Sofa, Split A/C, Private Bathroom with Water Heater, Kitchenette, Wi-Fi · $50 / 2,500 EGP per night. يسع حتى 4 أفراد دهب.',
+    image: 'https://sinaibooking.com/images/og-studio-mashraba.jpg',
+    url: 'https://sinaibooking.com/rooms/studio-4'
+  },
+  {
     path: 'room/studio-1',
     title: 'Mashraba duplex (Studio 1) — Sinai Booking | دوبلكس المشربة دهب',
     description: 'Comfortable duplex loft, sea view, AC and private bathroom · Dahab, South Sinai. $40 / 2,000 EGP per night. استوديو دوبلكس المشربة دهب.',

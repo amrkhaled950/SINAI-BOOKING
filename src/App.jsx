@@ -40,6 +40,9 @@ function getApartmentFromUrl() {
   if (path.includes('villa') || hash.includes('villa') || search.includes('villa') || path.includes('room3') || hash.includes('room3') || search.includes('room3') || path.includes('mashraba-villa')) {
     return DEFAULT_APARTMENTS.find(a => a.code === 'villa-mashraba' || a.id === 'villa-mashraba') || DEFAULT_APARTMENTS[2]
   }
+  if (path.includes('studio-mashraba') || hash.includes('studio-mashraba') || search.includes('studio-mashraba') || path.includes('room4') || hash.includes('room4') || search.includes('room4') || path.includes('studio-4') || hash.includes('studio-4')) {
+    return DEFAULT_APARTMENTS.find(a => a.code === 'studio-mashraba' || a.id === 'studio-mashraba') || DEFAULT_APARTMENTS[3]
+  }
   if (path.includes('studio-2') || hash.includes('studio-2') || search.includes('studio-2')) {
     return DEFAULT_APARTMENTS.find(a => a.code === 'studio-2' || a.id === 'studio-2') || DEFAULT_APARTMENTS[1]
   }

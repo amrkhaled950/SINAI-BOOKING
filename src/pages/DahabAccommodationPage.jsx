@@ -47,9 +47,9 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
     return () => { isMounted = false }
   }, [])
 
-  // Order apartments: 3BR Luxury Villa first, followed by 2BR Boho Stone House, then Mashraba Duplex
+  // Order apartments: 3BR Luxury Villa first, followed by 2BR Boho Stone House, Mashraba Studio, then Mashraba Duplex
   const sortedApartments = [...apartments].sort((a, b) => {
-    const order = { 'villa-mashraba': 1, 'studio-2': 2, 'studio-1': 3 }
+    const order = { 'villa-mashraba': 1, 'studio-2': 2, 'studio-mashraba': 3, 'studio-1': 4 }
     const orderA = order[a.code] || order[a.id] || 99
     const orderB = order[b.code] || order[b.id] || 99
     return orderA - orderB
@@ -126,11 +126,15 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                             ? 'فيلا المشربة بحمام سباحة'
                             : apt.code === 'studio-2'
                             ? 'بيت بوهو وروف (العصلة)'
+                            : apt.code === 'studio-mashraba'
+                            ? 'ستوديو المشربة العائلي'
                             : 'دوبلكس المشربة')
                         : (apt.code === 'villa-mashraba'
                             ? '3BR Villa & Pool'
                             : apt.code === 'studio-2'
                             ? '2BR Boho Stone House'
+                            : apt.code === 'studio-mashraba'
+                            ? 'Mashraba Family Studio'
                             : 'Mashraba Duplex')}
                     </span>
                     <span className="text-[#8C867C] font-normal">
@@ -216,6 +220,7 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
           {sortedApartments.map((apt, index) => {
             const isVilla = apt.code === 'villa-mashraba' || apt.id === 'villa-mashraba'
             const isStudio2 = apt.code === 'studio-2' || apt.id === 'studio-2'
+            const isStudioMashraba = apt.code === 'studio-mashraba' || apt.id === 'studio-mashraba'
             const currentPhoto = selectedPhotoMap[apt.id || apt.code] || apt.images?.[0] || '/images/villa-mashraba-pool.jpg'
             const previewThumbnails = (apt.images || []).slice(0, 6)
 
@@ -224,18 +229,24 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
               ? (isAr ? 'المكان · فيلا المشربة الفاخرة بحمام سباحة' : 'THE PLACE · 3BR LUXURY VILLA & POOL')
               : isStudio2
               ? (isAr ? 'المكان · بيت بوهو حجري وروف خاص' : 'THE PLACE · 2BR BOHO STONE HOUSE')
+              : isStudioMashraba
+              ? (isAr ? 'المكان · ستوديو المشربة العائلي' : 'THE PLACE · MASHRABA FAMILY STUDIO')
               : (isAr ? 'المكان · دوبلكس المشربة' : 'THE PLACE · MASHRABA DUPLEX')
 
             const sectionTitle = isVilla
               ? (isAr ? (apt.title_ar || 'فيلا المشربة الفاخرة بحمام سباحة خاص') : (apt.title || 'Meet the 3BR Luxury Villa with Private Pool'))
               : isStudio2
               ? (isAr ? 'بيت واستوديو بوهو غرفتين وروف خاص' : 'Meet the 2BR Boho Stone House & Private Roof')
+              : isStudioMashraba
+              ? (isAr ? 'ستوديو المشربة العائلي (يسع حتى 4 أفراد)' : 'Meet the Mashraba Family Studio')
               : (isAr ? (apt.title_ar || page.place.title) : (apt.title || page.place.title))
 
             const sectionSubtitle = isVilla
               ? (isAr ? 'المشربة · حمام سباحة خاص، جلسة برجولة مظللة بمرجيحة استرخاء، 3 غرف نوم مكيّفة، صالون معيشة واسع ومطبخ كامل بجزيرة طعام.' : 'Mashraba · Private Swimming Pool, Shaded Pergola Lounge with Swing Chair, 3 AC Bedrooms, Grand Salon & Fully Equipped Kitchen.')
               : isStudio2
               ? (isAr ? 'بين اللايت هاوس والعصلة · غرفتين نوم مكيفتين، حديقة خاصة، كانون نار وروف ببرجولة خشبية وإطلالة جبلية.' : 'Between Lighthouse & Assala · 2 AC Bedrooms, Private Garden & Rooftop Mountain Views.')
+              : isStudioMashraba
+              ? (isAr ? 'المشربة · 2 سرير مريح وكنبة أمريكي، تكييف سبليت، حمام خاص بسخان مياه، مطبخ مجهز متكامل وإنترنت واي فاي سريع.' : 'Mashraba · Up to 4 guests, 2 Beds + American Sofa Bed, Split A/C, Private Bathroom with Water Heater, Kitchenette & Wi-Fi.')
               : (isAr ? page.place.subtitle : 'Thoughtful essentials, with room to settle in.')
 
             return (
@@ -374,6 +385,21 @@ export default function DahabAccommodationPage({ t, lang, onNavigateHome, onSele
                               </span>
                               <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
                                 {isAr ? 'حديقة وكانون نار' : 'Garden & Fire Pit'}
+                              </span>
+                            </>
+                          ) : isStudioMashraba ? (
+                            <>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? '2 سرير + كنبة أمريكي' : '2 Beds + Sofa Bed'}
+                              </span>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? 'تكييف وسخان مياه' : 'A/C & Water Heater'}
+                              </span>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? 'واي فاي سريع' : 'Fast Wi-Fi'}
+                              </span>
+                              <span className="px-2.5 py-1 bg-white text-[#5A554E] text-[11px] font-medium rounded-lg border border-[#EAE1D1]">
+                                {isAr ? 'مطبخ تحضيري' : 'Kitchenette'}
                               </span>
                             </>
                           ) : (
