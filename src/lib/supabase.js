@@ -467,7 +467,13 @@ export async function fetchApartments() {
     if (error || !data || data.length === 0) {
       return { data: DEFAULT_APARTMENTS, error: null }
     }
-    return { data, error: null }
+
+    // Merge: ensure all DEFAULT_APARTMENTS exist, giving precedence to DB rows
+    const existingCodes = new Set(data.map(d => d.code || d.id))
+    const missingDefaults = DEFAULT_APARTMENTS.filter(def => !existingCodes.has(def.code) && !existingCodes.has(def.id))
+    const merged = [...data, ...missingDefaults]
+
+    return { data: merged, error: null }
   } catch (err) {
     return { data: DEFAULT_APARTMENTS, error: null }
   }
