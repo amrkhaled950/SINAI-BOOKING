@@ -968,6 +968,11 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                           <td className="px-4 py-3 text-[#5A554E] whitespace-nowrap">
                             <div>{b.check_in_date || '—'}</div>
                             <div className="text-[10px] text-[#7A7367]">→ {b.check_out_date || '—'}</div>
+                            {b.created_at && (
+                              <div className="text-[9px] text-[#9A9387] mt-0.5">
+                                {isAr ? 'تاريخ الطلب:' : 'Booked:'} {new Date(b.created_at).toLocaleDateString('en-CA')}
+                              </div>
+                            )}
                           </td>
                           <td className="px-4 py-3 text-[#22211F]">
                             <span>{b.guests_count || 1} {isAr ? 'بالغ' : 'adults'}</span>
@@ -981,20 +986,25 @@ export default function AdminDashboardPage({ onNavigateHome, lang = 'ar' }) {
                               <span className="px-2 py-0.5 rounded-md bg-[#FAF5ED] font-mono text-[10px]">
                                 {b.payment_method || 'wallet'}
                               </span>
-                              {b.payment_status === 'paid' && (
+                              {(b.payment_status === 'paid' || (b.notes || '').includes('PayTabs Paid')) && (
                                 <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-800 border border-green-200">
                                   ✓ {isAr ? 'مدفوع PayTabs' : 'Paid PayTabs'}
                                 </span>
                               )}
-                              {b.paytabs_tran_ref && (
-                                <span className="text-[9px] text-[#7A7367] font-mono" title={b.paytabs_tran_ref}>
-                                  Ref: {b.paytabs_tran_ref.slice(-8)}
+                              {(b.paytabs_tran_ref || (b.notes || '').match(/Ref:\s*(PTE\w+)/)?.[1]) && (
+                                <span className="text-[9px] text-[#7A7367] font-mono" title={b.paytabs_tran_ref || (b.notes || '').match(/Ref:\s*(PTE\w+)/)?.[1]}>
+                                  Ref: {(b.paytabs_tran_ref || (b.notes || '').match(/Ref:\s*(PTE\w+)/)?.[1]).slice(-8)}
                                 </span>
                               )}
                             </div>
                           </td>
                           <td className="px-4 py-3 font-bold text-[#2A6543] whitespace-nowrap">
-                            ${b.estimated_total_usd || '—'}
+                            <div>${b.estimated_total_usd || '—'}</div>
+                            {b.estimated_total_egp && (
+                              <div className="text-[10px] font-normal text-[#7A7367]">
+                                {Number(b.estimated_total_egp).toLocaleString()} {isAr ? 'ج' : 'EGP'}
+                              </div>
+                            )}
                           </td>
                           <td className="px-4 py-3">
                             <select
