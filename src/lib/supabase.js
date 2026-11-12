@@ -267,6 +267,27 @@ export const DEFAULT_APARTMENTS = [
    1. Client Public Insert Methods
    ========================================================== */
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const OPTIONAL_PAYMENT_COLUMNS = ['paytabs_tran_ref', 'payment_status', 'paid_amount', 'paid_currency']
+
+async function insertBookingWithColumnFallback(table, payload) {
+  const { data, error } = await supabase.from(table).insert([payload]).select().single()
+  if (!error) return { data: data || true, error: null }
+
+  // If live DB hasn't migrated the optional PayTabs columns yet, retry without them so the booking is never lost
+  const msg = String(error.message || error.details || '').toLowerCase()
+  if (error.code === 'PGRST204' || msg.includes('column') || msg.includes('schema cache')) {
+    const fallbackPayload = { ...payload }
+    for (const col of OPTIONAL_PAYMENT_COLUMNS) {
+      delete fallbackPayload[col]
+    }
+    const retry = await supabase.from(table).insert([fallbackPayload]).select().single()
+    return { data: retry.data || !retry.error, error: retry.error }
+  }
+
+  return { data: null, error }
+}
+
 export async function saveApartmentBooking(b) {
   if (!supabase) return { data: null, error: null }
   try {
@@ -294,8 +315,7 @@ export async function saveApartmentBooking(b) {
       status: b.status || 'pending',
       notes: b.notes || null,
     }
-    const { data, error } = await supabase.from('apartment_bookings').insert([payload]).select().single()
-    return { data: data || !error, error }
+    return await insertBookingWithColumnFallback('apartment_bookings', payload)
   } catch (err) {
     return { data: null, error: err }
   }
@@ -327,8 +347,7 @@ export async function saveSafariBooking(s) {
       status: s.status || 'pending',
       notes: s.notes || null,
     }
-    const { data, error } = await supabase.from('safari_bookings').insert([payload]).select().single()
-    return { data: data || !error, error }
+    return await insertBookingWithColumnFallback('safari_bookings', payload)
   } catch (err) {
     return { data: null, error: err }
   }
@@ -356,15 +375,14 @@ export async function saveTransferBooking(t) {
       status: t.status || 'pending',
       notes: t.notes || null,
     }
-    const { data, error } = await supabase.from('transfer_bookings').insert([payload]).select().single()
-    return { data: data || !error, error }
+    return await insertBookingWithColumnFallback('transfer_bookings', payload)
   } catch (err) {
     return { data: null, error: err }
   }
 }
 
 export async function updateBookingPaymentStatus(type, id, updateData = {}) {
-  if (!supabase || !id) return { data: null, error: null }
+  if (!supabase || !id || !UUID_REGEX.test(id)) return { data: null, error: null }
   const tableMap = {
     apartment: 'apartment_bookings',
     safari: 'safari_bookings',
@@ -378,14 +396,34 @@ export async function updateBookingPaymentStatus(type, id, updateData = {}) {
       .eq('id', id)
       .select()
       .single()
-    return { data, error }
+    if (!error) return { data, error: null }
+
+    const msg = String(error.message || error.details || '').toLowerCase()
+    if (error.code === 'PGRST204' || msg.includes('column') || msg.includes('schema cache')) {
+      const refNote = updateData.paytabs_tran_ref
+        ? `PayTabs Paid (${updateData.paid_amount || ''} ${updateData.paid_currency || 'EGP'}) - Ref: ${updateData.paytabs_tran_ref}`
+        : null
+      const fallbackUpdate = {
+        status: updateData.status || 'confirmed',
+        payment_method: 'card',
+        ...(refNote ? { notes: refNote } : {})
+      }
+      const retry = await supabase
+        .from(table)
+        .update(fallbackUpdate)
+        .eq('id', id)
+        .select()
+        .single()
+      return { data: retry.data, error: retry.error }
+    }
+    return { data: null, error }
   } catch (err) {
     return { data: null, error: err }
   }
 }
 
 export async function getBookingById(type, id) {
-  if (!supabase || !id) return { data: null, error: null }
+  if (!supabase || !id || !UUID_REGEX.test(id)) return { data: null, error: null }
   const tableMap = {
     apartment: 'apartment_bookings',
     safari: 'safari_bookings',

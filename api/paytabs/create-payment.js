@@ -41,12 +41,16 @@ export default async function handler(req, res) {
     }
 
     // Determine host for callback/return if not passed
-    const host = req.headers.host || 'sinai-booking.vercel.app';
+    const host = req.headers.host || 'www.sinaibooking.com';
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const origin = `${protocol}://${host}`;
 
-    const finalReturnUrl = returnUrl || `${origin}/payment-result?bookingId=${encodeURIComponent(bookingId || '')}&type=${encodeURIComponent(bookingType || '')}`;
-    const callbackUrl = `${origin}/api/paytabs/callback`;
+    // Always route PayTabs browser POST return through /api/paytabs/return to prevent HTTP 405 on static SPA routes
+    const defaultReturnUrl = `${origin}/api/paytabs/return?bookingId=${encodeURIComponent(bookingId || '')}&type=${encodeURIComponent(bookingType || 'apartment')}`;
+    const finalReturnUrl = returnUrl
+      ? returnUrl.replace('/payment-result', '/api/paytabs/return')
+      : defaultReturnUrl;
+    const callbackUrl = `${origin}/api/paytabs/callback?type=${encodeURIComponent(bookingType || 'apartment')}`;
 
     // PayTabs Egypt processes primary card transactions in EGP.
     // If USD is requested and not enabled on merchant profile, convert to EGP at the rate

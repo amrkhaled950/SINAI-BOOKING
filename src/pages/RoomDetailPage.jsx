@@ -858,7 +858,7 @@ export default function RoomDetailPage({ t, lang, onNavigateBack, onNavigateHome
                             customerPhone: guestPhone,
                             amount: totEgp,
                             currency: 'EGP',
-                            returnUrl: `${window.location.origin}/payment-result?bookingId=${encodeURIComponent(bookingId)}&type=apartment`
+                            returnUrl: `${window.location.origin}/api/paytabs/return?bookingId=${encodeURIComponent(bookingId)}&type=apartment`
                           })
 
                           if (session.success && session.redirect_url) {

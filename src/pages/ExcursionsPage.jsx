@@ -120,7 +120,7 @@ export default function ExcursionsPage({ t, lang, onNavigateHome }) {
         customerPhone,
         amount: totalEgp,
         currency: 'EGP',
-        returnUrl: `${window.location.origin}/payment-result?bookingId=${encodeURIComponent(bookingId)}&type=safari`
+        returnUrl: `${window.location.origin}/api/paytabs/return?bookingId=${encodeURIComponent(bookingId)}&type=safari`
       })
 
       if (session.success && session.redirect_url) {

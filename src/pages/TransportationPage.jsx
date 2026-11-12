@@ -97,7 +97,7 @@ export default function TransportationPage({ t, lang, onNavigateHome }) {
         customerPhone,
         amount: totalEgp,
         currency: 'EGP',
-        returnUrl: `${window.location.origin}/payment-result?bookingId=${encodeURIComponent(bookingId)}&type=transfer`
+        returnUrl: `${window.location.origin}/api/paytabs/return?bookingId=${encodeURIComponent(bookingId)}&type=transfer`
       })
 
       if (session.success && session.redirect_url) {
